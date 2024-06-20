@@ -637,6 +637,17 @@ class PagesController extends Controller {
     }
 
     public function subscribe(Request $request) {
+
+        $messages = [
+            'g-recaptcha-response.required' => 'Please complete the CAPTCHA to proceed.',
+            'g-recaptcha-response.captcha' => 'The CAPTCHA verification failed, please try again.',
+        ];
+
+        $request -> validate([
+            'email' => ['required', 'email', 'max:255'],
+            'g-recaptcha-response' => 'required|captcha',
+        ], $messages);
+
         if(!DB::table('subscribers') -> where('email', $request -> email) -> first()) 
             DB::table('subscribers') -> insert(['email' => $request -> email]);
 

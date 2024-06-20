@@ -13,6 +13,16 @@
     <script src="{{ asset('bootstrap/js/jquery-1.7.1.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.js') }}"></script>
 
+    @if($errors->has('g-recaptcha-response') || $errors->has('email'))
+    <script type="text/javascript">
+
+    $(window).on('load', function() {
+        $('#subscribe').modal('show'); 
+    });
+    </script>
+
+    @endif
+
     <script type="text/javascript">
 
     $(window).on('load', function() {
@@ -699,14 +709,25 @@
       <x-input-label for="email" style="text-align: left" class="text-left w-full" :value="__('Email')" />
       <div class="d-flex mb-4 gap-2">
             <input style = "padding: 6px 10px; border: 2px solid #4d4d4d; color: #808080; border-radius: 6px" id="email" class="block mt-2 w-full" type="email" name="email" value="{{ old('email') }}" placeholder="username@example.com" required autocomplete="email" />
-
-        <div class="col-lg-3 mt-2 d-flex align-items-center">
-            <button type="submit" style="text-transform: uppercase; text-decoration: none; color: ghostwhite; font-weight: 600; font-size: 11px; padding: 9px 8px; diplay: block; border: none" class="apply-btn w-full text-center" href="{{ route('login') }}"> Subscribe</button>
-        </div>
             
         </div>
 
       <x-input-error :messages="$errors->get('email')" class="mt-2 text-left" />
+
+      <div class="mt-3 d-flex justify-content-between align-items-center">
+            {!! NoCaptcha::display() !!}
+
+            <div class="col-lg-3 mt-2 d-flex align-items-center">
+            <button type="submit" style="text-transform: uppercase; text-decoration: none; color: ghostwhite; font-weight: 600; font-size: 11px; padding: 9px 8px; diplay: block; border: none" class="apply-btn w-full text-center" href="{{ route('login') }}"> Subscribe</button>
+        </div>
+
+        </div>
+
+        <div class="mt-3 mb-4">
+            @if ($errors->has('g-recaptcha-response'))
+                <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
+            @endif
+        </div>
 
       <div class="d-flex justify-content-start w-full sm:max-w-md mt-2">
                     <div style="padding: 0px 0px 0px 0px" class="row container">
@@ -727,6 +748,7 @@
 
 @endif
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>  
 <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>  
