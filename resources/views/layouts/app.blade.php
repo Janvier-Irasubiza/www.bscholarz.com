@@ -7,9 +7,9 @@
 
         <title>BScholarz - @yield('title')</title>
 
-        <link rel="stylesheet" href="{{ asset('styles.css') }}">
-        <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles.css') }}?v={{ filemtime(public_path('styles.css')) }}">
+        <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
+        <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
 
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
@@ -19,7 +19,7 @@
 <script src="https://cdn.tiny.cloud/1/7ytstwdjbe27dcidmq5rnasle0m9zq4pmgjn0txxs17vvbca/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
 <script>
-  tinymce.init({
+    tinymce.init({
     selector: '.textarea',
     content_css: "{{ asset('textarea.css') }}",
     plugins: 'charmap emoticons lists wordcount casechange autocorrect typography',

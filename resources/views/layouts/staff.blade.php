@@ -7,9 +7,9 @@
 
         <title>BScholarz - @yield('title')</title>
 
-        <link rel="stylesheet" href="{{ asset('styles.css') }}">
-        <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles.css') }}?v={{ filemtime(public_path('styles.css')) }}">
+        <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
+        <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
 
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">

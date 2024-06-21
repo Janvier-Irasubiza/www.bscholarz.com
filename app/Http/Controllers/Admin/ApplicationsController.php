@@ -184,7 +184,7 @@ class ApplicationsController extends Controller {
                     'country' => $request -> country, 
                     'category' => $request -> category, 
                     'discipline_desc' => $request -> short_desc, 
-            		'discipline_detailed_desc' => $request -> desc,  
+            		    'discipline_detailed_desc' => $request -> desc,  
                     'poster' => $poster, 
                     'includes' => $request -> benefits, 
                     'requirements' => $request -> requirements, 
@@ -194,6 +194,7 @@ class ApplicationsController extends Controller {
                     'due_date' => $request -> due_date, 
                     'speciality' => $request -> specialty,
                   	'link' => $request -> link, 
+                  	'website_link' => $request -> link_to_institution, 
                 ];  
                 
                 DB::table('disciplines') -> where('id', $request -> app_id) -> limit(1) -> update($data);
@@ -207,7 +208,7 @@ class ApplicationsController extends Controller {
                 'country' => $request -> country, 
                 'category' => $request -> category, 
                 'discipline_desc' => $request -> short_desc, 
-            	'discipline_detailed_desc' => $request -> desc,  
+            	  'discipline_detailed_desc' => $request -> desc,  
                 'includes' => $request -> benefits, 
                 'requirements' => $request -> requirements, 
                 'status' => $request -> status, 
@@ -216,6 +217,7 @@ class ApplicationsController extends Controller {
                 'due_date' => $request -> due_date, 
                 'speciality' => $request -> specialty,
               	'link' => $request -> link, 
+                'website_link' => $request -> link_to_institution, 
             ];  
             DB::table('disciplines') -> where('id', $request -> app_id) -> limit(1) -> update($data);
         }

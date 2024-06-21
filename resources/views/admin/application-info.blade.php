@@ -322,6 +322,13 @@
         </div>
 
         <div>
+            <x-input-label for="link" :value="__('Institution Link')" />
+            <small class="text-muted mb-0">Link to the Institution</small>
+            <x-text-input id="link" name="link_to_institution" type="text" class="mt-1 block w-full" value="{{ $app_info -> website_link }}" required autocomplete="link_to_institution" style="border: 1px solid rgba(0, 0, 0, 0.192)" />
+            <x-input-error class="mt-2" :messages="$errors->get('link_to_institution')" />
+        </div>
+
+        <div>
             <x-input-label style="font-size: 15px" for="name" :value="__('Poster')" />
             <small class="text-semi-muted mb-0">Application Poster</small></br>
             <input type="text" hidden value="{{ $app_info -> poster }}" class="text-left" name="old_poster" >

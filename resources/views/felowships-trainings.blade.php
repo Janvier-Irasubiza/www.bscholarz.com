@@ -109,24 +109,24 @@
             <img class="card-img-top" src="{{ asset('images') }}/{{ $scholarship -> poster }}" alt="Card image cap">
             <div class="the-status" style="color: #2D5FA3">
 
-              @php
-                      
-              $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
-              $due_date = \Carbon\Carbon::parse($scholarship -> due_date);
-              $rem = $due_date->diffInDays($today);
-
-              @endphp
-              
-              @if($scholarship -> status =='Comming soon')
-                      
-                      {{ $scholarship -> status }}
-                      
-                      @elseif($rem > 1) Remaining {{ $rem }} Days @elseif($rem == 1) Remaining {{ $rem }} Day @elseif($rem == 0) Ends Today @else Ended @endif
+            @php
+                
+                $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
+                $due_date = \Carbon\Carbon::parse($scholarship -> due_date);
+                $rem = $due_date->diffInDays($today);
+            
+            @endphp
+            
+            @if($scholarship -> status =='Comming soon')
+            
+            {{ $scholarship -> status }}
+            
+            @elseif($rem > 1) Remaining {{ $rem }} Days @elseif($rem == 1) Remaining {{ $rem }} Day @elseif($rem == 0) Ends Today @else Ended @endif
               
               </div>
-            <a href="#!">
-                <div class="mask rgba-white-slight"></div>
-            </a>
+                <a href="#!">
+                    <div class="mask rgba-white-slight"></div>
+                </a>
             </div>
 
             <!-- Card content -->
