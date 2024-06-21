@@ -59,11 +59,11 @@ class UserRequestController extends Controller {
               if (!Auth::guard('client') -> user()) 
                 $applicantId = Crypt::encrypt($applicant_info -> id);
 
-                  // Mail::to($_COOKIE['user_email']) -> send(new RequestReceived($url, $user, $app));
+                  Mail::to($_COOKIE['user_email']) -> send(new RequestReceived($url, $user, $app));
 
                   return redirect() -> route('follow-up', ['discipline' => $discipline_info -> identifier, 'app_id' => $request -> app_id, 'applicant' => $applicantId]);
 
-              // Mail::to($_COOKIE['user_email']) -> send(new RequestReceived($url, $user, $app)); 
+              Mail::to($_COOKIE['user_email']) -> send(new RequestReceived($url, $user, $app)); 
 
               return redirect() -> route('client.client-dashboard');
 
@@ -147,7 +147,7 @@ class UserRequestController extends Controller {
 
           	Session::put('scss', 'Your request was successfully sent!');
       
-			// Mail::to($request -> email) -> send(new RequestReceived($url, $user, $app));
+			Mail::to($request -> email) -> send(new RequestReceived($url, $user, $app));
           
             if (!Auth::guard('client') -> user()) {
               $applicantId = Crypt::encrypt($applicant_info -> id);

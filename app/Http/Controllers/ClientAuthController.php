@@ -67,7 +67,7 @@ class ClientAuthController extends Controller
        	$url = url(route('client.client-dashboard'));
 		$client = $request -> name;
 
-		// Mail::to($request -> email) -> send(new Welcome($url, $client));
+		Mail::to($request -> email) -> send(new Welcome($url, $client));
        
  
         if (Auth::guard('client') -> attempt(['email' => $clientInfo['email'], 'password' => $clientInfo['password']])) {

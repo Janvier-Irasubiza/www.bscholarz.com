@@ -38,14 +38,14 @@ class ClientRequestController extends Controller {
       
         if (!Auth::guard('client') -> user()) {
           
-          // Mail::to($user -> email) -> send(new RequestReceived($url, $user -> names, $app));
+          Mail::to($user -> email) -> send(new RequestReceived($url, $user -> names, $app));
            
           return redirect() -> route('follow-up', ['discipline' => $request -> identifier, 'app_id' => $request -> app_id,  'applicant' => $request -> applicant]);
         }
 
         else {
           
-          	// Mail::to($user -> email) -> send(new RequestReceived($url, $user -> names, $app));
+          	Mail::to($user -> email) -> send(new RequestReceived($url, $user -> names, $app));
           
             Session::put('scss', 'Your request was successfully sent!');
               return redirect() -> route('client.client-dashboard');

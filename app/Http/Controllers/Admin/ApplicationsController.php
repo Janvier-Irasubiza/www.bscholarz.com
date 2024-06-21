@@ -120,11 +120,11 @@ class ApplicationsController extends Controller {
             
           }
           
-          /* foreach($receipients as $receipient) {
+          foreach($receipients as $receipient) {
           
             Mail::to($receipient['email']) -> send(new Post($url, $title, $type, $desc));
             
-          } */
+          }
         
            return redirect() -> route('admin.applications');
           

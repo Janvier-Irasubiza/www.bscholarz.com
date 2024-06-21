@@ -246,7 +246,7 @@ class AdminController extends Controller {
         $staff_names = $staff -> names;      	  
         $phone_number = $staff -> phone_number;
 
-        // Mail::to($staff -> email) -> send(new DisbursedSalary($staff_names, $amount_disbursed, $balance, $phone_number));
+        Mail::to($staff -> email) -> send(new DisbursedSalary($staff_names, $amount_disbursed, $balance, $phone_number));
 
         return back();
     }
