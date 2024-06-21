@@ -59,7 +59,7 @@
           
           @php
           
-          Session::forget('scss');
+          Session::forget('exist');
           
           @endphp
           

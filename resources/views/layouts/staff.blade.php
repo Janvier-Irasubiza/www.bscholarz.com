@@ -17,12 +17,21 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 
     <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 
     @if($errors -> has('email') || $errors -> has('password'))
     <script>
         $(window).on('load', function() {
-      $('#createNewStudent').modal('show');
-      });
+            $('#createNewStudent').modal('show');
+        });
+    </script>
+    @endif
+
+    @if(session('delete_success'))
+    <script>
+        $(document).ready(function() {
+            $('.toast').toast('show');
+        });
     </script>
     @endif
 

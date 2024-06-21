@@ -298,11 +298,16 @@
                         </div>
                     </div>
 
-                    <a style="color: black" href="{{ route('customer-details', ['customer_info' => $client -> id, 'application_info' => $client -> application_id]) }}" class="container d-flex align-items-center justify-content-center" style="padding: 5px; border-radius: 5px">
-                        <div class="continue-app d-flex align-items-center justify-content-center p-1" style="">
-                            <div class="staff-resume-btn-1">Make a Review</div>
-                        </div>
+                    <div class="d-flex justify-content-between py-2 px-4">
+
+                    <a style="color: black" href="{{ route('customer-details', ['customer_info' => $client -> id, 'application_info' => $client -> application_id]) }}" class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
+                            Review request
                     </a>
+
+                    <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}" data-service="{{ $discipline->discipline_name }}" data-client="{{ $client_info->names }}">
+                      Delete
+                    </a>
+                   </div>
 
                     </div>
                   @endif
@@ -329,15 +334,67 @@
                         </div>
                     </div>
 
-                    <a style="color: black" href="{{ route('customer-details', ['customer_info' => $client -> id, 'application_info' => $client -> application_id]) }}" class="container d-flex align-items-center justify-content-center" style="padding: 5px; border-radius: 5px">
-                        <div class="continue-app d-flex align-items-center justify-content-center p-1" style="">
-                            <div class="staff-resume-btn-1">Make a Review</div>
-                        </div>
+                   <div class="d-flex justify-content-between py-2 px-4">
+
+                    <a style="color: black" href="{{ route('customer-details', ['customer_info' => $client -> id, 'application_info' => $client -> application_id]) }}" class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
+                            Review request
                     </a>
+
+                    <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}" data-service="{{ $discipline->discipline_name }}" data-client="{{ $client_info->names }}">
+                      Delete
+                    </a>
+                   </div>
 
                     </div>
                   	@endif
                     @endforeach
+
+                    <!-- Modal -->
+                      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered" style="margin-left: auto; margin-right: 16em;">
+                              <div class="modal-content">
+                                  <div class="p-3" style="border-bottom: 1px solid #e6e6e6">
+                                      <p class="m-0" style="font-size: 18px;">Delete request</p>
+                                  </div>
+                                  <div class="modal-body">
+                                      Are you sure you want to delete this application?
+                                      <div class="mt-3">
+                                          Service: <span id="service"></span><br>
+                                          By: <span id="client"></span>
+                                      </div>
+                                      <div class="mt-3 mb-2" style="border-radius: 5px;">
+                                          <i class="fa-solid fa-triangle-exclamation btn btn-danger" style="font-size: 16px; padding: 7px 10px;"></i>&nbsp; Remember that this action cannot be undone
+                                      </div>
+                                  </div>
+                                  <div class="p-3 text-center" style="border-top: 1px solid #e6e6e6">
+                                      <button type="button" class="btn apply-btn" data-bs-dismiss="modal" style="padding: 3px 20px; color: ghostwhite">Cancel</button>
+                                      <a href="#" id="delete-link" class="ml-2 btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger">
+                                          <span class="mr-2 opacity-7">
+                                              <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                          </span>
+                                          <small><span class="fa fa-trash"></span></small>&nbsp;
+                                          <span class="mr-1">Yes, Delete</span>
+                                      </a>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- End of modal -->
+
+
+                      <!-- <toast> -->
+                      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header d-flex justify-content-between bg-secondary text-white">
+                                    <strong class="mr-auto">Request deleted</strong>
+                                    <small class="text-muted">just now</small>
+                                </div>
+                                <div class="toast-body">
+                                    {{ session('delete_success') }}
+                                </div>
+                            </div>
+                        </div>
+                      <!-- </tast>  -->
 
                     @else
 
@@ -784,7 +841,24 @@
 
     <script>
 
-      let partialBtn = document.getElementById('partialBtn');
+      $(document).ready(function() {
+        $('.postpone-btn').click(function() {
+            var service = $(this).data('service');
+            var client = $(this).data('client');
+            var applicationId = $(this).data('application-id'); 
+
+            $('#service').text(service);
+            $('#client').text(client);
+
+            var applicationId = $(this).data('application-id');
+            var deleteUrl = "{{ route('delete-request', ['application_id' => ':application_id']) }}";
+            deleteUrl = deleteUrl.replace(':application_id', applicationId);
+            $('#delete-link').attr('href', deleteUrl);
+            console.log(deleteUrl);
+        });
+    });  
+    
+    let partialBtn = document.getElementById('partialBtn');
 
       partialBtn.addEventListener('click', function() {
         document.getElementById('partialDeptPayment').style.display="block";

@@ -591,6 +591,7 @@ public function add_client_app (Request $request) {
       
         DB::table('applications') -> where('app_id', $request -> application_id) -> update(['deletion_status' => 'Requested']);
 
+        session()->flash('delete_success', 'Application deleted successfully.');
 
         return redirect() -> route('staff-dashboard');
     }

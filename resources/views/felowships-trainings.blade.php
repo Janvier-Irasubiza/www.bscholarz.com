@@ -99,6 +99,8 @@
         <div class="overflow-hidden p-0">
         <div class="row gy-5"  style="">
 
+        <a href="tel:+250781336634">Call me!</a>
+
             @foreach($f_trainings as $scholarship)
             <div class="col-lg-3 w-5" style="">
             <!-- Card Wider -->
