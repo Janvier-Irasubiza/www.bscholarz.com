@@ -214,6 +214,7 @@ Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () {
     Route::post('/client-info-update', [PagesController::class, 'profile_info_update']) -> name('client-info-update');
   
   	Route::get('/unreachable/{application_id}/{applicant}', [StaffController::class, 'unreachable']) -> name('unreachable');
+  	Route::post('/request-to-pay', [StaffController::class, 'request_to_pay']) -> name('request-to-pay');
 
 
 });

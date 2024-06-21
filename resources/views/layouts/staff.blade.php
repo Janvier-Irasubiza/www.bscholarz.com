@@ -27,7 +27,7 @@
     </script>
     @endif
 
-    @if(session('delete_success'))
+    @if(session('delete_success') || session('poked'))
     <script>
         $(document).ready(function() {
             $('.toast').toast('show');

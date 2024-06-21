@@ -396,6 +396,21 @@
                         </div>
                       <!-- </tast>  -->
 
+
+                      <!-- <toast> -->
+                      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header d-flex justify-content-between bg-secondary text-white">
+                                    <strong class="mr-auto">Poke email sent</strong>
+                                    <small class="text-muted">just now</small>
+                                </div>
+                                <div class="toast-body">
+                                    {{ session('poked') }}
+                                </div>
+                            </div>
+                        </div>
+                      <!-- </tast>  -->
+
                     @else
 
                     <div class="container-fluid testimonial-group">
@@ -596,10 +611,10 @@
                 </div>
               </form>
 
-              <form action="{{ route('remind-to-pay') }}" method="POST" class="">
+              <form action="{{ route('request-to-pay') }}" method="POST" class="">
               @csrf
                 <div class="" style="">
-                    <input type="text" name="app_id" class="debtor" required hidden>
+                  <input type="text" name="app_id" class="debtor" required hidden>
                 </div>
 
                 <div class="d-flex align-items-center justify-content-center mt-3 ml-3"> 
@@ -707,11 +722,15 @@
       </td>
       <td class="text-center">
         <div class="d-flex align-items-center justify-content-center">
-          <div class="action-btn mr-1">
-            <button type="button" class="btn btn-link btn-sm btn-rounded action-btn debtorId" value="{{ $debtor -> application_id }}" data-bs-toggle="modal" data-bs-target="#exampleModal1"  style="text-decoration: none; background-color: #0D6EFD; color: white; border-radius: 20px;">
-                Poke <i class="fa-solid fa-hand-point-right" style="transform: rotate(-45deg)"></i>
-            </button>
-          </div>
+          @if ($debtor->poked == 1)
+                <span class="badge bg-secondary">Poked</span>
+            @else
+                <div class="action-btn mr-1">
+                    <button type="button" class="btn btn-link btn-sm btn-rounded action-btn debtorId" value="{{ $debtor->application_id }}" data-bs-toggle="modal" data-bs-target="#exampleModal1" style="text-decoration: none; background-color: #0D6EFD; color: white; border-radius: 20px;">
+                        Poke <i class="fa-solid fa-hand-point-right" style="transform: rotate(-45deg)"></i>
+                    </button>
+                </div>
+            @endif
 
           <div class="action-btn ml-1">
             <button type="button" class="btn btn-link btn-sm btn-rounded clientId" value="{{ $debtor -> application_id }}" data-bs-toggle="modal" data-bs-target="#exampleModal" style="text-decoration: none; background-color: #80ffaa; color: black; border-radius: 20px;">
@@ -799,7 +818,7 @@
                 </div>
               </form>
 
-              <form action="{{ route('remind-to-pay') }}" method="POST" class="">
+              <form action="{{ route('request-to-pay') }}" method="POST" class="">
               @csrf
                 <div class="" style="">
                     <input type="text" name="app_id" class="debtor" required hidden>

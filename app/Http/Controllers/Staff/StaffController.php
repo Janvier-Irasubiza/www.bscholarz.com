@@ -15,6 +15,7 @@ use Session;
 use DB;
 use Mail;
 use App\Mail\Unreachable;
+use App\Mail\RequestToPay;   
 
 class StaffController extends Controller {
 
@@ -23,7 +24,17 @@ class StaffController extends Controller {
         $my_funds = DB::table('applications') -> select(DB::raw('sum(assistant_pending_commission) as commission')) -> where('assistant', Auth::guard('staff') -> user() -> id) -> where('remittance_status', 'on hold') -> first();
         $postponed_applications = DB::table('applications') -> where('assistant', Auth::guard('staff') -> user() -> id) -> where('status', 'Postponed') -> WhereNull('deletion_status') -> get();
         $ready_clients = DB::table('user_requests') -> where('status', 'Pending') -> whereNull('deletion_status') -> where('due_date', '>', now() -> format('Y-m-d H:i:s.u'))-> get();
-        $outstanding_clients = DB::table('served_requests') -> where('assistant', Auth::guard('staff') -> user() -> id) -> where('amount_not_paid', 0) -> whereNotNull('outstanding_amount') -> whereNull('deliberation') -> get();
+        
+        $outstanding_clients = DB::table('served_requests')
+            ->join('applications', 'served_requests.application_id', '=', 'applications.app_id')
+            ->where('served_requests.assistant', Auth::guard('staff')->user()->id)
+            ->where('served_requests.amount_not_paid', 0)
+            ->whereNotNull('served_requests.outstanding_amount')
+            ->whereNull('served_requests.deliberation')
+            ->select('served_requests.*', 'applications.poked')
+            ->get();
+        
+
         $under_review = DB::table('user_requests') -> where('status', '<>', 'Pending') -> where('status', '<>', 'Complete') -> where('status', '<>', 'Postponed') -> WhereNull('deletion_status') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> where('due_date', '>', now() -> format('Y-m-d H:i:s.u')) -> get();
         //$under_review = DB::table('user_requests') -> where('status', '<>', 'Pending') -> where('status', '<>', 'Complete') -> where('status', '<>', 'Postponed') -> where('deletion_status', '<>', 'Requested') -> where('deletion_status', '<>', 'Deletion Confirmed') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> get();
       	$user_info = DB::table('staff') -> where('id', Auth::guard('staff') -> user() -> id) -> first();
@@ -967,4 +978,28 @@ public function add_client_app (Request $request) {
         return view('staff.assistance-requests', compact('requests'));
         
     }
+
+    public function request_to_pay(Request $request) {
+        $serviceInfo = DB::table('served_requests')
+            -> where('id', $request->app_id)
+            -> first();
+            
+        $client = $serviceInfo->names;
+        $app = $serviceInfo->discipline_name;
+        $date = $serviceInfo->served_on;
+        $amount = $serviceInfo -> outstanding_amount;
+
+        if(Mail::to($serviceInfo->email)->send(new RequestToPay($client, $app, $date, $amount))) {
+
+            DB::table('applications')
+            -> where('app_id', $request->app_id)
+            -> update(['poked'=>1]);
+
+            session()->flash('poked', 'Poke email successfully sent');
+        }
+
+        return redirect()->back();
+
+    }
+
 }
