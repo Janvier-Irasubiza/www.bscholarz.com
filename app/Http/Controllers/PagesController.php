@@ -130,7 +130,7 @@ class PagesController extends Controller {
         $faqs = DB::table('faqs') -> get();
         $avai_trainings = count($f_trainings);
         $community = count(DB::table('served_requests') -> get());
-        $fships_trainings = DB::table('disciplines') -> where('category', 'training') -> orWhere('category', 'fellowship') -> distinct('organization') -> count();
+        $fships_trainings = DB::table('disciplines') -> where('status' ,'<>', 'N/A') -> where('category', 'training') -> orWhere('category', 'fellowship') -> distinct('organization') -> count();
 
         return view('felowships-trainings', compact('f_trainings', 'motivation', 'faqs', 'avai_trainings', 'community', 'fships_trainings'));
     }
