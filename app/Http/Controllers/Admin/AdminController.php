@@ -37,9 +37,21 @@ class AdminController extends Controller {
         $active_emp = DB::table('staff') -> select(DB::raw('count(id) as active')) -> where('status', 'Online') -> first();
         $requests = DB::table('assistance_seekings') -> whereNull('assistance_given') -> get();
       
-      	$requested_delete = DB::table('user_requests') -> where('deletion_status', 'Requested') -> get();
+        $requested_delete = DB::table('user_requests')
+            ->where('deletion_status', 'Requested')
+            ->get();
+    
+        $deleted_by = [];
+        
+        if($requested_delete->isNotEmpty()) {
+            foreach ($requested_delete as $item) {
+                $deleted_by[] = DB::table('staff')
+                    ->where('id', $item->revied_by)
+                    ->first();
+            }
+        }
 
-        return view('admin.dashboard', compact('applications', 'userRequests', 'readyCustomers', 'servedCustomers', 'active_emp', 'requests', 'requested_delete'));
+        return view('admin.dashboard', compact('applications', 'userRequests', 'readyCustomers', 'servedCustomers', 'active_emp', 'requests', 'requested_delete', 'deleted_by'));
     }
   
   	public function deleted_details (Request $request) {

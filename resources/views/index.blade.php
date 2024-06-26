@@ -121,9 +121,17 @@
 
             <div class="section-right-body">
 
+            <a href="{{ route('ksp-apply') }}" target="self">
+                <div class="p-3">
+                    <div class="m-0 add-item rounded" style="max-width: 100%; overflow: hidden;">
+                        <img src="{{ asset('images/ads/ksp.PNG') }}" alt="" style="width: 100%; height: auto; display: block;" class="rounded">
+                    </div>
+                </div>
+            </a>
+
               @if(!$scholarships->isEmpty())
                 <div class="sch-trends">
-                <h4 class="mb-4 mt-4">Trending Scholarships</h4>
+                <h4 class="mb-4">Trending Scholarships</h4>
 
                 <div class="container overflow-hidden p-0">
                 <div class="row gy-5">

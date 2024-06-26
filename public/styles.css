@@ -776,7 +776,7 @@ footer{
    	/* box-shadow: rgba(0, 0, 0, 0.35) 0px 0px 15px; */
     padding: 20px 25px;
     left: 0px;
-    top: 70px;
+    top: 59px;
     bottom: 0px;
     height: calc(100vh - 70px);
     margin: 0px;
@@ -1205,9 +1205,6 @@ input[type="text"]:focus {
     border-radius: 8px;
     padding: 10px;
     background-color: #ffffffe0;
-    max-height: 502px;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 .customers-card {
@@ -1217,12 +1214,15 @@ input[type="text"]:focus {
     border-radius: 8px 10px 10px 8px;
     padding: 10px;
     background-color: #80ffaa36;
+}
+
+.requests-scroll {
     max-height: 502px;
     overflow-x: hidden;
     overflow-y: auto;
 }
 
-.customers-card::-webkit-scrollbar {
+.requests-scroll::-webkit-scrollbar {
     display: none;
 }
 
@@ -3250,4 +3250,8 @@ ul .sb-li:first-child {
 
 .toast-container {
     z-index: 10000;
+}
+
+.add-item {
+    height: 10em;
 }

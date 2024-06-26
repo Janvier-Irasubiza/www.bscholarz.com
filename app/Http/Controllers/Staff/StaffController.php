@@ -60,8 +60,18 @@ class StaffController extends Controller {
 
         $under_review = DB::table('user_requests') -> where('status', 'Under Review') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> get();
 
-        
-        return view('staff.customer-details', compact('client_info', 'client_background', 'client_docs', 'application_requested', 'applications_items', 'all_details', 'under_review'));
+        $outs = DB::table('served_requests')->where('id', $request -> customer_info)->where('outstanding_amount', '<>', 0)->get();
+
+        return view('staff.customer-details', compact(
+            'client_info', 
+            'client_background', 
+            'client_docs', 
+            'application_requested', 
+            'applications_items', 
+            'all_details', 
+            'under_review',
+            'outs'
+        ));
     }
 
     public function record_activity () {
@@ -919,17 +929,39 @@ public function add_client_app (Request $request) {
     }
 
     public function recordings(Request $request) {
+    // Set week start and end days if needed
+    Carbon::setWeekStartsAt(Carbon::SATURDAY);
+    Carbon::setWeekEndsAt(Carbon::FRIDAY);
 
-        Carbon::setWeekStartsAt(Carbon::SATURDAY);
-        Carbon::setWeekEndsAt(Carbon::FRIDAY);
+    // Get the start and end of the current month
+    $startOfMonth = Carbon::now()->startOfMonth();
+    $endOfMonth = Carbon::now()->endOfMonth();
 
-        $completedApp = DB::table('served_requests') -> where('assistant', Auth::guard('staff') -> user() -> id) -> where('application_status', 'Complete') -> whereBetween('served_on', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]) -> orderBy('served_on', 'desc') -> get();
-        $my_funds = DB::table('applications') -> select(DB::raw('sum(assistant_pending_commission) as commission')) -> where('assistant', Auth::guard('staff') -> user() -> id) -> where('remittance_status', 'on hold') -> first(); 
+    // Query for completed applications within the current month
+    $completedApp = DB::table('served_requests')
+        ->where('assistant', Auth::guard('staff')->user()->id)
+        ->where('application_status', 'Complete')
+        ->whereBetween('served_on', [$startOfMonth, $endOfMonth])
+        ->orderBy('served_on', 'desc')
+        ->get();
 
-        $balance = DB::table('served_requests') -> where('assistant', Auth::guard('staff') -> user() -> id) -> where('application_status', 'Complete') -> get();
+    // Query for pending commissions within the current month
+    $my_funds = DB::table('applications')
+        ->select(DB::raw('sum(assistant_pending_commission) as commission'))
+        ->where('assistant', Auth::guard('staff')->user()->id)
+        ->where('remittance_status', 'on hold')
+        ->whereBetween('served_on', [$startOfMonth, $endOfMonth])
+        ->first();
 
-        return view('staff.sheet', compact('completedApp', 'my_funds', 'balance'));
-    }
+    // Query for balance within the current month
+    $balance = DB::table('served_requests')
+        ->where('assistant', Auth::guard('staff')->user()->id)
+        ->where('application_status', 'Complete')
+        ->whereBetween('served_on', [$startOfMonth, $endOfMonth])
+        ->get();
+
+    return view('staff.sheet', compact('completedApp', 'my_funds', 'balance'));
+}
 
     public function sortRecsAll(Request $request) {
         $my_funds = DB::table('applications') -> select(DB::raw('sum(assistant_pending_commission) as commission')) -> where('assistant', Auth::guard('staff') -> user() -> id) -> where('remittance_status', 'on hold') -> first(); 

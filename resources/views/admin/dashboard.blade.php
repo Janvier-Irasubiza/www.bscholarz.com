@@ -129,53 +129,49 @@
     </tr>
   </thead>
   <tbody>
-    @foreach($requested_delete as $debtor)
-    
-    @php
-      $deleted_by = DB::table('staff') -> where('id', $debtor -> revied_by) -> first();
-    @endphp
-    
-    <tr>
-      <td>
-        <div class="d-flex align-items-center" style="margin: 0px">
-          <div class="" style="padding: 0px 5px">
-            <p class="fw-bold mb-1">{{ $debtor -> names }}</p>
-            <p class="text-muted mb-0">{{ $debtor -> email }} <br> {{ $debtor -> phone_number }}</p>
-          </div>
-        </div>
-      </td>
-      
-      <td>
-        <div class="d-flex align-items-center" style="margin: 0px">
-          <div class="" style="padding: 0px 5px">
-            <p class="fw-bold mb-1">{{ $debtor -> discipline_name }}</p>
-            <p class="text-muted mb-0">{{ $debtor -> discipline_organization }} - {{ $debtor -> discipline_country }}</p>
-          </div>
-        </div>
-      </td> 
-      
-      <td>
-        <p class="fw-normal mb-1"><strong>{{ $debtor -> deleted_on }}</strong></p>
-      </td>
-      
-      <td>
-        <div class="d-flex align-items-center" style="margin: 0px">
-          <div class="" style="padding: 0px 5px">
-            <small class="mb-1">{{ $deleted_by -> names }}</small>
-          </div>
-        </div>
-      </td> 
-      
-      <td class="text-center">
-        <div class="w-full">
-          <a style="color: black" href="{{ route('assess', ['customer_info' => $debtor -> id, 'application_info' => $debtor -> application_id]) }}" class="container d-flex align-items-center justify-content-center" style="padding: 5px; border-radius: 5px">
-            <div class="continue-app d-flex align-items-center justify-content-center p-1" style="">
-                <div class="staff-resume-btn-1">ASSESS</div>
+  @foreach($requested_delete as $item => $debtor)
+      <tr>
+          <td>
+              <div class="d-flex align-items-center" style="margin: 0px">
+                  <div class="" style="padding: 0px 5px">
+                      <p class="fw-bold mb-1">{{ $debtor->names }}</p>
+                      <p class="text-muted mb-0">{{ $debtor->email }} <br> {{ $debtor->phone_number }}</p>
+                  </div>
+              </div>
+          </td>
+
+          <td>
+              <div class="d-flex align-items-center" style="margin: 0px">
+                  <div class="" style="padding: 0px 5px">
+                      <p class="fw-bold mb-1">{{ $debtor->discipline_name }}</p>
+                      <p class="text-muted mb-0">{{ $debtor->discipline_organization }} - {{ $debtor->discipline_country }}</p>
+                  </div>
+              </div>
+          </td> 
+
+          <td>
+              <p class="fw-normal mb-1"><strong>{{ $debtor->deleted_on }}</strong></p>
+          </td>
+
+          <td>
+            <div class="d-flex align-items-center" style="margin: 0px">
+                <div class="" style="padding: 0px 5px">
+                    <small class="mb-1">{{ $deleted_by[$item]->names ?? '' }}</small>
+                </div>
             </div>
-          </a>
-        </div>
-	  </td>
-    </tr>
+          </td> 
+
+          <td class="text-center">
+              <div class="w-full">
+                  <a style="color: black" href="{{ route('assess', ['customer_info' => $debtor->id, 'application_info' => $debtor->application_id]) }}" class="container d-flex align-items-center justify-content-center" style="padding: 5px; border-radius: 5px">
+                      <div class="continue-app d-flex align-items-center justify-content-center p-1">
+                          <div class="staff-resume-btn-1">ASSESS</div>
+                      </div>
+                  </a>
+              </div>
+          </td>
+      </tr>
+
             <!-- Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
