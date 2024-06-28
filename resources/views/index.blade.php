@@ -121,9 +121,15 @@
 
             <div class="section-right-body">
 
+            <div class="p-3">
+                <div class="m-0 add-item rounded bg-info">
+                    <img src="" alt="">
+                </div>
+            </div>
+
               @if(!$scholarships->isEmpty())
                 <div class="sch-trends">
-                <h4 class="mb-4 mt-4">Trending Scholarships</h4>
+                <h4 class="mb-4">Trending Scholarships</h4>
 
                 <div class="container overflow-hidden p-0">
                 <div class="row gy-5">

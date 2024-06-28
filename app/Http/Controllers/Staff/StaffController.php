@@ -60,8 +60,18 @@ class StaffController extends Controller {
 
         $under_review = DB::table('user_requests') -> where('status', 'Under Review') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> get();
 
-        
-        return view('staff.customer-details', compact('client_info', 'client_background', 'client_docs', 'application_requested', 'applications_items', 'all_details', 'under_review'));
+        $outs = DB::table('served_requests')->where('id', $request -> customer_info)->where('outstanding_amount', '<>', 0)->get();
+
+        return view('staff.customer-details', compact(
+            'client_info', 
+            'client_background', 
+            'client_docs', 
+            'application_requested', 
+            'applications_items', 
+            'all_details', 
+            'under_review',
+            'outs'
+        ));
     }
 
     public function record_activity () {

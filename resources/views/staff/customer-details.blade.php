@@ -10,20 +10,17 @@
 
     <div class="card">
 
-    <div class="card-header-tab card-header py-3 d-flex" style="border-bottom: 1px solid rgba(0, 0, 0, 0.192)">
+    <div class="card-header-tab card-header py-3 d-flex justify-content-between" style="border-bottom: 1px solid rgba(0, 0, 0, 0.192)">
         <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-6" style="">
           <strong>{{ $application_requested -> discipline_name }} - Pre-Application Review</strong>
         </div>
       
-      	<div class="col-lg-3 d-flex justify-content-end" style="">
+      	<div class="d-flex justify-content-end" style="">
           <div>
             <a href="{{ route('unreachable', ['application_id' => $application_requested -> application_id, 'applicant' => $client_info -> id]) }}" class="ml-4 postpone-btn" style="color: black; background-color: #1DC4C9 !important">
               UNREACHABLE
             </a>
           </div>
-      	</div>
-      
-      	<div class="col-lg-3 d-flex justify-content-end" style="">
           <div>
             <a href="{{ route('delete-request', ['application_id' => $application_requested -> application_id]) }}" class="ml-4 postpone-btn" style="color: black">
               DELETE REQUEST
@@ -83,6 +80,28 @@
         </div>
 
     </div>
+
+    @if($outs->isNotEmpty())
+    <x-input-label style="font-size: 17px; font-weight: 600" for="name" :value="__('Outstanding application')" />
+
+    <div class="container-fluid testimonial-group p-0 mb-4 mt-2">
+        <div class="row text-center gap-3" style="padding: 0px; margin: 0px; overflow-x: auto;">
+        @foreach($outs as $request)
+            <div class="col-sm-6 m-0 application-hold bg-warning p-3">
+                <div class="text-left" class="m-0">
+                    <div style="font-size: 19px">
+                        <strong class="">{{ $request->discipline_name }}</strong><br>
+                        <p class="mt-2" style="font-size: 15px">Request Date: </p>
+                        <p class="" style="font-size: 15px">Assisted on: &nbsp; By: <strong></strong></p>
+                        <p class="" style="font-size: 15px">Amount: <strong>{{ number_format($request->outstanding_amount) }} <small>RWF</small></strong></p>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    @endif
 
     <div class="d-flex gap-3">
         <div class="col-lg-7">

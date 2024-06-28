@@ -212,7 +212,8 @@
             
 
                     @if($clientApps->isNotEmpty())
-                    <div class="d-flex gap-2 mb-0"> <x-input-label style="font-size: 17px; font-weight: 600" for="name" :value="__('Applications')" class="mb-0" /> - <span style="color: ghostwhite; padding: 0px 20px 2px 20px; border-radius: 20px; font-weight: 600; font-size: 17px" class="bg-success mb-0"><small>Served</small></span></div>
+                    <div class="d-flex gap-2 mb-0"> 
+                        <x-input-label style="font-size: 17px; font-weight: 600" for="name" :value="__('Applications')" class="mb-0" /> - <span style="color: ghostwhite; padding: 0px 20px 2px 20px; border-radius: 20px; font-weight: 600; font-size: 17px" class="bg-success mb-0"><small>Served</small></span></div>
                     <div class="info-div mt-3 mb-4">
                     
 
