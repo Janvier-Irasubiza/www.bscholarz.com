@@ -50,7 +50,7 @@
                     <div class="col-lg-3 d-flex gap-2">
                         <a href="{{ route('sort-recs-this-week', ['assistant' => Auth::guard('staff') -> user() -> id]) }}">
                             <p class="fw-normal mb-1">
-                                <span class="badge rounded-pill px-3" style="color: #000; background: #cccccc">This week</span>
+                                <span class="badge rounded-pill px-3" style="color: #000; background: #cccccc">This month</span>
                             </p>
                         </a>
 

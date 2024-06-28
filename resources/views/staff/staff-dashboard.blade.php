@@ -41,13 +41,9 @@
 
                   @endif
                 </div>
-    
                 
 
                 <div class="text-capitalize text-right col-lg-4 d-flex justify-content-end align-items-center gap-2">
-                
-                
-                
 
                 @if(Auth::guard('staff') -> user() -> working_status == 'Suspended')
 
@@ -208,8 +204,10 @@
                     </div>
                   
                   <form class="mb-2">
-                    <input style = "border: 2px solid #4d4d4d; color: #000; border-radius: 5px" type="text" class="w-full" name="search" placeholder="Type here to search">
-                    </form>
+                    <input id="postponed-search" style="border: 2px solid #4d4d4d; color: #000; border-radius: 5px" type="text" class="w-full" name="search" placeholder="Type here to search">
+                  </form>
+
+                    <div class="requests-scroll">
 
                     @if($postponed_applications->isNotEmpty())
 
@@ -218,12 +216,15 @@
                     $applicant = DB::table('applicant_info') -> where('id', $postponed -> applicant) -> first();
                     $discipline = DB::table('disciplines') -> where('id', $postponed -> discipline_id) -> first()
                     @endphp
-                    <div class="mb-4 client-info" style="">
+                    <div class="mb-4 client-info search-item" style="">
                     <div class="container staff-client" style="">
                         <div class="row">
                             <div class="col-lg-6" style="padding: 5px 10px">
-                                <strong><h1 style="font-size: 20px">{{ $applicant -> names }}</h1></strong>
-                                <strong><small>{{ $applicant -> email }} <br> {{ $applicant -> phone_number }}</small></strong>
+                                <strong>
+                                  <h1 class="client-name" style="font-size: 20px">{{ $applicant -> names }}</h1>
+                                </strong>
+                                <p class="client-email">{{ $applicant -> email }}</p> 
+                                <p class="client-phone-number">{{ $applicant -> phone_number }}</p>
                             </div>
 
                             <div class="col-lg-6 client-pp d-flex align-items-center justify-content-center" style="">
@@ -251,6 +252,7 @@
                     </div>
 
                     @endif
+                  </div>
 
                 </div>
 
@@ -261,9 +263,10 @@
                     </div>
                   
                   <form class="mb-2">
-                    <input style = "border: 2px solid #4d4d4d; color: #000; border-radius: 5px" type="text" class="w-full" name="search" placeholder="Type here to search">
-                    </form>
+                    <input id="search-box" style="border: 2px solid #4d4d4d; color: #000; border-radius: 5px" type="text" class="w-full" name="search" placeholder="Type here to search">
+                  </form>
 
+                    <div class="requests-scroll">
                     @if($ready_clients->isNotEmpty())
 
                     @foreach($ready_clients as $client)
@@ -275,15 +278,18 @@
                   
                   
                   	@if($client -> review_ccl == 'yes')
-                  	<div class="mb-4 client-info-1" style="border: 3px solid #FAC898">
+                  	<div class="mb-4 client-info-1 customer-search-item" style="border: 3px solid #FAC898">
                       <div class="px-2 py-1 d-flex align-items-center">
                         <small style="font-weight: 500">Reviewed by: &nbsp </small><h5 style="font-weight: bold; font-size: 12px">{{ $reviewer -> names }}</h5>
                       </div>
                     <div class="container staff-client-1" style="">
                         <div class="row">
                             <div class="col-lg-6" style="padding: 5px 10px">
-                                <strong><h1 style="font-size: 20px">{{ $client_info -> names }}</h1></strong>
-                                <strong><small>{{ $client_info -> email }} <br> {{ $client_info -> phone_number }}</small></strong>
+                              <strong>
+                                    <h1 class="client-name" style="font-size: 20px">{{ $client_info -> names }}</h1>
+                                  </strong>
+                                  <p class="client-email">{{ $client_info -> email }}</p> 
+                                  <p class="client-phone-number">{{ $client_info -> phone_number }}</p>
                             </div>
 
                             <div class="col-lg-6">
@@ -314,12 +320,15 @@
                   
                   	
                   	@if($client -> review_ccl != 'yes')
-                    <div class="mb-4 client-info-1" style="">
+                    <div class="mb-4 client-info-1 customer-search-item" style="">
                     <div class="container staff-client-1" style="">
                         <div class="row">
                             <div class="col-lg-6" style="padding: 5px 10px">
-                                <strong><h1 style="font-size: 20px">{{ $client_info -> names }}</h1></strong>
-                                <strong><small>{{ $client_info -> email }} <br> {{ $client_info -> phone_number }}</small></strong>
+                              <strong>
+                                    <h1 class="client-name" style="font-size: 20px">{{ $client_info -> names }}</h1>
+                                  </strong>
+                                  <p class="client-email">{{ $client_info -> email }}</p> 
+                                  <p class="client-phone-number">{{ $client_info -> phone_number }}</p>
                             </div>
 
                              <div class="col-lg-6">
@@ -337,7 +346,7 @@
                    <div class="d-flex justify-content-between py-2 px-4">
 
                     <a style="color: black" href="{{ route('customer-details', ['customer_info' => $client -> id, 'application_info' => $client -> application_id]) }}" class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
-                            Review request
+                      Review request
                     </a>
 
                     <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}" data-service="{{ $discipline->discipline_name }}" data-client="{{ $client_info->names }}">
@@ -421,6 +430,7 @@
 
                     @endif
                     
+                </div>
                 </div>
 
 
@@ -856,6 +866,8 @@
     </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <script>
@@ -905,6 +917,40 @@
               $('.debtor').val($(this).val());
             });
           });
+
+
+          $(document).ready(function() {
+              $('#postponed-search').on('input', function() {
+                  var searchValue = $(this).val().toLowerCase();
+                  $('.search-item').each(function() {
+                      var clientName = $(this).find('.client-name').text().toLowerCase();
+                      var clientEmail = $(this).find('.client-email').text().toLowerCase();
+                      var clientPhoneNumber = $(this).find('.client-phone-number').text().toLowerCase();
+                      if (clientName.includes(searchValue) || clientEmail.includes(searchValue) || clientPhoneNumber.includes(searchValue)) {
+                          $(this).show();
+                      } else {
+                          $(this).hide();
+                      }
+                  });
+              });
+          });
+
+          $(document).ready(function() {
+              $('#search-box').on('input', function() {
+                  var searchValue = $(this).val().toLowerCase();
+                  $('.customer-search-item').each(function() {
+                    var clientName = $(this).find('.client-name').text().toLowerCase();
+                      var clientEmail = $(this).find('.client-email').text().toLowerCase();
+                      var clientPhoneNumber = $(this).find('.client-phone-number').text().toLowerCase();
+                      if (clientName.includes(searchValue) || clientEmail.includes(searchValue) || clientPhoneNumber.includes(searchValue)) {
+                          $(this).show();
+                      } else {
+                          $(this).hide();
+                      }
+                  });
+              });
+          });
+
 
     </script>
 

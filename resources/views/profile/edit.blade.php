@@ -15,9 +15,46 @@
                     @include('profile.partials.update-profile-information-form')
                     </div>
 
+                    @if(Auth::guard('staff'))
+
+                    <div class="w-full">  
+                        <table class="table align-middle mb-0 bg-white">
+                            <thead class="bg-light">
+                                <tr>
+                                <th>Activity on my account</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach($history as $record)
+                                
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center" style="margin: 0px">
+                                        <div class="w-full" style="padding: 0px 5px">
+                                            <p class="fw-bold mb-1">{{ $record->activity }}</p>
+                                            <p class="text-muted mb-0" style="font-size: 15px">{{ $record->done_at }}</p>
+                                        </div>
+                                        
+                                        <div class="text-right w-full" style="padding: 0px 5px">
+                                            <p class="text-muted mb-0" style="font-size: 15px"> {{ $record->details }} </p>
+                                        </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    @else
+
                     <div class="w-full">
                     @include('profile.partials.update-password-form')
                     </div>
+
+                    @endif
 
                 </div>
             </div>

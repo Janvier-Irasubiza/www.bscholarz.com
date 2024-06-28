@@ -44,6 +44,10 @@ Route::get('/apply/{discipline_id}', [UserRequestController::class, 'apply']) ->
   return redirect() -> route('notice');
 }) -> name('apply'); */
 
+Route::get('/ksp-apply', function() {
+    return redirect()->away('https://ksp.bscholarz.com/apply');
+}) -> name('ksp-apply');
+
 Route::get('/apply/{discipline}/payment', [PaymentsController::class, 'payment_view']) -> middleware('guest') -> name('app-payment');
 Route::post('/apply/payment/approve', [PaymentsController::class, 'approve_payment']) -> name('client.payment');
 Route::post('/user-request', [UserRequestController::class, 'user_request_application']) -> name('user-request-application');
@@ -212,6 +216,7 @@ Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () {
     Route::post('/request-reply', [PagesController::class, 'request_reply']) -> name('staff.request-reply');
     Route::post('staff-create-client', [ClientAuthController::class, 'staff_create_client']) -> name('staff-create-client');
     Route::post('/client-info-update', [PagesController::class, 'profile_info_update']) -> name('client-info-update');
+    Route::get('/profile', [ProfileController::class, 'edit']) ->name('staff.profile.edit');
   
   	Route::get('/unreachable/{application_id}/{applicant}', [StaffController::class, 'unreachable']) -> name('unreachable');
   	Route::post('/request-to-pay', [StaffController::class, 'request_to_pay']) -> name('request-to-pay');

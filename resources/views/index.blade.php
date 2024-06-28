@@ -121,11 +121,13 @@
 
             <div class="section-right-body">
 
-            <div class="p-3">
-                <div class="m-0 add-item rounded bg-info">
-                    <img src="" alt="">
+            <a href="{{ route('ksp-apply') }}" target="self">
+                <div class="p-3">
+                    <div class="m-0 add-item rounded" style="max-width: 100%; overflow: hidden;">
+                        <img src="{{ asset('images/ads/ksp.PNG') }}" alt="" style="width: 100%; height: auto; display: block;" class="rounded">
+                    </div>
                 </div>
-            </div>
+            </a>
 
               @if(!$scholarships->isEmpty())
                 <div class="sch-trends">
