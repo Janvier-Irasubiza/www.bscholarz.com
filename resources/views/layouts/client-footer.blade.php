@@ -19,18 +19,22 @@
                 <div class="mt-4 flex-section gap-3">
                    <div class="col-md-4 border-r mb-8">
                    <h4 class="text-gray-600 text-center">Contact</h4>
-                    <div class="mt-6">        
+                   <div class="mt-6">        
 
                         <p class="text-center">
                             <i class="fa-solid fa-phone f-25"></i>
                         </p>
-                        <p class="text-gray-600 text-center mt-2">+250 781 336 634</p>
-                    </div>
-                    <div class="mt-6">
+                        <p class="text-gray-600 text-center mt-2">
+                            <a href="tel:+250781336634">+250 781 336 634</a>
+                        </p>
+                        </div>
+                        <div class="mt-6">
                         <p class="text-center">
                             <i class="fa-solid fa-phone f-25"></i>
                         </p>
-                        <p class="text-gray-600 text-center mt-2">+250 780 478 405</p>
+                        <p class="text-gray-600 text-center mt-2">
+                            <a href="tel:+250780478405">+250 780 478 405</a>
+                        </p>
                     </div>
 
                     <div class="mt-6">

@@ -740,13 +740,17 @@
                         <p class="text-center">
                             <i class="fa-solid fa-phone f-25"></i>
                         </p>
-                        <p class="text-gray-600 text-center mt-2">+250 781 336 634</p>
+                        <p class="text-gray-600 text-center mt-2">
+                            <a href="tel:+250781336634">+250 781 336 634</a>
+                        </p>
                     </div>
                     <div class="mt-6">
                         <p class="text-center">
                             <i class="fa-solid fa-phone f-25"></i>
                         </p>
-                        <p class="text-gray-600 text-center mt-2">+250 780 478 405</p>
+                        <p class="text-gray-600 text-center mt-2">
+                            <a href="tel:+250780478405">+250 780 478 405</a>
+                        </p>
                     </div>
 
                     <div class="mt-6">
@@ -821,7 +825,7 @@
 
       <x-input-error :messages="$errors->get('email')" class="mt-2 text-left" />
 
-      <div class="mt-3 d-flex justify-content-between align-items-center">
+      <div class="mt-3 flex-section justify-content-between align-items-center">
             {!! NoCaptcha::display() !!}
 
             <div class="col-lg-3 mt-2 d-flex align-items-center">
