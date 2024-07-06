@@ -234,7 +234,7 @@ Route::get('staff-logout', [AuthenticatedSessionController::class, 'staff_destro
 Route::post('error', function () {return view('error');}) -> name('error');
 Route::get('notice', function () {return view('error');}) -> name('notice');
 
-
+Route::post('/send-email', 'App\Http\Controllers\Dev\SendEmailController@sendEmail')->name('send.email');
 
 require __DIR__.'/auth.php';
   

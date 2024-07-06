@@ -83,6 +83,55 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        function toggleShakeAnimation(enableShake) {
+            if (enableShake) {
+                $('#contactButton').addClass('shaking');
+            } else {
+                $('#contactButton').removeClass('shaking');
+            }
+        }
+
+        $('#contactButton').click(function() {
+            $('#popup').slideDown();
+            toggleShakeAnimation(false);
+        });
+
+        $('#closePopup').click(function() {
+            $('#popup').slideUp();
+            toggleShakeAnimation(true);
+        });
+
+        toggleShakeAnimation(true);
+    });
+
+    $(document).ready(function() {
+        $('#contactForm').submit(function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    $('#messageDiv').html('<p class="text-green-500">Message sent successfully. We will reach out to you shortly.</p>');
+                    $('#contactForm').trigger('reset');
+                },
+                error: function(xhr, status, error) {
+                    $('#messageDiv').html('<p class="text-red-500">Failed to send message. Please try again later.</p>');
+                }
+            });
+        });
+    });
+</script>
+
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen  sm-section">

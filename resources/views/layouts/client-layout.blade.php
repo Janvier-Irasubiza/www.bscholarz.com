@@ -17,6 +17,54 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        function toggleShakeAnimation(enableShake) {
+            if (enableShake) {
+                $('#contactButton').addClass('shaking');
+            } else {
+                $('#contactButton').removeClass('shaking');
+            }
+        }
+
+        $('#contactButton').click(function() {
+            $('#popup').slideDown();
+            toggleShakeAnimation(false);
+        });
+
+        $('#closePopup').click(function() {
+            $('#popup').slideUp();
+            toggleShakeAnimation(true);
+        });
+
+        toggleShakeAnimation(true);
+    });
+
+    $(document).ready(function() {
+        $('#contactForm').submit(function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    $('#messageDiv').html('<p class="text-green-500">Message sent successfully. We will reach out to you shortly.</p>');
+                    $('#contactForm').trigger('reset');
+                },
+                error: function(xhr, status, error) {
+                    $('#messageDiv').html('<p class="text-red-500">Failed to send message. Please try again later.</p>');
+                }
+            });
+        });
+    });
+</script>
+
+
     <style>
 
         body, .modal-content{
@@ -310,7 +358,7 @@
 
         <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>  
         <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>  
-        <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
+        <!-- <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script> -->
         <script src="{{ asset('bootstrap/dist/js/popper.js') }}"></script>
         <script src="{{ asset('bootstrap/dist/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('bootstrap/dist/js/main.js') }}"></script>

@@ -1650,7 +1650,81 @@ ul .sb-li:first-child {
     border: 1.6px solid #bfbfbf;
 }
 
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(-5deg); }
+    50% { transform: translateX(5px) rotate(5deg); }
+    75% { transform: translateX(-5px) rotate(-5deg); }
+    100% { transform: translateX(0); }
+}
 
+.shaking {
+    animation: shake 5s ease-in-out infinite;
+}
+
+#contactButton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+#contactButton:hover {
+    background-color: #f0f0f0;
+    color: #333;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+}
+
+.popup {
+    position: fixed;
+    right: 3.5rem;
+    bottom: 3.5rem;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 5px;
+    display: none;
+    z-index: 1000;
+}
+
+input, select, textarea {
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 5px !important;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border: 2px solid #b3d1ff !important;
+}
+
+.lara-btn {
+    color: ghostwhite;
+    background-color: #05050a;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.border-r {
+    border-right: 1px solid #d9d9d9;
+}
+
+.b-none {
+    border: none;
+}
+
+.bg-none {
+    background: none !important;
+}
 
 @media (max-width: 600px) {
   
@@ -1872,6 +1946,12 @@ ul .sb-li:first-child {
 
     .sidebar.hide {
         left: -430px;
+    }
+
+    .popup {
+        right: 1rem;
+        bottom: 3.5rem;
+        width: 92.5%;
     }
 }
 
@@ -3252,6 +3332,6 @@ ul .sb-li:first-child {
     z-index: 10000;
 }
 
-/* .add-item {
+/* .add-item {  
     height: 10em;
 } */

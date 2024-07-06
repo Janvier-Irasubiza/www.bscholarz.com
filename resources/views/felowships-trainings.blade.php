@@ -228,7 +228,7 @@
 </div>
 
 
-<script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
+<!-- <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script> -->
 
 
 <script>

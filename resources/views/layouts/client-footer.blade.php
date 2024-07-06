@@ -6,7 +6,73 @@
         </div>  
 
         <div style="" class="col-lg-6">
-            <p style="margin-bottom: 0px; text-align: right; font-size: 13px">Developed by <strong>RB-A</strong></p> 
+            <p style="margin-bottom: 0px; text-align: right; font-size: 13px">Developed by <button id="contactButton"  class="text-center text-gray-600 shake b-none bg-none"> &nbsp; <strong>RB-A</strong></button>                    </div> </p> 
         </div> 
     </div>
 </div>
+
+<div id="popup" class="popup p-4 border col-md-6 bg-gray-200">
+                <div class="d-flex justify-content-between">
+                    <h3 class="text-gray-600">RhythmBox Associations</h3>
+                    <button id="closePopup" class="b-none bg-none">Close</button>
+                </div>
+                <div class="mt-4 flex-section gap-3">
+                   <div class="col-md-4 border-r mb-8">
+                   <h4 class="text-gray-600 text-center">Contact</h4>
+                    <div class="mt-6">        
+
+                        <p class="text-center">
+                            <i class="fa-solid fa-phone f-25"></i>
+                        </p>
+                        <p class="text-gray-600 text-center mt-2">+250 781 336 634</p>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-center">
+                            <i class="fa-solid fa-phone f-25"></i>
+                        </p>
+                        <p class="text-gray-600 text-center mt-2">+250 780 478 405</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <p class="text-center">
+                            <i class="fa-solid fa-envelope f-25"></i>
+                        </p>
+                        <p class="text-gray-600 text-center mt-2">arhythmbox@gmail.com</p>
+                    </div>
+
+                   </div>
+                   <div class="w-full">
+                   <h4 class="text-gray-600">Send us a message</h4>
+                    <form action="{{ route('send.email') }}" method="POST" class="mt-3" id="contactForm"> @csrf
+                        <div>
+                            <x-input-label for="name" class="f-14" :value="__('Name')" />
+                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="How can we address you?" />
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="mt-3">
+                            <x-input-label for="email" :value="__('Email')" />
+                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="email" placeholder="Email" />
+                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        </div>
+
+                        <!-- phone number -->
+                        <div class="mt-3">
+                            <x-input-label for="phone" :value="__('Message')" />
+                            <textarea id="request" class="block mt-1 w-full border-gray rounded p-2" name="request" required placeholder="Message">{{ old('requests') }}</textarea>
+                            <x-input-error :messages="$errors->get('request')" class="mt-2" />
+                        </div>
+
+                        <div id="messageDiv" class="mt-3"></div>
+
+                        <div class="mt-6 d-flex align-items-center justify-content-between">
+
+                            <button class="lara-btn">
+                                {{ __('Send message') }}
+                            </button>
+                        </div>
+                    </form>
+                   </div>
+                </div>
+            </div>

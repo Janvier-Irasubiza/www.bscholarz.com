@@ -8,10 +8,57 @@
     <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
         <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
-
+<!-- 
     <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('bootstrap/js/jquery-1.7.1.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/jquery-1.7.1.min.js') }}"></script> -->
     <script src="{{ asset('bootstrap/js/bootstrap.js') }}"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            function toggleShakeAnimation(enableShake) {
+                if (enableShake) {
+                    $('#contactButton').addClass('shaking');
+                } else {
+                    $('#contactButton').removeClass('shaking');
+                }
+            }
+
+            $('#contactButton').click(function() {
+                $('#popup').slideDown();
+                toggleShakeAnimation(false);
+            });
+
+            $('#closePopup').click(function() {
+                $('#popup').slideUp();
+                toggleShakeAnimation(true);
+            });
+
+            toggleShakeAnimation(true);
+        });
+
+        $(document).ready(function() {
+            $('#contactForm').submit(function(e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#messageDiv').html('<p class="text-green-500">Message sent successfully. We will reach out to you shortly.</p>');
+                        $('#contactForm').trigger('reset');
+                    },
+                    error: function(xhr, status, error) {
+                        $('#messageDiv').html('<p class="text-red-500">Failed to send message. Please try again later.</p>');
+                    }
+                });
+            });
+        });
+    </script>
 
     @if($errors->has('g-recaptcha-response') || $errors->has('email'))
     <script type="text/javascript">
@@ -63,8 +110,6 @@
       			$('#exampleModal').on('show.bs.modal', function () {
                     $('#subscribe').modal('hide'); 
                 });
-
-
 </script>
 
     <style>
@@ -457,9 +502,7 @@
                 @yield('content')
             </div>
   
-        
-
-            <footer class="">
+<footer class="">
     <div class="footer-title-content">
         <h4 class="footer-title" style="color: ghostwhite">BScholarz</h4><br>
         <p class="mb-4" style="color: ghostwhite">BSCHOLARZ is a prominent education consultancy in Rwanda, 
@@ -671,20 +714,84 @@
 
     <br>
 
-<div class="d-flex justify-content-center w-full" style="">
-                <div style="border-top: 1px solid #a8a3a3; padding: 20px 30px" class="d-flex container-fluid justify-content-between">
-                    <div class="col-lg-6" style="font-size: 13px; color: ghostwhite">
-                        &copy; 2023 <strong>BScholarz</strong> 
-                    </div> 
-                    
-                    <div style="" class="col-lg-6">
-                        <p style="margin-bottom: 0px; width: 100%; text-align: right; font-size: 13px; color: ghostwhite"><i class="fa-solid fa-code"></i> &nbsp;<strong>RB-A</strong></p> 
-                    </div> 
-
-                </div>
-            </div>
+<div class="d-flex justify-content-betweem w-full" style="">
+        <div style="border-top: 1px solid #a8a3a3; padding: 20px 30px" class="d-flex container-fluid justify-content-between">
+            <div class="col-lg-6" style="font-size: 13px; color: ghostwhite">
+                &copy; 2023 <strong>BScholarz</strong> 
+            </div> 
+            
+            <div style="" class="">
+            <button id="contactButton"  class="text-center text-gray-600 shake text-white b-none bg-none"> <i class="fa-solid fa-code"></i> &nbsp; <strong>RB-A</strong></button>                    </div> 
+        </div>
+    </div>
 
 </footer>
+
+<div id="popup" class="popup p-4 border col-md-6 bg-gray-200">
+                <div class="d-flex justify-content-between">
+                    <h3 class="text-gray-600">RhythmBox Associations</h3>
+                    <button id="closePopup" class="b-none bg-none">Close</button>
+                </div>
+                <div class="mt-4 flex-section gap-3">
+                   <div class="col-md-4 border-r mb-8">
+                   <h4 class="text-gray-600 text-center">Contact</h4>
+                    <div class="mt-6">        
+
+                        <p class="text-center">
+                            <i class="fa-solid fa-phone f-25"></i>
+                        </p>
+                        <p class="text-gray-600 text-center mt-2">+250 781 336 634</p>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-center">
+                            <i class="fa-solid fa-phone f-25"></i>
+                        </p>
+                        <p class="text-gray-600 text-center mt-2">+250 780 478 405</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <p class="text-center">
+                            <i class="fa-solid fa-envelope f-25"></i>
+                        </p>
+                        <p class="text-gray-600 text-center mt-2">arhythmbox@gmail.com</p>
+                    </div>
+
+                   </div>
+                   <div class="w-full">
+                   <h4 class="text-gray-600">Send us a message</h4>
+                    <form action="{{ route('send.email') }}" method="POST" class="mt-3" id="contactForm"> @csrf
+                        <div>
+                            <x-input-label for="name" class="f-14" :value="__('Name')" />
+                            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="How can we address you?" />
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="mt-3">
+                            <x-input-label for="email" :value="__('Email')" />
+                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="email" placeholder="Email" />
+                            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                        </div>
+
+                        <!-- phone number -->
+                        <div class="mt-3">
+                            <x-input-label for="phone" :value="__('Message')" />
+                            <textarea id="request" class="block mt-1 w-full border-gray rounded p-2" name="request" required placeholder="Message">{{ old('requests') }}</textarea>
+                            <x-input-error :messages="$errors->get('request')" class="mt-2" />
+                        </div>
+
+                        <div id="messageDiv" class="mt-3"></div>
+
+                        <div class="mt-6 d-flex align-items-center justify-content-between">
+
+                            <button class="lara-btn">
+                                {{ __('Send message') }}
+                            </button>
+                        </div>
+                    </form>
+                   </div>
+                </div>
+            </div>
 
 @if(!isset($_COOKIE['client_email']))
 
@@ -752,12 +859,12 @@
 
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>  
 <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>  
-<script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
+<!-- <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script> -->
 <script src="{{ asset('bootstrap/dist/js/popper.js') }}"></script>
 <script src="{{ asset('bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('bootstrap/dist/js/main.js') }}"></script>
 
-<script type="text/javascript">
+<script type="text/javascript"> 
   
   	$('#toast').toast({delay:30000});
   	$('#toast').toast('show');
@@ -818,7 +925,7 @@
                 });
 
                
-                                
+                        
 
 </script>
 

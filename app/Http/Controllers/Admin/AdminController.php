@@ -14,6 +14,7 @@ use DB;
 use File; 
 use Mail;
 use App\Mail\DisbursedSalary;
+use Illuminate\Support\Facades\Cache;
 
 class AdminController extends Controller {
 
@@ -29,30 +30,83 @@ class AdminController extends Controller {
 
     }
 
-    public function dashboard () {
-        $applications = DB::table('disciplines') -> where('category', '<>', 'Custom') -> where('due_date', '>', now()->format('Y-m-d H:i:s.u')) -> orderBy('publish_date', 'DESC') -> get();
-        $userRequests = DB::table('user_requests') -> where('payment_status', 'Not yet paid') -> where('application_status', 'Pending') -> get();
-        $readyCustomers = DB::table('user_requests') -> where('application_status', 'Pending') -> get();
-        $servedCustomers = DB::table('served_requests') -> where('payment_status', 'Paid') -> where('application_status', 'Complete') -> get();
-        $active_emp = DB::table('staff') -> select(DB::raw('count(id) as active')) -> where('status', 'Online') -> first();
-        $requests = DB::table('assistance_seekings') -> whereNull('assistance_given') -> get();
-      
-        $requested_delete = DB::table('user_requests')
-            ->where('deletion_status', 'Requested')
-            ->get();
-    
-        $deleted_by = [];
-        
-        if($requested_delete->isNotEmpty()) {
-            foreach ($requested_delete as $item) {
-                $deleted_by[] = DB::table('staff')
-                    ->where('id', $item->revied_by)
-                    ->first();
-            }
-        }
+    public function dashboard() {
 
-        return view('admin.dashboard', compact('applications', 'userRequests', 'readyCustomers', 'servedCustomers', 'active_emp', 'requests', 'requested_delete', 'deleted_by'));
+        $userRequestCount = Cache::remember('user_request_count', now()->addMinutes(10), function () {
+            return DB::table('user_requests')
+                ->where('payment_status', 'Not yet paid')
+                ->where('application_status', 'Pending')
+                ->count();
+        });
+
+        $readyCustomerCount = Cache::remember('ready_customer_count', now()->addMinutes(10), function () {
+            return DB::table('user_requests')
+                ->where('application_status', 'Pending')
+                ->count();
+        });
+
+        $servedCustomerCount = Cache::remember('served_customer_count', now()->addMinutes(10), function () {
+            return DB::table('served_requests')
+                ->where('payment_status', 'Paid')
+                ->where('application_status', 'Complete')
+                ->count();
+        });
+
+        $activeEmployeeCount = Cache::remember('active_employee_count', now()->addMinutes(10), function () {
+            return DB::table('staff')
+                ->where('status', 'Online')
+                ->count();
+        });
+
+        $assistanceRequestCount = Cache::remember('assistance_request_count', now()->addMinutes(10), function () {
+            return DB::table('assistance_seekings')
+                ->whereNull('assistance_given')
+                ->count();
+        });
+
+        $requestedDeleteCount = Cache::remember('requested_delete_count', now()->addMinutes(10), function () {
+            return DB::table('user_requests')
+                ->where('deletion_status', 'Requested')
+                ->count();
+        });
+
+        $applicationCount = Cache::remember('application_count', now()->addMinutes(10), function () {
+            return DB::table('disciplines')
+            ->where('category', '<>', 'Custom')
+            ->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))
+            ->count();
+        });
+
+        $deadlinedAppsCount = Cache::remember('deadlined_apps_count', now()->addMinutes(10), function () {
+            return DB::table('disciplines')
+            ->where('category', '<>', 'Custom')
+            ->where('due_date', '<', now()->format('Y-m-d H:i:s.u'))
+            ->count();
+        });
+
+        return view('admin.dashboard', compact(
+            'applicationCount',
+            'userRequestCount',
+            'readyCustomerCount',
+            'servedCustomerCount',
+            'activeEmployeeCount',
+            'assistanceRequestCount',
+            'requestedDeleteCount',
+            'deadlinedAppsCount'
+        ));
     }
+
+    public function assistance_requests() {
+        $assistanceRequests = Cache::remember('assistance_requests', now()->addMinutes(10), function () {
+            return DB::table('assistance_seekings')
+                ->whereNull('assistance_given')
+                ->orderBy('posted_on', 'DESC')
+                ->paginate(10);
+        });
+    
+        return view('admin.assistance-requests', ['assistanceRequests' => $assistanceRequests]);
+    }
+      
   
   	public function deleted_details (Request $request) {
       

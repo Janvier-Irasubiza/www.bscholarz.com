@@ -1,4 +1,4 @@
-@section('title', 'On going applications')
+@section('title', 'Recycle bin')
 
 <x-app-layout>
 
