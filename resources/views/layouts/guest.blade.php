@@ -43,6 +43,10 @@
                     margin-top: -6em;
 
                 }
+
+                .mgn {
+                    margin-bottom: 4em
+                }
             }
 
 
@@ -102,16 +106,16 @@
     </head>
     <body class="font-sans antialiased">
 
-    <div class="d-flex justify-content-center align-items-center mt-5 mb-0">
-        <a href="{{ route('home') }}">
-        <div class="bbg-logo mt-3" style="">
-                <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
-            </div>
-        </a>
-    </div>
+        <div class="d-flex justify-content-center  align-items-center mt-5 mgn">
+            <a href="{{ route('home') }}">
+                <div class="bbg-logo mt-3" style="">
+                    <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
+                </div>
+            </a>
+        </div>
 
         <div class="sm-section">
-                {{ $slot }}
+            {{ $slot }}
         </div>
 
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
