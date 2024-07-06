@@ -321,17 +321,17 @@
 </head>
 <body>
 
+<div class="sidebar-drawer" style="z-index: 10 !important">
+    <i style="font-size: 30px" class="fa-solid fa-suitcase-rolling"></i>
+</div>
+
 <nav>
     <div class="container-fluid">
 
         <div class="nav-wrapper">
 
-        <div class="sidebar-drawer" style="z-index: 5 !important">
-            <i style="font-size: 30px" class="fa-solid fa-suitcase-rolling"></i>
-        </div>
-
         <div class="d-flex gap-2">
-        <button class="nav-drawer" href="">
+            <button class="nav-drawer" href="">
                 <i class="fa-solid fa-bars dft-btn"></i>
             </button>
 
@@ -348,14 +348,13 @@
             <div class="d-flex align-items-center" style="margin-left: 10px; width: 100%;">
                 
             <div style="padding: 0px" class="col-lg-9 nav-links-contianer">
-            <ul style="margin: 0px;">
-
+                <ul style="margin: 0px;">
                     <li class="navigator"><a href="{{ route('home') }}">Home</a></li>
                     <li class="navigator"><a href="{{ route('BeScholar') }}">Be A Scholar</a></li>
                     <li class="navigator"><a href="{{ route('get-employed') }}">Get Employed</a></li>
                     <li class="navigator"><a href="{{ route('felowships-trainings') }}">Fellowships & Trainings</a></li>
                     <li class="navigator"><a href="{{ route('about-us') }}">About Us</a></li>
-                <li class="navigator"><a href="{{ route('contact-us') }}">Contact Us</a></li>
+                    <li class="navigator"><a href="{{ route('contact-us') }}">Contact Us</a></li>
                 </ul>
             </div>
 
@@ -395,7 +394,7 @@
 
                                 @foreach($sugs as $sug)
 
-                                <li class="sugest-navigator mb-1"><a href="{{ route('search', ['search_keyword' => $sug -> keyword]) }}"> <small>#</small> {{ $sug -> keyword }}</a></li>
+                                    <li class="sugest-navigator mb-1"><a href="{{ route('search', ['search_keyword' => $sug -> keyword]) }}"> <small>#</small> {{ $sug -> keyword }}</a></li>
 
                                 @endforeach
 
@@ -487,7 +486,7 @@
   
 </nav>
 
-<div style="padding: 0px; z-index: 10" class="nav-links-drawer">
+        <div style="padding: 0px; z-index: 10" class="nav-links-drawer">
             <ul style="margin: 0px; padding: 3px 0px">
                 <li class="small-navigator"><a href="{{ route('home') }}">Home</a></li>
                 <li class="small-navigator"><a href="{{ route('BeScholar') }}">Be A Scholar</a></li>
