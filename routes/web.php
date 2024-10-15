@@ -159,7 +159,7 @@ Route::prefix('admin') -> group(function () {
   	Route::get('/confirm-d/{application_id}', [AdminController::class, 'confirm_delete']) -> name('confirm-d');
 });
 
-Route::prefix('md')->group(function () {
+Route::prefix('md')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [MdController::class, 'dashboard'])->name('md.dashboard');
 });
 
