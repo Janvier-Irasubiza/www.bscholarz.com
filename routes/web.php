@@ -14,6 +14,7 @@ use App\Http\Controllers\RhythmBox\RhythmBoxController;
 use App\Http\Controllers\Admin\ApplicationsController;
 use App\Http\Controllers\Staff\StaffController;
 use App\Http\Controllers\ClientAuthController;
+use App\Http\Controllers\MdController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -156,6 +157,10 @@ Route::prefix('admin') -> group(function () {
   	Route::get('/recover/{application_id}', [AdminController::class, 'recover_request']) -> name('recover');
   	Route::get('/recover/{customer_info}/{application_info}', [AdminController::class, 'recover_deleted']) -> name('recovery');
   	Route::get('/confirm-d/{application_id}', [AdminController::class, 'confirm_delete']) -> name('confirm-d');
+});
+
+Route::prefix('md')->group(function () {
+    Route::get('/dashboard', [MdController::class, 'dashboard'])->name('md.dashboard');
 });
 
 Route::get('/rhythmbox', function () {
