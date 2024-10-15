@@ -49,6 +49,11 @@ return [
             }
         ],
 
+        'accountability' => [
+            'driver' => 'session',
+            'provider' => 'accountability',
+        ],
+
         'client' => [
             'driver' => 'session',
             'provider' => 'clients',
@@ -89,6 +94,11 @@ return [
         'staffs' => [
             'driver' => 'eloquent',
             'model' => App\Models\Staff::class,
+        ],
+
+        'accountability' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Accountability::class,
         ],
 
         'clients' => [

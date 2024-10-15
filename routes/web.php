@@ -80,13 +80,14 @@ Route::prefix('client') -> middleware(['client']) -> group(function() {
     Route::get('/delete-background/{back_id}', [PagesController::class, 'delete_background']) -> name('delete-background');
 });
 
+
 Route::get('client-logout', [AuthenticatedSessionController::class, 'client_destroy']) -> name('client.logout');
 
 Route::get('/admin', function () {
     return redirect() -> route('admin.dashboard');
 });
 
-Route::prefix('admin') -> group(function () { 
+Route::prefix('admin') -> group(function () {
     Route::get('/auth', [AdminController::class, 'login']) -> name('admin.auth');
     Route::get('/dashboard', [AdminController::class, 'dashboard']) -> middleware(['auth', 'verified']) -> name('admin.dashboard');
     Route::get('/applications', [ApplicationsController::class, 'applications']) -> middleware(['auth', 'verified']) -> name('admin.applications');
@@ -99,8 +100,8 @@ Route::prefix('admin') -> group(function () {
     Route::get('/delete-app', [ApplicationsController::class, 'delete_application']) -> middleware(['auth', 'verified']) -> name('admin.delete-app');
     Route::get('/revenue', [AdminController::class, 'revenue']) -> middleware(['auth', 'verified']) -> name('admin.revenue');
     Route::get('/org/applications', [AdminController::class, 'organization']) -> middleware(['auth', 'verified']) -> name('admin.org');
-    Route::get('/org/members/{member}', [AdminController::class, 'org_member']) -> middleware(['auth', 'verified']) -> name('admin.member'); 
-    Route::get('/organization/it/{member}', [AdminController::class, 'org_it_member']) -> middleware(['auth', 'verified']) -> name('admin.it-member'); 
+    Route::get('/org/members/{member}', [AdminController::class, 'org_member']) -> middleware(['auth', 'verified']) -> name('admin.member');
+    Route::get('/organization/it/{member}', [AdminController::class, 'org_it_member']) -> middleware(['auth', 'verified']) -> name('admin.it-member');
     Route::get('/hire', [AdminController::class, 'hire']) -> middleware(['auth', 'verified']) -> name('admin.hire');
     Route::post('/hire-emp', [AdminController::class, 'hire_emp']) -> middleware(['auth', 'verified']) -> name('admin.hire-emp');
     Route::get('/fire-emp/{emp}', [AdminController::class, 'fire_emp']) -> middleware(['auth', 'verified']) -> name('admin.fire-emp');
@@ -149,13 +150,13 @@ Route::prefix('admin') -> group(function () {
     Route::get('/validate-partner', [AdminController::class, 'validate_partner']) -> middleware(['auth', 'verified']) -> name('admin.validate-partner');
     Route::post('/disburse-full-to-partner', [AdminController::class, 'disburse_full_to_partner']) -> name('admin.disburse-full-to-partner');
     Route::post('/disburse-partial-to-partner', [AdminController::class, 'disburse_partial_to_partner']) -> name('admin.disburse-partial-to-partner');
-	
+
   	Route::get('/assess/{customer_info}/{application_info}', [AdminController::class, 'deleted_details']) -> name('assess');
   	Route::get('/recycle', [AdminController::class, 'recycle_bin']) -> name('recycle');
   	Route::get('/recover/{application_id}', [AdminController::class, 'recover_request']) -> name('recover');
   	Route::get('/recover/{customer_info}/{application_info}', [AdminController::class, 'recover_deleted']) -> name('recovery');
   	Route::get('/confirm-d/{application_id}', [AdminController::class, 'confirm_delete']) -> name('confirm-d');
-}); 
+});
 
 Route::get('/rhythmbox', function () {
     return redirect() -> route('rhythmbox.dashboard');
@@ -165,7 +166,7 @@ Route::get('/rba', function () {
     return redirect() -> route('rhythmbox.dashboard');
 });
 
-Route::prefix('rhythmbox') -> middleware('rhythmbox', 'atrack') -> group(function () { 
+Route::prefix('rhythmbox') -> middleware('rhythmbox', 'atrack') -> group(function () {
     Route::get('/profile', [ProfileController::class, 'edit_profile'])->name('rhythm.profile');
 	Route::get('/disbursements', [RhythmBoxController::class, 'disbursements'])->name('rhythm.disbursements');
     Route::patch('/profile', [ProfileController::class, 'update_rhythmbox_profile'])->name('dev.profile.update');
@@ -179,7 +180,7 @@ Route::prefix('rhythmbox') -> middleware('rhythmbox', 'atrack') -> group(functio
     Route::get('/sheets/{assistant}/all', [RhythmBoxController::class, 'sortRecsAll']) -> name('rhythmbox.sort-recs-all');
     Route::get('/admin', [RhythmBoxController::class, 'admin']) -> name('rhythmbox.admin');
     Route::get('/rba', [RhythmBoxController::class, 'rba']) -> name('rba');
-  
+
   	Route::get('/recyclebin', [RhythmBoxController::class, 'recycle_bin']) -> name('rhythmbox.recycle');
   	Route::get('/recover/{customer_info}/{application_info}', [RhythmBoxController::class, 'recover_deleted']) -> name('recovery');
 });
@@ -190,7 +191,7 @@ Route::get('/staffpanel', function () {
 
 Route::get('/staff-disbursements/{assistant}', [PagesController::class, 'staff_disbursements']) -> name('staff.disbursements');
 
-Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () { 
+Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () {
 
     Route::get('/dashboard', [StaffController::class, 'staff_dashboard']) -> name('staff-dashboard');
     Route::get('/customer-details/{customer_info}/{application_info}', [StaffController::class, 'customer_details']) -> name('customer-details');
@@ -217,11 +218,15 @@ Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () {
     Route::post('staff-create-client', [ClientAuthController::class, 'staff_create_client']) -> name('staff-create-client');
     Route::post('/client-info-update', [PagesController::class, 'profile_info_update']) -> name('client-info-update');
     Route::get('/profile', [ProfileController::class, 'edit']) ->name('staff.profile.edit');
-  
+
   	Route::get('/unreachable/{application_id}/{applicant}', [StaffController::class, 'unreachable']) -> name('unreachable');
   	Route::post('/request-to-pay', [StaffController::class, 'request_to_pay']) -> name('request-to-pay');
 
 
+});
+
+Route::prefix('accountability') -> middleware(['accountability']) -> group(function() {
+    Route::get('/dashboard', [[AccountabilityController::class, 'accountant_dashboard']]) -> name('accountant-dashboard');
 });
 
 Route::get('/failed-session', function () {
@@ -237,4 +242,3 @@ Route::get('notice', function () {return view('error');}) -> name('notice');
 Route::post('/send-email', 'App\Http\Controllers\Dev\SendEmailController@sendEmail')->name('send.email');
 
 require __DIR__.'/auth.php';
-  
