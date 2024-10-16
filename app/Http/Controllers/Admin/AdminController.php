@@ -203,7 +203,7 @@ class AdminController extends Controller {
                 'work_phone' => ['required'],
                 'department' => ['required'],
                 'role' => ['required'],
-                'percentage' => ['required'],
+                'percentage' => ['required_if:department,Applications'],
                 'password' => ['required', 'confirmed']
             ]);
     

@@ -6,7 +6,24 @@
 
                 <!-- Navigation Links -->
                 <div class="d-flex align-items-center">
-                    <h6>Administration</h6>
+
+                <!-- Adimin -->
+        @if(Auth::user())
+            <h6 style="font-weight: 600">Administration</h6>
+
+        <!-- Marketing department -->
+        @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
+            <h6 style="font-weight: 600">Marketing</h6>
+
+        @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Applications')
+            <h6 style="font-weight: 600">Applications</h6>
+
+        <!-- this is for the accounting department -->
+        @else
+            <h6 style="font-weight: 600">Accounting</h6>
+
+        @endif
+
                 </div>
             </div>
 
