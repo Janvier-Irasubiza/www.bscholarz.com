@@ -28,7 +28,7 @@
         <div>
             <x-input-label for="names" :value="__('Names')" />
             <small class="text-muted mb-0">Provide fullname</small>
-            <x-text-input id="names" name="names" type="text" class="mt-1 block w-full" placeholder="Full name" :value="old('names')" required autocomplete="names" />
+            <x-text-input id="names" name="names" type="text" class="mt-1 block w-full" placeholder="Full name" :value="old('names')" required autocomplete="names" autofocus/>
             <x-input-error class="mt-2" :messages="$errors->get('names')" />
         </div>
 
@@ -55,8 +55,12 @@
 
         <div>
             <x-input-label for="department" :value="__('Department')" />
-            <small class="text-muted mb-0">Working deparment</small>
-            <x-text-input id="department" name="department" type="text" class="mt-1 block w-full" placeholder="Department" :value="old('department')" required autocomplete="department" />
+            <small class="text-muted mb-0">Working department</small>
+            <select name="department" id="department" class="mt-1 block w-full" onchange="togglePercentageField()">
+                <option value="">-------------</option>
+                <option value="Applications" {{ old('department') == 'Applications' ? 'selected' : '' }}>Applications</option>
+                <option value="Marketing" {{ old('department') == 'Marketing' ? 'selected' : '' }}>Marketing</option>
+            </select>
             <x-input-error class="mt-2" :messages="$errors->get('department')" />
         </div>
 
@@ -67,12 +71,36 @@
             <x-input-error class="mt-2" :messages="$errors->get('role')" />
         </div>
 
-        <div>
-            <x-input-label for="role" :value="__('Percentage')" />
+        <!-- Percentage field -->
+        <div id="percentageField" style="display:none;">
+            <x-input-label for="percentage" :value="__('Percentage')" />
             <small class="text-muted mb-0">Percentage <small>(</small> % <small>)</small></small>
-            <x-text-input id="percentage" name="percentage" type="text" class="mt-1 block w-full" placeholder="Percentage here..." required :value="old('percentage')" autocomplete="percentage" />
+            <x-text-input id="percentage" name="percentage" type="text" class="mt-1 block w-full" placeholder="Percentage here..." :value="old('percentage')" autocomplete="percentage" />
             <x-input-error class="mt-2" :messages="$errors->get('percentage')" />
         </div>
+
+        <script>
+            function togglePercentageField() {
+                const department = document.getElementById('department').value;
+                const percentageField = document.getElementById('percentageField');
+                const percentageInput = document.getElementById('percentage');
+
+                if (department === 'Applications') {
+                    percentageField.style.display = 'block';
+                    percentageInput.setAttribute('required', 'required'); // Add required attribute
+                } else {
+                    percentageField.style.display = 'none';
+                    percentageInput.removeAttribute('required'); // Remove required attribute
+                }
+            }
+
+            // Run this function on page load to check if the department is already set
+            window.onload = function() {
+                togglePercentageField();
+            };
+        </script>
+
+
 
         <div>
             <x-input-label for="role" :value="__('Password')" />

@@ -161,8 +161,9 @@ Route::prefix('admin') -> group(function () {
 
 });
 
-Route::prefix('md')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::get('/dashboard', [MdController::class, 'dashboard'])->name('md.dashboard');
+    Route::get('/apps', [MdController::class, 'apps'])->name('md.apps');
 });
 
 Route::get('/rhythmbox', function () {

@@ -37,7 +37,7 @@ class StaffAuthController extends Controller
         if (Auth::guard('staff') -> attempt(['email' => $staffInfo['email'], 'password' => $staffInfo['password']])) {
             $request->session()->regenerate();
 
-            if (Auth::guard('staff') -> user() -> working_status == 'Fired') {
+            if (Auth::guard('staff') -> user() -> working_status == 'Fired' || Auth::guard('staff') -> user() -> working_status == 'fired') {
 
                 Auth::guard('staff')->logout();
 
@@ -46,6 +46,12 @@ class StaffAuthController extends Controller
                 $request->session()->regenerateToken();
                     
                 return redirect() -> route('fired-staff-notify');
+            }
+
+            elseif (Auth::guard('staff') -> user() -> department == "Marketing" || Auth::guard('staff') -> user() -> department == "marketing") {
+                DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
+ 
+                return redirect() -> route('md.dashboard');
             }
 
             else {
