@@ -1,5 +1,14 @@
 <div class="sidebar">
 
+<<<<<<< HEAD
+<!-- Logo -->
+<div class="shrink-0 flex items-center justify-content-center py-4">
+                <a href="{{ route('admin.dashboard') }}">
+                    <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                </a>
+                <h1 class="ml-3">BScholarz</h1>
+            </div>
+=======
     <!-- Logo -->
     <div class="shrink-0 flex items-center justify-content-center py-4">
             <a href="{{ route('admin.dashboard') }}">
@@ -7,6 +16,7 @@
             </a> 
             <h1 class="ml-3">BScholarz</h1>
         </div>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
 
         <div style="border-top: 1px solid rgba(0, 0, 0, 0.096); padding: 20px 0px 20px 40px;">
 
@@ -21,7 +31,7 @@
                     <div class="d-flex align-items-center mr-1">
                         <i class="fa-solid fa-house" style="font-size: 14px; margin-top: 0px; color: #000000a8"></i>
                     </div>
-                    
+
                     <div class="trend-content" style="text-align: left">
                         <h5>Dashboard</h5>
                     </div>
@@ -40,7 +50,16 @@
                             <h5>Requests</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Requests</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
 
             <li class="sb-li" style=" margin: 0px">
@@ -54,7 +73,16 @@
                             <h5>Applications</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Applications</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
 
             <li class="sb-li" style="margin: 0px">
@@ -68,7 +96,16 @@
                             <h5>Ads</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Ads</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
 
             <li class="sb-li" style=" margin: 0px">
@@ -82,7 +119,16 @@
                             <h5>Revenue</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Revenue</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
 
             <li class="sb-li" style="margin: 0px">
@@ -96,7 +142,16 @@
                             <h5>Employees</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Employees</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
 
             <li class="sb-li" style="margin: 0px">
@@ -110,7 +165,16 @@
                             <h5>Partners</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Partners</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
 
 
@@ -125,9 +189,18 @@
                             <h5>Community</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Community</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
-          
+
           	<li class="sb-li" style="margin: 0px">
                 <a href="{{ route('recycle') }}" class="sd-bar-link" >
                     <div class="flex" style="">
@@ -139,19 +212,28 @@
                             <h5>Recycle Bin</h5>
                         </div>
                     </div>
+<<<<<<< HEAD
+
+                    <div class="trend-content" style="text-align: left">
+                        <h5>Recycle Bin</h5>
+                    </div>
+                </div>
+            </a>
+=======
                 </a>
+>>>>>>> 7cee83a62e6bdea7de2eabdce65538f6cd9378a3
             </li>
-            
+
         </ul>
-        
+
     </div>
 
     <div class="footer w-full">
-            
+
             <div class="d-flex gap-5 px-5">
 
                 <div>
-                    <a href="{{ route('faqs') }}">FAQs</a>    
+                    <a href="{{ route('faqs') }}">FAQs</a>
                 </div>
 
                 <div>
@@ -163,15 +245,15 @@
 
                 <div style="border-top: 1px solid rgba(0, 0, 0, 0.096); padding: 20px 30px" class="row container-fluid">
                     <div class="col-lg-6" style="font-size: 13px">
-                        &copy; 2023 <strong>BScholarz</strong> 
-                    </div> 
-                    
+                        &copy; 2023 <strong>BScholarz</strong>
+                    </div>
+
                     <div style="" class="col-lg-6">
-                        <p style="margin-bottom: 0px; text-align: right; font-size: 13px"><i class="fa-solid fa-code"></i> &nbsp;<strong>RB-A</strong></p> 
-                    </div> 
+                        <p style="margin-bottom: 0px; text-align: right; font-size: 13px"><i class="fa-solid fa-code"></i> &nbsp;<strong>RB-A</strong></p>
+                    </div>
 
                 </div>
             </div>
         </div>
-    
+
     </div>

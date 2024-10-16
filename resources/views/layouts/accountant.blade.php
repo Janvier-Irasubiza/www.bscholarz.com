@@ -229,19 +229,7 @@
     </head>
     <body class="font-sans antialiased">
 
-        <!-- Adimin -->
-        @if(Auth::user())
-            @include('layouts.sidebar')
-
-        <!-- Marketing department -->
-        @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
-            @include('layouts.partials.md-sidebar')
-
-        <!-- this is for the accounting department -->
-        @else
-            @include('layouts.sidebar')
-
-        @endif
+    @include('layouts.acc-sidebar')
 
         <div class="min-h-screen">
 

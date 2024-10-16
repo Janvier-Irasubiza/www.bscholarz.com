@@ -12,6 +12,7 @@ use App\Http\Controllers\ClientRequestController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\RhythmBox\RhythmBoxController;
 use App\Http\Controllers\Admin\ApplicationsController;
+use App\Http\Controllers\Accountability\AccountabilityController;
 use App\Http\Controllers\Staff\StaffController;
 use App\Http\Controllers\ClientAuthController;
 use App\Http\Controllers\MdController;
@@ -157,6 +158,7 @@ Route::prefix('admin') -> group(function () {
   	Route::get('/recover/{application_id}', [AdminController::class, 'recover_request']) -> name('recover');
   	Route::get('/recover/{customer_info}/{application_info}', [AdminController::class, 'recover_deleted']) -> name('recovery');
   	Route::get('/confirm-d/{application_id}', [AdminController::class, 'confirm_delete']) -> name('confirm-d');
+
 });
 
 Route::prefix('md')->middleware('staff', 'strack')->group(function () {
@@ -236,10 +238,6 @@ Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () {
 
 });
 
-Route::prefix('accountability') -> middleware(['accountability']) -> group(function() {
-    Route::get('/dashboard', [[AccountabilityController::class, 'accountant_dashboard']]) -> name('accountant-dashboard');
-});
-
 Route::get('/failed-session', function () {
     return view('staff.fired-member-notify');
 }) -> name('fired-staff-notify');
@@ -253,3 +251,10 @@ Route::get('notice', function () {return view('error');}) -> name('notice');
 Route::post('/send-email', 'App\Http\Controllers\Dev\SendEmailController@sendEmail')->name('send.email');
 
 require __DIR__.'/auth.php';
+
+Route::prefix('accountant') -> group(function () {
+    Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard']) -> name('dashboard');
+    Route::get('/transactions', [AccountabilityController::class, 'pending_transactions']) -> name('pending-transactions');
+    Route::get('/review', [AccountabilityController::class, 'transaction_review']) -> name('transaction-review');
+    Route::get('/debtors', [AccountabilityController::class, 'accountant_deptors']) -> name('accountant-deptors');
+});

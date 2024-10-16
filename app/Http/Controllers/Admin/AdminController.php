@@ -11,7 +11,7 @@ use App\Models\RhythmBox;
 use App\Models\Staff;
 use Carbon\Carbon;
 use DB;
-use File; 
+use File;
 use Mail;
 use App\Mail\DisbursedSalary;
 use Illuminate\Support\Facades\Cache;
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Cache;
 class AdminController extends Controller {
 
     public function login() {
-        
+
         if (!Auth::user()) {
             return view('auth.admin-auth');
         }
@@ -103,60 +103,60 @@ class AdminController extends Controller {
                 ->orderBy('posted_on', 'DESC')
                 ->paginate(10);
         });
-    
+
         return view('admin.assistance-requests', ['assistanceRequests' => $assistanceRequests]);
     }
-      
-  
+
+
   	public function deleted_details (Request $request) {
-      
+
       	date_default_timezone_set('Africa/Kigali');
-      
+
         $client_info = DB::table('applicant_info') -> where('id', $request -> customer_info) -> first();
         $client_background = DB::table('applicant_education_info') -> where('applicant', $request -> customer_info) -> get();
         $client_docs = DB::table('applicant_documents') -> where('applicant', $request -> customer_info) -> get();
         $application_requested = DB::table('user_requests') -> where('application_id', $request -> application_info) -> where('id', $request -> customer_info) -> first();
         $applications_items = DB::table('applications') -> where('app_id', $request -> application_info) -> where('applicant', $request -> customer_info) -> first();
         $all_details = DB::table('served_requests') -> where('id', $request -> customer_info) -> where('amount_not_paid', '<>', 0) -> where('deliberation', 'Refused to pay') -> get();
-      
+
         //DB::table('applications') -> where('app_id', $request -> application_info) -> limit(1) -> update(['status' => 'Under Review', 'revied_by' => Auth::guard('staff') -> user() -> id, 'revied_on' => date('Y-m-d H:m:s') , 'review_ccl' => 'yes']);
 
         //$under_review = DB::table('user_requests') -> where('status', 'Under Review') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> get();
 
-        
+
         return view('admin.delete-details', compact('client_info', 'client_background', 'client_docs', 'application_requested', 'applications_items', 'all_details'));
     }
-  
-  	
+
+
   	public function recycle_bin () {
-      
+
       $requested_delete = DB::table('user_requests') -> where('deletion_status', 'Deletion Confirmed') -> get();
-    
+
       return view('admin.recycle', compact('requested_delete'));
-      
+
     }
-  
-  
+
+
   	public function recover_request (Request $request) {
-      
+
         DB::table('applications') -> where('app_id', $request -> application_id) -> update(['deletion_status' => NULL, 'deleted_on' => NULL]);
 
 
         return redirect() -> route('admin.dashboard');
     }
-  
-  
+
+
   	public function recover_deleted (Request $request) {
-      
+
         DB::table('applications') -> where('applicant', $request -> customer_info) -> where('app_id', $request -> application_info) -> update(['deletion_status' => NULL, 'deleted_on' => NULL]);
 
 
         return redirect() -> route('recycle');
     }
-  
-  	
+
+
   	public function confirm_delete (Request $request) {
-      
+
         DB::table('applications') -> where('app_id', $request -> application_id) -> update(['deletion_status' => 'Deletion Confirmed', 'deleted_on' => Carbon::now()]);
 
 
@@ -180,13 +180,13 @@ class AdminController extends Controller {
     public function parteners() {
 
         $parteners = DB::table('rhythmbox') -> get();
-      
+
       	foreach($parteners as $partner) {
-      
+
       		$history = DB::table('partners_payment_history') -> where('paid_to', $partner -> id) -> orderBy('paid_at', 'DESC') -> get();
 
         }
-        
+
         return view('admin.parteners', compact('parteners', 'history'));
     }
 
@@ -206,7 +206,7 @@ class AdminController extends Controller {
                 'percentage' => ['required_if:department,Applications'],
                 'password' => ['required', 'confirmed']
             ]);
-    
+
             if ($request -> department == 'IT' || $request -> department == 'It' || $request -> department == 'it' || $request -> department == 'Development' || $request -> department == 'development' || $request -> department == 'Software Development' || $request -> department == 'software development' || $request -> department == 'Software development' || $request -> department == 'software Development' || $request -> department == 'software' || $request -> department == 'Software') {
 
                 $data = [
@@ -228,7 +228,7 @@ class AdminController extends Controller {
             }
 
             else {
-                
+
                 $data = [
                     'names' => $request -> names,
                     'email' => $request -> email,
@@ -246,7 +246,7 @@ class AdminController extends Controller {
                 return redirect() -> route('admin.org');
 
             }
-    
+
     }
 
     public function org_member(Request $request) {
@@ -276,7 +276,7 @@ class AdminController extends Controller {
         $member = DB::table('staff') -> where('id', $request -> assistant) -> first();
         $completedApp = DB::table('served_requests') -> where('assistant', $request -> assistant) -> where('application_status', 'Complete') -> orderBy('served_on', 'desc') -> get();
       	$history = DB::table('disbursement_history') -> where('assistant', $request -> assistant) -> limit(2) -> orderBy('date_time', 'DESC') -> get();
-  
+
       	return view('admin.sheet-all-apps', compact('member', 'completedApp', 'history'));
     }
 
@@ -285,7 +285,7 @@ class AdminController extends Controller {
         $request -> validate ([
             'app' => ['required']
         ]);
-      	
+
       	$amount_disbursed = 0;
 
         foreach($request -> app as $key => $app_id) {
@@ -297,19 +297,19 @@ class AdminController extends Controller {
 
             DB::table('applications') -> where('assistant', $request -> assistant) -> where('app_id', $app_id) -> limit(1) -> update(['assistant_paid_commission' => $amount_tobe_paid, 'assistant_pending_commission' => 0, 'remittance_status' => 'Paid']);
         }
-      
+
       	$dib_data = [
           'assistant' => $request -> assistant,
           'amount_disbursed' => $amount_disbursed,
           'date_time' => now()->format('Y-m-d H:i:s.u'),
         ];
-      	
+
       	DB::table('disbursement_history') -> insert($dib_data);
-          
+
         $staff = DB::table('staff') -> where('id', $request -> assistant) -> first();
         $amt_rem = DB::table('served_requests') -> where('assistant', $request -> assistant) -> where('assistant_pending_commission', '>', 0) -> where('remittance_status', 'on hold') -> get();
         $balance = $amt_rem -> sum('assistant_pending_commission');
-        $staff_names = $staff -> names;      	  
+        $staff_names = $staff -> names;
         $phone_number = $staff -> phone_number;
 
         Mail::to($staff -> email) -> send(new DisbursedSalary($staff_names, $amount_disbursed, $balance, $phone_number));
@@ -330,7 +330,7 @@ class AdminController extends Controller {
         }
 
         return back();
-    } 
+    }
 
     public function disburse_partial_to_partner(Request $request) {
 
@@ -347,7 +347,7 @@ class AdminController extends Controller {
         }
 
         return back();
-    } 
+    }
 
     public function fire_emp (Request $request) {
 
@@ -426,7 +426,7 @@ class AdminController extends Controller {
 
         if ($request -> hasFile('media')) {
             $mediaName = time().'-'.$request -> file('media') -> getClientOriginalName();
-            $request -> file('media') -> move(public_path('ads/'), $mediaName); 
+            $request -> file('media') -> move(public_path('ads/'), $mediaName);
 
             if (File::exists(public_path('ads/'.$request -> old_media))) {
                 File::delete(public_path('ads/'.$request -> old_media));
@@ -445,7 +445,7 @@ class AdminController extends Controller {
                 'status' => $request -> status
             ];
 
-            DB::table('adverts') -> where('id', $request -> advert) -> limit(1) -> update($advertData);    
+            DB::table('adverts') -> where('id', $request -> advert) -> limit(1) -> update($advertData);
         }
 
         else {
@@ -461,7 +461,7 @@ class AdminController extends Controller {
                 'status' => $request -> status
             ];
 
-            DB::table('adverts') -> where('id', $request -> advert) -> limit(1) -> update($advertData);    
+            DB::table('adverts') -> where('id', $request -> advert) -> limit(1) -> update($advertData);
         }
 
         return back();
@@ -487,7 +487,7 @@ class AdminController extends Controller {
     }
 
     public function community() {
-        $clients = DB::table('applicant_info') -> get(); 
+        $clients = DB::table('applicant_info') -> get();
         return view('admin.com', compact('clients'));
     }
 
@@ -506,7 +506,7 @@ class AdminController extends Controller {
     public function debtors (Request $request) {
 
             $debtors = DB::table('served_requests') -> where('application_status', 'Complete') -> where('amount_not_paid', '<>', 0) -> where('deliberation', 'Refused to pay') -> orderBy('served_on', 'desc') -> get();
-            
+
             return view('admin.debtors', compact('debtors'));
 
         }
@@ -564,6 +564,73 @@ class AdminController extends Controller {
         return back();
 
     }
-    
+
+
+    public function accountant_dashboard() {
+
+            $userRequestCount = Cache::remember('user_request_count', now()->addMinutes(10), function () {
+                return DB::table('user_requests')
+                    ->where('payment_status', 'Not yet paid')
+                    ->where('application_status', 'Pending')
+                    ->count();
+            });
+
+            $readyCustomerCount = Cache::remember('ready_customer_count', now()->addMinutes(10), function () {
+                return DB::table('user_requests')
+                    ->where('application_status', 'Pending')
+                    ->count();
+            });
+
+            $servedCustomerCount = Cache::remember('served_customer_count', now()->addMinutes(10), function () {
+                return DB::table('served_requests')
+                    ->where('payment_status', 'Paid')
+                    ->where('application_status', 'Complete')
+                    ->count();
+            });
+
+            $activeEmployeeCount = Cache::remember('active_employee_count', now()->addMinutes(10), function () {
+                return DB::table('staff')
+                    ->where('status', 'Online')
+                    ->count();
+            });
+
+            $assistanceRequestCount = Cache::remember('assistance_request_count', now()->addMinutes(10), function () {
+                return DB::table('assistance_seekings')
+                    ->whereNull('assistance_given')
+                    ->count();
+            });
+
+            $requestedDeleteCount = Cache::remember('requested_delete_count', now()->addMinutes(10), function () {
+                return DB::table('user_requests')
+                    ->where('deletion_status', 'Requested')
+                    ->count();
+            });
+
+            $applicationCount = Cache::remember('application_count', now()->addMinutes(10), function () {
+                return DB::table('disciplines')
+                ->where('category', '<>', 'Custom')
+                ->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))
+                ->count();
+            });
+
+            $deadlinedAppsCount = Cache::remember('deadlined_apps_count', now()->addMinutes(10), function () {
+                return DB::table('disciplines')
+                ->where('category', '<>', 'Custom')
+                ->where('due_date', '<', now()->format('Y-m-d H:i:s.u'))
+                ->count();
+            });
+
+            return view('admin.accountant-dashboard', compact(
+                'applicationCount',
+                'userRequestCount',
+                'readyCustomerCount',
+                'servedCustomerCount',
+                'activeEmployeeCount',
+                'assistanceRequestCount',
+                'requestedDeleteCount',
+                'deadlinedAppsCount'
+            ));
+    }
+
 
 }
