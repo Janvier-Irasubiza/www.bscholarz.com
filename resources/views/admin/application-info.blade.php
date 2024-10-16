@@ -9,20 +9,25 @@
     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mt-2 p-2">
 
     <div class="container-fluid">
-    <div class="card-header-tab card-header py-3 d-flex" style="border-bottom: 1px solid rgba(0, 0, 0, 0.192)">
+    <div class="card-header-tab card-header py-3 d-flex align-items-center justify-content-between" style="border-bottom: 1px solid rgba(0, 0, 0, 0.192)">
                     <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-8">
                     {{ $app_info -> discipline_name }} </br>
                     <small class="text-muted mb-0">{{ $app_info -> organization }}</small>
                     </div>
-                    <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
+                    <div class="btn-actions-pane-right text-capitalize text-right d-flex gap-4">
+
+                    <button class="border btn btn-primary">
+                        <i class="fa-solid fa-comment" style="font-size: 20px"></i>
+                        <span class="badge badge-light">9</span>
+                    </button>
 
                     <button class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger"  data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                <span class="mr-2 opacity-7">
-                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
-                </span>
-                <small><span class="fa fa-trash"></span></small> &nbsp;
-                <span class="mr-1">Delete</span>
-                </button>
+                        <span class="mr-2 opacity-7">
+                            <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                        </span>
+                        <small><span class="fa fa-trash"></span></small> &nbsp;
+                        <span class="mr-1">Delete</span>
+                    </button>
 
                 <!-- Modal -->
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -42,7 +47,7 @@
                     </div>
                     <div class="p-3 text-center" style="border-top: 1px solid #e6e6e6">
                        <button type="button" class="btn apply-btn" data-bs-dismiss="modal" style="padding: 3px 20px; color: ghostwhite">Cancel</button>
-                        <a href="{{ route('admin.delete-app', ['app_id' => $app_info -> id]) }}" class="ml-2 btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger">
+                        <a href="{{ Auth::user() ? route('admin.delete-app', ['app_id' => $app_info -> id]) : route('md.delete-app', ['app_id' => $app_info -> id]) }}" class="ml-2 btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger">
                         <span class="mr-2 opacity-7">
                         <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
                         </span>
@@ -59,7 +64,7 @@
                     </div>
                     </div>
                     
-    <form method="post" action="{{ route('admin.edit-app') }}" class="mt-6 space-y-6 mt-4 mb-3"  enctype="multipart/form-data">
+    <form method="post" action="{{ Auth::user() ? route('admin.edit-app') : route('md.edit-app') }}" class="mt-6 space-y-6 mt-4 mb-3"  enctype="multipart/form-data">
         @csrf
 
         <div>

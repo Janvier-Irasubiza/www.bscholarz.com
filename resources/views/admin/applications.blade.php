@@ -17,16 +17,18 @@
                     </div>
                     <div class="btn-actions-pane-right text-capitalize text-right col-lg-6">
 
-                    <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('admin.requests') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                    View Clients requests
-                    </a>
+                    @if(Auth::user())
+                      <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('admin.requests') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                      View Clients requests
+                      </a>
+                    @endif
 
-                    <a href="{{ route('admin.new-application') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
-                <span class="mr-2 opacity-7">
-                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
-                </span>
-                <span class="mr-1">New application</span>
-                </a>
+                    <a href="{{ Auth::user() ? route('admin.new-application') : route('md.new-application')  }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
+                      <span class="mr-2 opacity-7">
+                      <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                      </span>
+                      <span class="mr-1">New application</span>
+                    </a>
 
                     </div>
                     </div>
@@ -38,7 +40,6 @@
       <th>Application</th>
       <th>Category</th>
       <th>Country</th>
-      <th class="text-center">Price</th>
       <th class="text-center">Review</th>
     </tr>
   </thead>
@@ -63,13 +64,7 @@
       </td>
 
       <td class="text-center">
-        <p class="fw-normal mb-1">{{ $discipline -> service_fee }}</p>
-      </td>
-
-      <td class="text-center">
-      <a href="{{ route('admin.app-info', ['identifier' => $discipline -> identifier]) }}" style="border: 2px solid; border-radius: 100px; padding: 2px 10px" class="btn btn-link btn-sm btn-rounded mr-1">
-      <i class="fa-solid fa-info"></i>
-            </a>
+        <a href="{{ Auth::user() ? route('admin.app-info', ['identifier' => $discipline -> identifier]) : route('md.app-info', ['identifier' => $discipline -> identifier]) }}" style="border: 2px solid; border-radius: 10px; padding: 2px 10px" class="btn btn-link btn-sm btn-rounded mr-1">Review</a>
       </td>
     </tr>
 

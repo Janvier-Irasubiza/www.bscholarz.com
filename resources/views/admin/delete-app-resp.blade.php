@@ -16,7 +16,7 @@
                     </div>
                     <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
 
-                    <a href="{{ route('admin.applications') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn apply-btn" >
+                    <a href="{{ Auth::user() ? route('admin.applications') : route('md.applications') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn apply-btn" >
                         <span class="mr-1">Back to applications</span>
                     </a>
 

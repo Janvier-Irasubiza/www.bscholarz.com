@@ -161,7 +161,12 @@ Route::prefix('admin') -> group(function () {
 
 Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::get('/dashboard', [MdController::class, 'dashboard'])->name('md.dashboard');
-    Route::get('/apps', [MdController::class, 'apps'])->name('md.apps');
+    Route::get('/apps', [ApplicationsController::class, 'applications'])->name('md.apps');
+    Route::get('/new-app', [ApplicationsController::class, 'new_application']) -> name('md.new-application');
+    Route::post('/post-new-app', [ApplicationsController::class, 'post_new_app']) -> name('md.post-new-app');
+    Route::get('/app-info/{identifier}', [ApplicationsController::class, 'application_info']) -> name('md.app-info');
+    Route::post('/edit-app', [ApplicationsController::class, 'edit_app']) -> name('md.edit-app');
+    Route::get('/delete-app', [ApplicationsController::class, 'delete_application']) -> name('md.delete-app');
 });
 
 Route::get('/rhythmbox', function () {

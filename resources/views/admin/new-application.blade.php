@@ -24,7 +24,7 @@
 
                     <div class="px-5">
                       
-    <form method="post" action="{{ route('admin.post-new-app') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
+    <form method="post" action="{{ Auth::user() ? route('admin.post-new-app') : route('md.post-new-app') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
         @csrf
       
       @if(Session::has('failed'))
@@ -189,12 +189,14 @@
             <x-input-error :messages="$errors->get('due_date')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="price" :value="__('Service fee')" />
-            <small class="text-muted mb-0">Application price</small>
-            <x-text-input id="price" name="price" type="text" class="mt-1 block w-full" :value="old('price')" required autocomplete="price" />
-            <x-input-error class="mt-2" :messages="$errors->get('price')" />
-        </div>
+        @if(Auth::user())
+            <div>
+                <x-input-label for="price" :value="__('Service fee')" />
+                <small class="text-muted mb-0">Application price</small>
+                <x-text-input id="price" name="price" type="text" class="mt-1 block w-full" :value="old('price')" required autocomplete="price" />
+                <x-input-error class="mt-2" :messages="$errors->get('price')" />
+            </div>
+        @endif
       
       <div>
             <x-input-label for="link" :value="__('Link To Application Platform')" />

@@ -14,7 +14,11 @@ use Session;
 class ApplicationsController extends Controller {
 
     public function applications () {
-        $applications = DB::table('disciplines') -> where('category', '<>', 'Custom') -> orderBy('publish_date', 'DESC') -> get();
+      $applications = DB::table('disciplines')
+      ->where('category', '<>', 'Custom')
+      ->orderBy('publish_date', 'ASC')
+      ->get();
+  
         return view('admin.applications', compact('applications'));
     }
 
@@ -42,7 +46,7 @@ class ApplicationsController extends Controller {
             'specialty' => 'required',
           	'start_date' => 'required',
             'due_date' => 'required',
-            'price' => 'required',
+            // 'price' => 'required',
             'link' => 'required',
           	'link_to_institution' => 'required',
           	//link_to_institution and start_date
