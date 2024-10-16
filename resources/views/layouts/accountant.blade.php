@@ -229,7 +229,7 @@
     </head>
     <body class="font-sans antialiased">
 
-    @include('layouts.sidebar')
+    @include('layouts.acc-sidebar')
 
         <div class="min-h-screen">
 
