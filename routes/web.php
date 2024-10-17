@@ -255,6 +255,10 @@ require __DIR__.'/auth.php';
 Route::prefix('accountant') -> group(function () {
     Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard']) -> name('dashboard');
     Route::get('/transactions', [AccountabilityController::class, 'pending_transactions']) -> name('pending-transactions');
-    Route::get('/review', [AccountabilityController::class, 'transaction_review']) -> name('transaction-review');
+    Route::post('/approve/{application_id}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
+    Route::get('/review/{transaction}/{applicant}/{application}/{agent}', [AccountabilityController::class, 'transaction_review']) -> name('transaction-review');
     Route::get('/debtors', [AccountabilityController::class, 'accountant_deptors']) -> name('accountant-deptors');
+    Route::get('/complete-transactions', [AccountabilityController::class, 'complete_transactions']) -> name('complete-transactions');
+
+    Route::get('/get-complete-transactions', [AccountabilityController::class, 'getCompleteTransactions'])->name('get-complete-transactions');
 });

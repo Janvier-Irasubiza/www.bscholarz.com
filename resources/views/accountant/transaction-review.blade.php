@@ -1,4 +1,4 @@
-@section('title', 'Transactions')
+@section('title', 'Transaction - Review')
 
 <x-accountant-layout>
     <x-slot name="header">
@@ -10,11 +10,6 @@
                 <div class="tab-content">
                     <div>
                         <div class="card">
-                            <div class="card-header-tab card-header py-3 d-flex">
-                                <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-5">
-                                    Mastercard Foundation Scholars Application - Payment
-                                </div>
-                            </div>
 
                             <div style="border-top: none" class="d-block p-3 card-footer">
 
@@ -28,17 +23,25 @@
                                                 <div class="align-items-center no-shadow rm-border bg-transparent widget-chart text-left border rounded">
                                                     <div class="pb-2 pt-2" style="border-bottom: 1px solid #d9d9d9">
                                                         <div class="widget-chart-content col-lg-12 ml-1">
-                                                            <div class="widget-subheading">Mastercard Foundation Scholars Application</div>
-                                                            <div class="widget-description text-focus"><p>ID: <strong>ID23456H</strong></p></div>
-                                                            <div class="widget-description text-focus"><p>Processed on: <strong>21-32-1233</strong></p></div>
+                                                            <div class="widget-description text-focus"><p><small>ID: &nbsp;</small><strong>{{ $transaction_info -> payment_id }}</strong></p></div>
+                                                            <div class="widget-subheading"><small style="font-weight: 400">Service: &nbsp;</small>{{ $application_info -> discipline_name }}</div>
+                                                            <div class="widget-subheading"><small style="font-weight: 400">Amount Paid: &nbsp;</small>{{ number_format($transaction_info -> amount_paid) }} <small style="font-weight: 400">frw</small></div>
+                                                            <div class="widget-description text-focus"><p><small>Organization: &nbsp;</small>{{ $application_info -> organization }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Transaction Time: &nbsp;</small>{{ $transaction_info -> payment_date }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Service Time: &nbsp;</small>{{ $transaction_info -> served_on }}</p></div>
                                                         </div>
                                                     </div>
 
                                                     <div class="mt-2 mb-2 d-flex gap-3 justify-content-center">
-                                                        <a href="#" class="btn bg-success">
-                                                            <span class="mr-1"><strong class="text-white">APROVE</strong></span>
-                                                        </a>
+                                                        <form action="{{ route('approve-transaction', ['application_id' => $transaction_info -> app_id]) }}" method="POST">
+                                                            @csrf <!-- Include CSRF token for security -->
+                                                            <input type="hidden" name="application_id" value="{{ $transaction_info -> app_id }}">
+                                                            <button type="submit" class="btn bg-success">
+                                                                <span class="mr-1"><strong class="text-white">APPROVE</strong></span>
+                                                            </button>
+                                                        </form>
                                                     </div>
+
                                                 </div>
                                             </div>
 
@@ -53,9 +56,12 @@
                                                 <div class="align-items-center no-shadow rm-border bg-transparent widget-chart text-left border rounded">
                                                     <div class="pb-2 pt-2" style="border-bottom: 1px solid #d9d9d9">
                                                         <div class="widget-chart-content col-lg-12 ml-1">
-                                                            <div class="widget-subheading">Mrs. GATANAZI Alphonsine</div>
-                                                            <div class="widget-description text-focus"><p>Phone: <strong>+250 780 234 546</strong></p></div>
-                                                            <div class="widget-description text-focus"><p>Processed on: <strong>21-32-1233</strong></p></div>
+                                                            <div class="widget-subheading"><small style="font-weight: 400">Names: &nbsp;</small>{{ $agent_info -> names }}</div>
+                                                            <div class="widget-description text-focus"><p><small>Phone: &nbsp;</small>{{ $agent_info -> phone_number }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Email: &nbsp;</small>{{ $agent_info -> email }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Role: &nbsp;</small>{{ $agent_info -> role }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Percentage: &nbsp;</small>{{ $agent_info -> percentage }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Current Status: &nbsp;</small>{{ $agent_info -> status }}</p></div>
                                                         </div>
                                                     </div>
 

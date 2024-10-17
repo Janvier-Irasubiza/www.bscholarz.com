@@ -12,7 +12,7 @@
                         <div class="card">
                             <div class="card-header-tab card-header py-3 d-flex">
                                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-6">
-                                    Pending Transactions
+                                    Complete Transactions
                                 </div>
                                 <div class="btn-actions-pane-right text-capitalize text-right col-lg-6">
                                     <button class="btn btn-primary" id="exportExcel">Export to Excel</button>
@@ -26,11 +26,10 @@
                                             <th>Amount Paid</th>
                                             <th>Payment Date</th>
                                             <th>Assistant</th>
-                                            <th class="text-center">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($pen_transactions as $transaction)
+                                        @foreach($complete_transactions as $transaction)
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -47,11 +46,6 @@
                                             </td>
                                             <td>
                                                 <p class="fw-normal mb-1">{{ $transaction->assistant_names }}</p>
-                                            </td>
-                                            <td class="text-center">
-                                                <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->app_id, 'applicant' => $transaction->applicant, 'application' => $transaction->discipline_id, 'agent' => $transaction->assistant]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                                                    Review
-                                                </a>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -71,8 +65,8 @@
                 document.getElementById('exportExcel').addEventListener('click', function () {
                     const wb = XLSX.utils.book_new();
                     const ws = XLSX.utils.table_to_sheet(document.getElementById('example1'));
-                    XLSX.utils.book_append_sheet(wb, ws, 'Pending Transactions');
-                    XLSX.writeFile(wb, 'Pending_Transactions.xlsx');
+                    XLSX.utils.book_append_sheet(wb, ws, 'Complete Transactions');
+                    XLSX.writeFile(wb, 'Complete_Transactions.xlsx');
                 });
 
                 // Show success modal if there is a success message
