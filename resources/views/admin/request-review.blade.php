@@ -40,31 +40,31 @@
 
                     <div>
                     <a style="font-weight: 600; border: 1.3px solid;" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                    {{ $request_info -> payment_status }} 
+                    {{ $request_info -> payment_status }}
                     </a>
 
                     @if($request_info -> application_status == 'Pending')
 
                     <a style="font-weight: 600; border: none;" class="btn-wide bg-warning btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                    {{ $request_info -> application_status }} 
+                    {{ $request_info -> application_status }}
                     </a>
 
                     @elseif($request_info -> application_status == 'In progress')
 
                     <a style="font-weight: 600; border: none; color: ghostwhite" class="btn-wide bg-info btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                    {{ $request_info -> application_status }} 
+                    {{ $request_info -> application_status }}
                     </a>
 
                     @elseif($request_info -> application_status == 'Postponed')
 
                     <a style="font-weight: 600; border: none; color: ghostwhite" class="btn-wide bg-danger btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                    {{ $request_info -> application_status }} 
+                    {{ $request_info -> application_status }}
                     </a>
 
                     @else
 
                     <a style="font-weight: 600; border: none; color: ghostwhite" class="btn-wide bg-success btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                    {{ $request_info -> application_status }} 
+                    {{ $request_info -> application_status }}
                     </a>
 
                     @endif
@@ -202,7 +202,7 @@
 
                         </div>
                     </div>
-                
+
                     </div>
 
                     <div class="col-lg-5 px-3">
@@ -211,7 +211,7 @@
 
                     <div class="mb-4" id="backSection">
                         <!-- Name -->
-                    
+
 
                         @foreach($edu_info as $level)
 
@@ -242,7 +242,7 @@
 
                     <x-input-label style="font-size: 17px; font-weight: 600" for="name" :value="__('Supporting Documents')" />
                     <div class="info-div mt-3 mb-4">
-                    
+
                     <div>
                     <x-input-label style="font-size: 15px" for="name" :value="__('Upload your document')" />
                     <small class="text-semi-muted mb-0">ID card, Transcripts, and your CV</small>
@@ -250,7 +250,7 @@
                     @foreach($client_documnent as $document)
                     <a href="{{ asset('documents') }}/{{ $document -> document }}"><div style = "padding: 6px 10px; border: 1px solid #00000023; color: #808080; border-radius: 6px"  id="names" class="block mt-1 w-full input-holder" >{{ $document -> document }}</div></a>
                     @endforeach
-                
+
                     </div>
                     </div>
 
@@ -261,7 +261,7 @@
                     @elseif($request_info -> application_status == 'Postponed')
 
                     <a href="{{ route('app-apply', ['request_id' => $request_info -> application_id, 'applink' => $request_info -> link]) }}" target="blank" style="font-weight: 500; color: ghostwhite" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 apply-btn"> <i class="fa-solid fa-arrow-up-right-from-square"></i> &nbsp; Resume Application </a>
-                    
+
                     @elseif($request_info -> application_status == 'Complete')
 
                     <a style="font-weight: 500; color: ghostwhite; display: none" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 apply-btn"> <i class="fa-solid fa-double-check"></i> &nbsp; Application Complete </a>
@@ -269,10 +269,10 @@
                     @else
 
                     <a style="font-weight: 500; color: ghostwhite" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 apply-btn"> <i class="fa-solid fa-arrow-up-right-from-square"></i> &nbsp; Application going on </a>
-                    
+
                     @endif -->
 
-                        </div>                
+                        </div>
                     </div>
                         </div>
                     </div>
