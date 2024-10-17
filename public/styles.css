@@ -1732,6 +1732,20 @@ input:focus, select:focus, textarea:focus {
     background: none !important;
 }
 
+.nots-btn {
+    
+}
+
+.nots {
+    font-size: 10px !important;
+    color: #000;
+    font-weight: 600;
+    position: absolute;
+    margin-top: -7px;
+    margin-left: -10px;
+    background-color: #006aff;
+}
+
 @media (max-width: 600px) {
   
   .freq-asked-questions-cstm {

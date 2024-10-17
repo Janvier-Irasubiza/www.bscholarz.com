@@ -16,9 +16,9 @@
                     </div>
                     <div class="btn-actions-pane-right text-capitalize text-right d-flex gap-4">
 
-                    <button class="border btn btn-primary">
-                        <i class="fa-solid fa-comment" style="font-size: 20px"></i>
-                        <span class="badge badge-light">9</span>
+                    <button class=""  data-bs-toggle="modal" data-bs-target="#comments">
+                        <i class="fa-solid fa-comment" style="font-size: 25px; color: #4d4d4d"></i>
+                        <span class="badge badge-light nots">9</span>
                     </button>
 
                     <button class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger"  data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -29,7 +29,39 @@
                         <span class="mr-1">Delete</span>
                     </button>
 
-                <!-- Modal -->
+                    <!-- <comments> -->
+                <div class="modal fade" id="comments" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="margin-left: auto; margin-right: 16em;">
+                    <div class="modal-content">
+                    <div class="text-center p-3"  style="border-bottom: 1px solid #e6e6e6">
+                        <p class="m-0" style="font-size: 18px;"><strong>Comments</strong></p>
+                        <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                    </div>
+                    <div class="modal-body text-center">
+                    Are you sure you want to delete this application? </br>
+
+                    <div class="mt-3 mb-2" style="border-radius: 5px; ">
+                    <i class="fa-solid fa-triangle-exclamation btn btn-danger" style="font-size: 16px; padding: 7px 10px 10px 10px"></i> &nbsp; Remember that this action can not be undone
+                    </div>
+
+                    </div>
+                    <div class="p-3 text-center" style="border-top: 1px solid #e6e6e6">
+                       <button type="button" class="btn apply-btn" data-bs-dismiss="modal" style="padding: 3px 20px; color: ghostwhite">Cancel</button>
+                        <a href="{{ Auth::user() ? route('admin.delete-app', ['app_id' => $app_info -> id]) : route('md.delete-app', ['app_id' => $app_info -> id]) }}" class="ml-2 btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger">
+                        <span class="mr-2 opacity-7">
+                        <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                        </span>
+                        <small><span class="fa fa-trash"></span></small> &nbsp;
+                        <span class="mr-1">Yes, Delete</span>
+                        </a>
+                       </div>
+
+                    </div>
+                </div>
+                </div>
+                <!-- </comments> -->
+
+                <!-- <delete> -->
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" style="margin-left: auto; margin-right: 16em;">
                     <div class="modal-content">
@@ -59,7 +91,7 @@
                     </div>
                 </div>
                 </div>
-                    <!-- End of modal -->
+                <!-- </delete> -->
 
                     </div>
                     </div>
@@ -312,12 +344,14 @@
             <x-input-error :messages="$errors->get('due_date')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="price" :value="__('Service fee')" />
-            <small class="text-muted mb-0">Application price</small>
-            <x-text-input id="price" style="border: 1px solid rgba(0, 0, 0, 0.192)" name="price" type="text" class="mt-1 block w-full" value="{{ $app_info -> service_fee }}" required  autocomplete="price" />
-            <x-input-error class="mt-2" :messages="$errors->get('price')" />
-        </div>
+        @if(Auth::user())
+            <div>
+                <x-input-label for="price" :value="__('Service fee')" />
+                <small class="text-muted mb-0">Application price</small>
+                <x-text-input id="price" style="border: 1px solid rgba(0, 0, 0, 0.192)" name="price" type="text" class="mt-1 block w-full" value="{{ $app_info -> service_fee }}" required  autocomplete="price" />
+                <x-input-error class="mt-2" :messages="$errors->get('price')" />
+            </div>
+        @endif
       
       	<div>
             <x-input-label for="link" :value="__('Link')" />

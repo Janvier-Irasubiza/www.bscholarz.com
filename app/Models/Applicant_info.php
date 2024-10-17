@@ -54,6 +54,11 @@ class Applicant_info extends Authenticatable
          * @param  string  $token
          * @return void
     */
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
   
     public function sendPasswordResetNotification($token)
     {

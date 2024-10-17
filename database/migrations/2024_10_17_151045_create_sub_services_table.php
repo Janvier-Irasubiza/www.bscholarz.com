@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('department')->nullable();
+        Schema::create('sub_services', function (Blueprint $table) {
+            $table->id();
+            $table->string('name'); 
+            $table->text('description')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // 
+        Schema::dropIfExists('sub_services');
     }
 };
