@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+use App\Models\Comment;
 use File; 
 use Illuminate\Http\Request;
 use DB;
@@ -24,7 +25,53 @@ class ApplicationsController extends Controller {
 
     public function application_info (Request $request) {
         $app_info = DB::table('disciplines') -> where('identifier', $request -> identifier) -> first();
-        return view ('admin.application-info', compact('app_info'));
+        if ($app_info) {
+            $comments = Comment::where('discipline_id', $app_info->id)->count();
+        } else {
+          $comments = 0;
+        }
+        return view ('admin.application-info', compact('app_info', 'comments'));
+    }
+
+    public function comments() {
+      $comments = Comment::with('user')
+        ->get()
+        ->map(function($comment) {
+            return [
+                'id' => $comment->id,
+                'discipline_id' => $comment->discipline_id,
+                'applicant_id' => $comment->applicant_id,
+                'comment' => $comment->comment,
+                'status' => $comment->status,
+                'created_at' => $comment->created_at,
+                'updated_at' => $comment->updated_at,
+                'name' => $comment->user ? $comment->user->names : 'Unknown',
+                'profile' => $comment->user->profile_picture
+            ];
+        });
+        return response()->json($comments);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $comment = Comment::find($id);
+        if ($comment) {
+            $comment->status = $request->status;
+            $comment->save();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
+    }
+
+    // Delete a comment
+    public function delete($id)
+    {
+        $comment = Comment::find($id);
+        if ($comment) {
+            $comment->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 
     public function new_application () {
@@ -168,7 +215,7 @@ class ApplicationsController extends Controller {
             'status' => ['required'],
             'specialty' => ['required'],
             'due_date' => ['required'],
-            'price' => ['required'],
+            // 'price' => ['required'],
           'link' => ['required'],
             // 'poster' => ['required', 'mimes:jpg,jpeg,png,gif,svg|max:5048'],
         ]);

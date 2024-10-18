@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Comment;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -72,10 +73,5 @@ class MdController extends Controller
             'requestedDeleteCount',
             'deadlinedAppsCount'
         ));
-    } 
-
-    public function apps () {
-        $applications = DB::table('disciplines') -> where('category', '<>', 'Custom') -> orderBy('publish_date', 'DESC') -> get();
-        return view('admin.applications', compact('applications'));
     }
 }

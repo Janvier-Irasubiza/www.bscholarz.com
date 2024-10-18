@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ApplicationsController;
 use App\Http\Controllers\Accountability\AccountabilityController;
 use App\Http\Controllers\Staff\StaffController;
 use App\Http\Controllers\ClientAuthController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\MdController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -169,6 +170,11 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::get('/app-info/{identifier}', [ApplicationsController::class, 'application_info']) -> name('md.app-info');
     Route::post('/edit-app', [ApplicationsController::class, 'edit_app']) -> name('md.edit-app');
     Route::get('/delete-app', [ApplicationsController::class, 'delete_application']) -> name('md.delete-app');
+    Route::get('/app/comments', [ApplicationsController::class, 'comments'])->name('md.app-comments');
+    Route::post('/comments/{id}/update-status', [ApplicationsController::class, 'updateStatus']);
+    Route::delete('/comments/{id}', [ApplicationsController::class, 'delete']);
+    Route::get('/ads', [AdminController::class, 'ads']) -> name('md.ads');
+    Route::get('/subs', [SubscriptionController::class, 'subs']) -> name('md.subs');
 });
 
 Route::get('/rhythmbox', function () {

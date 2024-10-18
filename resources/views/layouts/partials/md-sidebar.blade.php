@@ -40,7 +40,7 @@
             </li>
 
             <li class="sb-li" style="margin: 0px">
-                <a href="{{ route('admin.ads') }}" class="sd-bar-link" >
+                <a href="{{ route('md.ads') }}" class="sd-bar-link" >
                     <div class="flex" style="">
                         <div class="d-flex align-items-center mr-1">
                             <i class="fa-solid fa-ad" style="font-size: 15px; margin-top: 2px; color: #000000a8"></i>
@@ -54,7 +54,7 @@
             </li>
 
             <li class="sb-li" style="margin: 0px">
-                <a href="{{ route('admin.com') }}" class="sd-bar-link" >
+                <a href="{{ route('md.subs') }}" class="sd-bar-link" >
                     <div class="flex" style="">
                         <div class="d-flex align-items-center mr-1">
                             <i class="fa-solid fa-users" style="font-size: 15px; margin-top: 2px; color: #000000a8"></i>

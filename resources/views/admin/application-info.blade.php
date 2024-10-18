@@ -18,7 +18,7 @@
 
                     <button class=""  data-bs-toggle="modal" data-bs-target="#comments">
                         <i class="fa-solid fa-comment" style="font-size: 25px; color: #4d4d4d"></i>
-                        <span class="badge badge-light nots">9</span>
+                        <span class="badge badge-light nots">{{ $comments }}</span>
                     </button>
 
                     <button class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger"  data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -31,39 +31,162 @@
 
                     <!-- <comments> -->
                 <div class="modal fade" id="comments" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="margin-left: auto; margin-right: 16em;">
+                <div class="modal-dialog modal-dialog-centered modal-lg" >
+
                     <div class="modal-content">
-                    <div class="text-center p-3"  style="border-bottom: 1px solid #e6e6e6">
-                        <p class="m-0" style="font-size: 18px;"><strong>Comments</strong></p>
-                        <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                    <div class="p-3 d-flex justify-content-between align-items-center"  style="border-bottom: 1px solid #e6e6e6">
+                        <div class="text-left">
+                        <p class="m-0" style="font-size: 20px;">
+                            <strong>{{ $app_info -> discipline_name }}</strong>
+                        </p>
+                        <p class="text-muted">Comments</p>
+                        </div>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="font-weight: 500; font-size: 15px">CLOSE</button>
+                        </div>
+                    <div class="modal-body text-left" id="commentsBody">
+                        <!-- comments -->
                     </div>
-                    <div class="modal-body text-center">
-                    Are you sure you want to delete this application? </br>
-
-                    <div class="mt-3 mb-2" style="border-radius: 5px; ">
-                    <i class="fa-solid fa-triangle-exclamation btn btn-danger" style="font-size: 16px; padding: 7px 10px 10px 10px"></i> &nbsp; Remember that this action can not be undone
-                    </div>
-
-                    </div>
-                    <div class="p-3 text-center" style="border-top: 1px solid #e6e6e6">
-                       <button type="button" class="btn apply-btn" data-bs-dismiss="modal" style="padding: 3px 20px; color: ghostwhite">Cancel</button>
-                        <a href="{{ Auth::user() ? route('admin.delete-app', ['app_id' => $app_info -> id]) : route('md.delete-app', ['app_id' => $app_info -> id]) }}" class="ml-2 btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger">
-                        <span class="mr-2 opacity-7">
-                        <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
-                        </span>
-                        <small><span class="fa fa-trash"></span></small> &nbsp;
-                        <span class="mr-1">Yes, Delete</span>
-                        </a>
-                       </div>
 
                     </div>
                 </div>
                 </div>
                 <!-- </comments> -->
 
+
+                <!-- get app comments -->
+                <script>
+
+                    function timeAgo(time) {
+                            const now = new Date();
+                            const commentTime = new Date(time);
+                            const diff = Math.abs(now - commentTime) / 1000; // Difference in seconds
+
+                            if (diff < 60) return 'now';
+                            if (diff < 3600) return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) > 1 ? 's' : ''} ago`;
+                            if (diff < 86400) return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) > 1 ? 's' : ''} ago`;
+
+                            // For comments older than 1 day
+                            const days = Math.floor(diff / 86400);
+                            if (days === 1) return 'yesterday';
+                            return `${days} day${days > 1 ? 's' : ''} ago`;
+                        }
+                        
+                    // Listen for the modal show event
+                    var commentsModal = document.getElementById('comments');
+                    commentsModal.addEventListener('show.bs.modal', function (event) {
+
+                        loadComments();
+                    }); 
+
+                    function loadComments() {
+                        // Make an AJAX request to the 'comments' route
+                        fetch('/md/app/comments') 
+                            .then(response => response.json())
+                            .then(data => {
+                                const modalBody = document.getElementById('commentsBody');
+                                modalBody.innerHTML = ''; // Clear previous content
+
+                                // Loop through comments and display them
+                                data.forEach(comment => {
+                                    const commentDiv = document.createElement('div');
+                                    commentDiv.className = 'border-bottom p-2';
+                                    commentDiv.innerHTML = `
+                                        <div class="d-flex gap-3">
+                                            <div class="">
+                                                <div class="user-profile">
+                                                    ${comment.profile ? 
+                                                    `<img src="{{ asset('/profile_pictures/${comment.profile}') }}" alt="User-Account" class="profile-pic">` : 
+                                                    `<img src="{{ asset('/images/profile.png') }}" alt="Default User-Account">`}
+                                                </div>
+                                            </div>
+                                            <div class="w-full text-left">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <p class="f-16" style="font-weight: 700">${comment.name}</p>
+                                                        <p class="text-muted f-12">${timeAgo(comment.created_at)}</p>
+                                                    </div>
+                                                    <div>
+                                                        ${comment.status == 'inactive' ? 
+                                                        `<span class="btn btn-danger badge badge-danger" disabled>${comment.status}</span>` : 
+                                                        `<span class="btn btn-success badge badge-success" disabled>${comment.status}</span>` }
+                                                    </div>
+                                                </div>
+                                                <p class="mt-1">${comment.comment}</p>
+                                                <div class="flex gap-4 mt-2">
+                                                    ${comment.status == 'inactive' ? 
+                                                    `<button class="f-15 muted-btn" onclick="updateStatus(${comment.id}, 'active')">Post</button>` : 
+                                                    `<button class="f-15 muted-btn" onclick="updateStatus(${comment.id}, 'inactive')">Unpost</button>`}
+                                                    <button class="f-15 muted-btn" onclick="deleteComment(${comment.id})">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    modalBody.appendChild(commentDiv);
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error fetching comments:', error);
+                                document.getElementById('commentsBody').innerHTML = '<p>Error loading comments.</p>';
+                            });
+                    };
+
+
+                    // Function to update the status of the comment
+                    function updateStatus(commentId, status) {
+                        fetch(`/md/comments/${commentId}/update-status`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({ status: status })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                loadComments();
+                            } else {
+                                alert('Failed to update status');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while updating the status');
+                        });
+                    }
+
+                    // Function to delete the comment
+                    function deleteComment(commentId) {
+                        if (confirm('Are you sure you want to delete this comment?')) {
+                            fetch(`/md/comments/${commentId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    loadComments();
+                                } else {
+                                    alert('Failed to delete comment');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting the comment');
+                            });
+                        }
+                    }
+
+
+                </script>
+                
+
                 <!-- <delete> -->
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="margin-left: auto; margin-right: 16em;">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                     <div class="text-center p-3"  style="border-bottom: 1px solid #e6e6e6">
                         <p class="m-0" style="font-size: 18px;">Delete <strong>{{ $app_info -> discipline_name }}</strong> <small>of</small> <strong>{{ $app_info -> organization }}</strong></p>

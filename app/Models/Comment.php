@@ -9,7 +9,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['application_id', 'user_id', 'content', 'status'];
+    protected $fillable = ['discipline_id', 'applicant_id', 'comment', 'status'];
 
     public function discipline()
     {
@@ -18,6 +18,6 @@ class Comment extends Model
 
     public function user()
     {
-        return $this->belongsTo(Applicant_info::class);
+        return $this->belongsTo(Applicant_info::class, 'applicant_id');
     }
 }
