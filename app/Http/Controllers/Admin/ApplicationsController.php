@@ -11,6 +11,7 @@ use DB;
 use Mail;
 use App\Mail\Post;
 use Session;
+use App\Http\Controllers\MailController;
 
 class ApplicationsController extends Controller {
 
@@ -170,12 +171,10 @@ class ApplicationsController extends Controller {
             ]);
             
           }
-          
-          foreach($receipients as $receipient) {
-          
-            Mail::to($receipient['email']) -> send(new Post($url, $title, $type, $desc));
-            
-          }
+
+          // Send mails
+          $mail_sender = new MailController();
+          $mail_sender->send_mail($receipients, $url, $title, $type, $desc);
         
            return redirect() -> route('admin.applications');
           
@@ -196,9 +195,6 @@ class ApplicationsController extends Controller {
           return back() -> withInput($inputs);
           
         }
-
-        
-
     }
 
     public function edit_app(Request $request) {

@@ -19,5 +19,5 @@ class SubPlan extends Model
     public function subscribers()
     {
         return $this->hasMany(SubscriberSubscription::class);
-    }
+    }   
 }

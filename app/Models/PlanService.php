@@ -8,5 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class PlanService extends Pivot
 {
+
+    protected $table = 'plan_services';
+
     use HasFactory;
 }

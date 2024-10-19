@@ -61,7 +61,7 @@
                         </div>
                         
                         <div class="trend-content" style="text-align: left">
-                            <h5>Subscribers</h5>
+                            <h5>Subscriptions</h5>
                         </div>
                     </div>
                 </a>

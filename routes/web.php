@@ -175,7 +175,17 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::delete('/comments/{id}', [ApplicationsController::class, 'delete']);
     Route::get('/ads', [AdminController::class, 'ads']) -> name('md.ads');
     Route::get('/subs', [SubscriptionController::class, 'subs']) -> name('md.subs');
+    Route::get('/subs/plans', [SubscriptionController::class, 'subs_plans']) -> name('md.subs-plans');
+    Route::post('/subs/services/store', [SubscriptionController::class, 'storeService']);
+    Route::get('/subs/export', [SubscriptionController::class, 'exportSubsXcel'])->name('subs.export');
 });
+
+Route::get('/subs/services', [SubscriptionController::class, 'subs_services']) -> name('subs-services.get');
+Route::get('/subs/services/{plan}', [SubscriptionController::class, 'subs_plan_services'])->name('subs-services-plan.get');
+Route::post('/subs/services/add', [SubscriptionController::class, 'addServiceToPlan'])->name('subs-service.add');
+Route::delete('/subs/services/remove', [SubscriptionController::class, 'removeServiceFromPlan'])->name('subs-service.remove');
+Route::put('/subs/services/update', [SubscriptionController::class, 'updateService'])->name('subs-service.update');
+Route::delete('/subs/services/delete', [SubscriptionController::class, 'deleteService'])->name('subs-service.delete');
 
 Route::get('/rhythmbox', function () {
     return redirect() -> route('rhythmbox.dashboard');

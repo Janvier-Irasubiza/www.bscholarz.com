@@ -377,9 +377,25 @@ ul{
     border: 2px solid #686868;
 }
 
+.inputs {
+    width: 55%;
+}
 
 .modal-header {
     width: 100%;
+}
+
+.cst-primary-btn {
+    background-color: #0080ff !important;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.cst-primary-btn:hover {
+    background-color: #0c75dd !important;
 }
 
 .desc-hold {
@@ -1828,6 +1844,19 @@ input:focus, select:focus, textarea:focus {
     color: #151515;
     text-decoration: none !important;
     font-weight: 600;
+}
+
+.scd-btn {
+    padding: 8px 10px;
+    color: #626262;
+    transition: background-color 0.2s ease;
+    border: 1.3px solid #d9d9d9;
+    border-radius: 5px;
+}
+
+.scd-btn:hover, .scd-btn.active {
+    color: #151515;
+    background-color: #eaeaea;
 }
 
 .bg-gray{
