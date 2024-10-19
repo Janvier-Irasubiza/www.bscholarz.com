@@ -1,12 +1,12 @@
 <?php
- 
+
 namespace App\Http\Controllers;
- 
+
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use DB;
- 
+
 class StaffAuthController extends Controller
 {
     /**
@@ -14,7 +14,7 @@ class StaffAuthController extends Controller
      */
 
      public function signin() {
-    
+
         if (!Auth::guard('staff') -> user()) {
             return view('auth.staff-login');
         }
@@ -33,7 +33,7 @@ class StaffAuthController extends Controller
         ]);
 
         $staffInfo = $request -> all();
- 
+
         if (Auth::guard('staff') -> attempt(['email' => $staffInfo['email'], 'password' => $staffInfo['password']])) {
             $request->session()->regenerate();
 
@@ -44,29 +44,35 @@ class StaffAuthController extends Controller
                 $request->session()->invalidate();
 
                 $request->session()->regenerateToken();
-                    
+
                 return redirect() -> route('fired-staff-notify');
             }
 
             elseif (Auth::guard('staff') -> user() -> department == "Marketing" || Auth::guard('staff') -> user() -> department == "marketing") {
                 DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
- 
+
                 return redirect() -> route('md.dashboard');
+            }
+
+            elseif (Auth::guard('staff') -> user() -> department == "Accountability" || Auth::guard('staff') -> user() -> department == "accountability") {
+                DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
+
+                return redirect() -> route('accountant-dashboard');
             }
 
             else {
 
                 DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
- 
+
                 return redirect() -> route('staff-dashboard');
-    
+
             }
 
         }
- 
+
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
-    
+
 }

@@ -72,7 +72,7 @@ class AccountabilityController extends Controller {
         DB::table('applications') -> where('app_id', $request->application_id) -> update(['payment_status' => 'Confirmed']);
         session() -> flash('success', 'Transaction confirmed successfully.');
 
-        return redirect() -> route('dashboard');
+        return redirect() -> route('pending-transactions');
     }
 
     public function accountant_deptors() {

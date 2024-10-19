@@ -1,5 +1,4 @@
 <div class="sidebar">
-
     <!-- Logo -->
     <div class="shrink-0 flex items-center justify-content-center py-4">
             <a href="{{ route('admin.dashboard') }}">

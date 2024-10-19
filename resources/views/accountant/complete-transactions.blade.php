@@ -14,8 +14,15 @@
                                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-6">
                                     Complete Transactions
                                 </div>
-                                <div class="btn-actions-pane-right text-capitalize text-right col-lg-6">
-                                    <button class="btn btn-primary" id="exportExcel">Export to Excel</button>
+                                <div class="btn-actions-pane-right text-capitalize text-right col-lg-6" style="border: 1px solid red">
+                                    <div class="d-flex">
+                                        <div class="col-lg-6">
+                                            <button class="btn btn-primary" id="exportExcel">Export to Excel</button>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <button class="btn btn-primary" id="exportExcel">Export to Excel</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div style="border-top: none" class="d-block p-3 card-footer">

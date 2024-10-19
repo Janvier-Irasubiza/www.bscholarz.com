@@ -237,7 +237,10 @@
         @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
             @include('layouts.partials.md-sidebar')
 
-        <!-- this is for the accounting department -->
+        <!-- Marketing department -->
+        @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Accountability' || department == 'accountability')
+            @include('layouts.acc-sidebar')
+
         @else
             @include('layouts.sidebar')
 

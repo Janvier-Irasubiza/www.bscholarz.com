@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\RhythmBox\RhythmBoxController;
 use App\Http\Controllers\Admin\ApplicationsController;
 use App\Http\Controllers\Accountability\AccountabilityController;
+use App\Http\Controllers\Accountability\ExportsController;
 use App\Http\Controllers\Staff\StaffController;
 use App\Http\Controllers\ClientAuthController;
 use App\Http\Controllers\MdController;
@@ -248,12 +249,16 @@ Route::post('/send-email', 'App\Http\Controllers\Dev\SendEmailController@sendEma
 require __DIR__.'/auth.php';
 
 Route::prefix('accountant') -> group(function () {
-    Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard']) -> name('dashboard');
+    Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard']) -> name('accountant-dashboard');
     Route::get('/transactions', [AccountabilityController::class, 'pending_transactions']) -> name('pending-transactions');
     Route::post('/approve/{application_id}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
     Route::get('/review/{transaction}/{applicant}/{application}/{agent}', [AccountabilityController::class, 'transaction_review']) -> name('transaction-review');
     Route::get('/debtors', [AccountabilityController::class, 'accountant_deptors']) -> name('accountant-deptors');
     Route::get('/complete-transactions', [AccountabilityController::class, 'complete_transactions']) -> name('complete-transactions');
-
-    Route::get('/get-complete-transactions', [AccountabilityController::class, 'getCompleteTransactions'])->name('get-complete-transactions');
+    Route::get('/get-complete-transactions', [ExportsController::class, 'exportCompleteTransactions'])->name('get-complete-transactions');
+    Route::post('/sort-transactions', [ExportsController::class, 'sortTransactions'])->name('sort-transactions');
+    Route::get('/accountant/staff', [AdminController::class, 'organization']) -> name('accountant-staff');
+    Route::get('/sheets/{assistant}', [AdminController::class, 'recordings']) -> name('employer-sheet');
+    Route::get('/sheets/{assistant}/this-week', [AdminController::class, 'recordings']) -> name('accountant-sort-recs-this-week');
+    Route::get('/sheets/{assistant}/all', [AdminController::class, 'sortRecsAll']) -> name('accountant-sort-recs-all');
 });

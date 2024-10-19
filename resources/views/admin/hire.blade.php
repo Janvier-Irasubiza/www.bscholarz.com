@@ -45,7 +45,7 @@
             <x-text-input id="phone_number" name="phone_number" type="text" class="mt-1 block w-full" placeholder="Phone number" :value="old('phone_number')" required autocomplete="phone_number" />
             <x-input-error class="mt-2" :messages="$errors->get('phone_number')" />
         </div>
-      
+
       <div>
             <x-input-label for="phone_number" :value="__('Work Phone number')" />
             <small class="text-muted mb-0">Employee work contact</small>
@@ -58,6 +58,7 @@
             <small class="text-muted mb-0">Working department</small>
             <select name="department" id="department" class="mt-1 block w-full" onchange="togglePercentageField()">
                 <option value="">-------------</option>
+                <option value="Accountability" {{ old('accountability') == 'Accountability' ? 'selected' : '' }}>Accountability</option>
                 <option value="Applications" {{ old('department') == 'Applications' ? 'selected' : '' }}>Applications</option>
                 <option value="Marketing" {{ old('department') == 'Marketing' ? 'selected' : '' }}>Marketing</option>
             </select>
@@ -112,7 +113,7 @@
             <x-input-label for="role" :value="__('Confirm Password')" />
             <small class="text-muted mb-0">Confirm password</small>
             <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" placeholder="Re-type password" required autocomplete="password_confirmation" />
-            
+
             <x-input-error class="mt-2" :messages="$errors->get('password')" />
 
             <x-input-error class="mt-2" :messages="$errors->get('password_confirmation')" />
