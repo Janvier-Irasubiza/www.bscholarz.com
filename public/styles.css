@@ -394,6 +394,10 @@ ul{
     transition: background-color 0.2s ease-in-out;
 }
 
+.cst-danger-btn {
+    padding: 3px;
+}
+
 .cst-primary-btn:hover {
     background-color: #0c75dd !important;
 }

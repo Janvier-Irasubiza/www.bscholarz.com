@@ -14,7 +14,7 @@
 
                     
                     <div>
-                       <a href="{{ route('testimonies') }}" class="d-flex gap-1 align-items-center back-btn"> <span class="fa-solid fa-angle-left" style="font-size: 23px; color: #595959"></span> Testmonials</a>
+                       <a href="{{ Auth::user() ? route('testimonies') : route('md.testimonies')  }}" class="d-flex gap-1 align-items-center back-btn"> <span class="fa-solid fa-angle-left" style="font-size: 23px; color: #595959"></span> Testmonials</a>
                     </div>
 
                     <div>
@@ -24,14 +24,14 @@
                     </div>
                     <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
 
-                    <a style="font-weight: 500; color: ghostwhite" href="{{ route('delete-testmony', ['id' => $testmony -> id, 'file' => $testmony -> motivator_pp]) }}" class="btn-wide bg-danger btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                    <a style="font-weight: 500; color: ghostwhite" href="{{ Auth::user() ? route('delete-testmony', ['id' => $testmony -> id, 'file' => $testmony -> motivator_pp]) : route('md.delete-testmony', ['id' => $testmony -> id, 'file' => $testmony -> motivator_pp]) }}" class="btn-wide bg-danger btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
                     Delete
                     </a>
 
                     </div>
                     </div>
                     <div class="px-5">
-    <form method="post" action="{{ route('edit-testmony-info') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
+    <form method="post" action="{{ Auth::user() ? route('edit-testmony-info') : route('md.edit-testmony-info') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
         @csrf
 
         <x-input-label for="m_info" :value="__('Personal Info')" />

@@ -16,7 +16,7 @@
                 Testimonials
                 </div>
                 <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
-                <a href="{{ route('new-testmony') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
+                <a href="{{ Auth::user() ? route('new-testmony') : route('md.new-testmony') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
                 <span class="mr-2 opacity-7">
                 <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
                 </span>
@@ -58,11 +58,11 @@
                     
 
                 <div class="mt-3 ml-2 d-flex gap-3">
-                <a class="underline text-sm hover:text-gray-600 dark:hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('edit-testmony', ['testmony' => $testmony -> id]) }}">
+                <a class="underline text-sm hover:text-gray-600 dark:hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ Auth::user() ? route('edit-testmony', ['testmony' => $testmony -> id]) : route('md.edit-testmony', ['testmony' => $testmony -> id]) }}">
                     {{ __('Edit testmony') }}
                 </a>
 
-                <a class="underline text-sm hover:text-gray-600 dark:hover:text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('delete-testmony', ['id' => $testmony -> id, 'file' => $testmony -> motivator_pp]) }}">
+                <a class="underline text-sm hover:text-gray-600 dark:hover:text-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ Auth::user() ? route('delete-testmony', ['id' => $testmony -> id, 'file' => $testmony -> motivator_pp]) : route('md.delete-testmony', ['id' => $testmony -> id, 'file' => $testmony -> motivator_pp]) }}">
                     {{ __('Delete') }}
                 </a>
 

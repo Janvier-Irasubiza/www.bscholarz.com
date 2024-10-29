@@ -401,7 +401,7 @@ class AdminController extends Controller {
 
         DB::table('adverts') -> insert($advertData);
 
-        return redirect() -> route('admin.ads');
+        return Auth::user() ? redirect() -> route('admin.ads') : redirect() -> route('md.ads');
 
     }
 

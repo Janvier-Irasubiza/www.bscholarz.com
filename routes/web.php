@@ -17,6 +17,7 @@ use App\Http\Controllers\Staff\StaffController;
 use App\Http\Controllers\ClientAuthController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\MdController;
+use App\Http\Controllers\MailController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -153,13 +154,11 @@ Route::prefix('admin') -> group(function () {
     Route::get('/validate-partner', [AdminController::class, 'validate_partner']) -> middleware(['auth', 'verified']) -> name('admin.validate-partner');
     Route::post('/disburse-full-to-partner', [AdminController::class, 'disburse_full_to_partner']) -> name('admin.disburse-full-to-partner');
     Route::post('/disburse-partial-to-partner', [AdminController::class, 'disburse_partial_to_partner']) -> name('admin.disburse-partial-to-partner');
-
   	Route::get('/assess/{customer_info}/{application_info}', [AdminController::class, 'deleted_details']) -> name('assess');
   	Route::get('/recycle', [AdminController::class, 'recycle_bin']) -> name('recycle');
   	Route::get('/recover/{application_id}', [AdminController::class, 'recover_request']) -> name('recover');
   	Route::get('/recover/{customer_info}/{application_info}', [AdminController::class, 'recover_deleted']) -> name('recovery');
   	Route::get('/confirm-d/{application_id}', [AdminController::class, 'confirm_delete']) -> name('confirm-d');
-
 });
 
 Route::prefix('md')->middleware('staff', 'strack')->group(function () {
@@ -178,6 +177,24 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::get('/subs/plans', [SubscriptionController::class, 'subs_plans']) -> name('md.subs-plans');
     Route::post('/subs/services/store', [SubscriptionController::class, 'storeService']);
     Route::get('/subs/export', [SubscriptionController::class, 'exportSubsXcel'])->name('subs.export');
+    Route::get('/publish-add', [AdminController::class, 'publish_add']) -> name('md.publish-add');
+    Route::post('/post-add', [AdminController::class, 'post_add']) -> name('md.post-add');
+    Route::get('/ads/{add_id}', [AdminController::class, 'add_info']) -> name('md.add-info');
+    Route::post('/ads/update/', [AdminController::class, 'update_ad']) -> name('md.update-ad');
+    Route::get('/ads/activate/{ad_id}', [AdminController::class, 'activateAd']) -> name('md.activate');
+    Route::get('/ads/disactivate/{ad_id}', [AdminController::class, 'disactivateAd']) -> name('md.disactivate');
+    Route::get('/ads/delete/{ad_id}', [AdminController::class, 'delete_ad']) -> name('md.delete-ad');
+    Route::get('/testmonials', [PagesController::class, 'testimonies']) -> name('md.testimonies');
+    Route::get('/edit-testmony/{testmony}', [PagesController::class, 'edit_testmony_form']) -> name('md.edit-testmony');
+    Route::post('/edit-testmony-info', [PagesController::class, 'edit_testmony']) -> name('md.edit-testmony-info');
+    Route::get('/delete-testmony/{id}/{file}', [PagesController::class, 'delete_testmony']) -> name('md.delete-testmony');
+    Route::get('/new-testmony', function () { return view('admin.new-testmony'); }) -> name('md.new-testmony');
+    Route::post('/post-testmony', [PagesController::class, 'post_testmony']) -> name('md.post-testmony');
+    Route::get('/faqs', [PagesController::class, 'faqs']) -> name('md.faqs');
+    Route::post('/edit-faq', [PagesController::class, 'edit_faqs']) -> name('md.edit-faq');
+    Route::post('/post-faq', [PagesController::class, 'post_faqs']) -> name('md.post-faq');
+    Route::get('/delete-faq/{id}', [PagesController::class, 'delete_faq']) -> name('md.delete-faq');
+    Route::get('/profile', [ProfileController::class, 'edit']) ->name('md.profile.edit');
 });
 
 Route::get('/subs/services', [SubscriptionController::class, 'subs_services']) -> name('subs-services.get');
@@ -186,6 +203,7 @@ Route::post('/subs/services/add', [SubscriptionController::class, 'addServiceToP
 Route::delete('/subs/services/remove', [SubscriptionController::class, 'removeServiceFromPlan'])->name('subs-service.remove');
 Route::put('/subs/services/update', [SubscriptionController::class, 'updateService'])->name('subs-service.update');
 Route::delete('/subs/services/delete', [SubscriptionController::class, 'deleteService'])->name('subs-service.delete');
+Route::post('/mails/new-app/send', [MailController::class, 'new_app_mail']) -> name('mails.new-app.send');
 
 Route::get('/rhythmbox', function () {
     return redirect() -> route('rhythmbox.dashboard');

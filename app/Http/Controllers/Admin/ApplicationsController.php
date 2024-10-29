@@ -12,6 +12,7 @@ use Mail;
 use App\Mail\Post;
 use Session;
 use App\Http\Controllers\MailController;
+use Auth;
 
 class ApplicationsController extends Controller {
 
@@ -140,60 +141,54 @@ class ApplicationsController extends Controller {
       
       	if(!DB::table('disciplines') -> where('discipline_name', $request -> app_name) -> exists()){
         
-          if(DB::table('disciplines') -> insert($data)){
-          
-          $receipients = [];
-          
-          $users = DB::table('applicant_info') -> get();
-          $subs = DB::table('subscribers') -> get();
-          
-          $url = url(route('learnMore', ['discipline_id' => $identifier]));
-          $title = $request -> app_name;
-          $type = $request -> category;
-          $desc = $request -> short_desc;
-          
-          foreach($users as $user) {
-          
-            array_push($receipients, [
-            
-              'email' => $user -> email, 
-              
-            ]);
-            
-          }
-          
-          foreach($subs as $sub) {
-          
-            array_push($receipients, [
-            
-              'email' => $sub -> email, 
-              
-            ]);
-            
-          }
+          try{
 
-          // Send mails
-          $mail_sender = new MailController();
-          $mail_sender->send_mail($receipients, $url, $title, $type, $desc);
-        
-           return redirect() -> route('admin.applications');
+            DB::table('disciplines') -> insert($data);
+            
+            $url = url(route('learnMore', ['discipline_id' => $identifier]));
+            $title = $request -> app_name;
+            $type = $request -> category;
+            $desc = $request -> short_desc;
+
+            $mail_data = [
+              'url' => $url,
+              'title' => $title,
+              'type' => $type,
+              'desc' => $desc
+            ];
+
+            // Send mails
+            // $mail_sender = new MailController();
+            // $mail_sender->new_app_mail($receipients, $url, $title, $type, $desc);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Application created successfully',
+                'data' => $mail_data
+              ], 201);
           
-        }
-      
-      else {
-      
-        return back() -> withInput($inputs);
+            // return Auth::user() 
+            //   ? redirect() -> route('admin.applications') 
+            //   : redirect() -> route('md.apps');
+            
+          }
         
-      }
-          
+          catch (\Exception $e) {
+            return response()->json([
+              'status' => 'error',
+              'message' => 'Application created successfully',
+              'error' => $e->getMessage()
+            ], 500);
+          }
         }
       
       	else{
-          
           Session::put('failed', 'Application exists');
-        
-          return back() -> withInput($inputs);
-          
+          // return back() -> withInput($inputs);
+          return response()->json([
+            'status' => 'error',
+            'message' => 'Application exists',
+          ], 400);
         }
     }
 

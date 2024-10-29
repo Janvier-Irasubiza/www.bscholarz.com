@@ -68,10 +68,10 @@
             </li>
 
             <li class="sb-li" style="margin: 0px">
-                <a href="{{ route('admin.com') }}" class="sd-bar-link" >
+                <a href="{{ route('md.testimonies') }}" class="sd-bar-link" >
                     <div class="flex" style="">
                         <div class="d-flex align-items-center mr-1">
-                            <i class="fa-regular fa-comments" style="font-size: 15px; margin-top: 2px; color: #000000a8"></i>
+                            <i class="fa-regular fa-comment-dots" style="font-size: 15px; margin-top: 2px; color: #000000a8"></i>
                         </div>
                         
                         <div class="trend-content" style="text-align: left">
@@ -82,7 +82,7 @@
             </li>
 
             <li class="sb-li" style="margin: 0px">
-                <a href="{{ route('admin.com') }}" class="sd-bar-link" >
+                <a href="{{ route('md.faqs') }}" class="sd-bar-link" >
                     <div class="flex" style="">
                         <div class="d-flex align-items-center mr-1">
                             <i class="fa-solid fa-clipboard-question" style="font-size: 17px; margin-top: 2px; color: #000000a8"></i>

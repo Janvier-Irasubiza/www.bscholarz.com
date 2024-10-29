@@ -15,7 +15,7 @@
                     </div>
                     <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
 
-                    <a style="font-weight: 500; border: 1.3px solid;" href="{{ route('admin.applications') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                    <a style="font-weight: 500; border: 1.3px solid;" href="{{ Auth::user() ? route('admin.applications') : route('md.apps') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
                     Go to applications
                     </a>
 
@@ -24,21 +24,21 @@
 
                     <div class="px-5">
                       
-    <form method="post" action="{{ Auth::user() ? route('admin.post-new-app') : route('md.post-new-app') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
+    <form method="post" id="publishForm" action="{{ Auth::user() ? route('admin.post-new-app') : route('md.post-new-app') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
         @csrf
       
       @if(Session::has('failed'))
-      
-      	{{ Session::get('failed') }}
-      
+
       	<div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Oops! </strong> {{ Session::get('failed') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
+            <strong>Oops! </strong> {{ Session::get('failed') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+            </button>
       </div>
       
       @endif
+
+      {{ Session::forget('failed') }}
 
         <div>
             <x-input-label for="app_name" :value="__('Application Name')" />
@@ -228,13 +228,34 @@
       </div>
 
         <div class="flex items-center gap-4">
-        <x-primary-button class="apply-btn" style="border: none">
+            <x-primary-button class="apply-btn" style="border: none">
                 {{ __('Publish') }}
             </x-primary-button>
         </div>
     </form>
     </div>
     </div>
+
+    <!-- <modal> -->
+    <div class="modal fade" id="successModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" >
+
+                        <div class="modal-content">
+                            <div class="p-3 d-flex justify-content-between align-items-center"  style="border-bottom: 1px solid #e6e6e6">
+                                <div class="text-left">
+                                <p class="m-0" style="font-size: 20px;">
+                                    <strong>New Application created</strong>
+                                </p>
+                                </div>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="font-weight: 500; font-size: 15px">CLOSE</button>
+                                </div>
+                            <div class="modal-body text-left">
+                                Application created successfully, <strong>now sending emails</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal -->
 
 
     <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
@@ -258,8 +279,8 @@
             }
 
             function exc() {
-            PreviewFile();
-            removeFileShow()
+                PreviewFile();
+                removeFileShow()
             }
 
             var max_count = 35;

@@ -30,13 +30,13 @@
                     </div>
                     <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
 
-                    <a style="font-weight: 500; border: 1.3px solid;" href="{{ route('admin.ads') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                    <a style="font-weight: 500; border: 1.3px solid;" href="{{ Auth::user() ? route('admin.ads') : route('md.ads') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
                     View adverts
                     </a>
 
                     </div>
                     </div>
-    <form method="post" action="{{ route('admin.update-ad') }}" class="mt-6 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
+    <form method="post" action="{{ Auth::user() ? route('admin.update-ad') : route('md.update-ad') }}" class="mt-6 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
         @csrf
 
         <div>

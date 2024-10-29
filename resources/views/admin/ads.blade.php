@@ -16,7 +16,7 @@
                 Adverts
                 </div>
                 <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
-                <a href="{{ route('admin.publish-add') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
+                <a href="{{ Auth::user() ? route('admin.publish-add') : route('md.publish-add') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
                 <span class="mr-2 opacity-7">
                 <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
                 </span>
@@ -65,23 +65,23 @@
 
             @if($ad -> status == 'active')
 
-            <a href="{{ route('admin.disactivate', ['ad_id' => $ad -> id]) }}" style="border: 2px solid; padding: 4px 10px; text-decoration: none" class="btn btn-link btn-sm btn-rounded mr-1">
+            <a href="{{ Auth::user() ? route('admin.disactivate', ['ad_id' => $ad -> id]) : route('md.disactivate', ['ad_id' => $ad -> id]) }}" style="border: 2px solid; padding: 4px 10px; text-decoration: none" class="btn btn-link btn-sm btn-rounded mr-1">
               <i class="fa-solid fa-download"></i> 
             </a>
 
             @else 
 
-            <a href="{{ route('admin.activate', ['ad_id' => $ad -> id]) }}" style="border: 2px solid; padding: 4px 10px; text-decoration: none" class="btn btn-link btn-sm btn-rounded mr-1">
+            <a href="{{ Auth::user() ? route('admin.activate', ['ad_id' => $ad -> id]) : route('md.activate', ['ad_id' => $ad -> id]) }}" style="border: 2px solid; padding: 4px 10px; text-decoration: none" class="btn btn-link btn-sm btn-rounded mr-1">
                  <i class="fa-solid fa-upload"></i> 
             </a>
 
             @endif
 
-            <a href="{{ route('admin.add-info', ['add_id' => $ad -> id]) }}" style="border: 2px solid; padding: 4px 10px; text-decoration: none" class="btn btn-link btn-sm btn-rounded mr-1">
+            <a href="{{ Auth::user() ? route('admin.add-info', ['add_id' => $ad -> id]) : route('md.add-info', ['add_id' => $ad -> id]) }}" style="border: 2px solid; padding: 4px 10px; text-decoration: none" class="btn btn-link btn-sm btn-rounded mr-1">
       <i class="fa-solid fa-info"></i> 
             </a>
 
-        <a href="{{ route('admin.delete-ad', ['ad_id' => $ad -> id]) }}" class="btn btn-link btn-sm btn-rounded mr-1" style="border: 2px solid; padding: 4px 6px; color: #ec6c55; text-decoration: none">
+        <a href="{{ Auth::user() ? route('admin.delete-ad', ['ad_id' => $ad -> id]) : route('md.delete-ad', ['ad_id' => $ad -> id]) }}" class="btn btn-link btn-sm btn-rounded mr-1" style="border: 2px solid; padding: 4px 6px; color: #ec6c55; text-decoration: none">
         <i class="fa-solid fa-trash"></i> 
             </a>
                 </div>

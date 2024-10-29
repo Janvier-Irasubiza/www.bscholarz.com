@@ -240,7 +240,6 @@
         <!-- this is for the accounting department -->
         @else
             @include('layouts.sidebar')
-
         @endif
 
         <div class="min-h-screen">
@@ -270,6 +269,21 @@
                 <!-- <div class="footer">
                     @include('layouts.footer')
                 </div> -->
+
+                <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div class="toast" id="liveToastSent" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                            <strong class="me-auto">Mails were sent</strong>
+                            <button type="button" class="" data-bs-dismiss="toast" aria-label="Close">
+                                <span aria-hidden="true" class="fa fa-times"></span>
+                            </button>
+                        </div>
+                        <div class="toast-body">
+                            Emails were successfully sent.
+                        </div>
+                    </div>
+                </div>
+
             </main>
 
         </div>
@@ -287,43 +301,112 @@
     <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+        <!-- jQuery CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
+        $(function () {
+            $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            });
+        });
 
-  $(document).ready(function() {
-    $('#myTable2').DataTable( {
-      dom: "<'row'<'col-sm-12 col-md-4'><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4'l>>" +
-        "<'row'<'col-sm-12'tr>>" +
-        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+        $(document).ready(function() {
+            $('#myTable2').DataTable( {
+            dom: "<'row'<'col-sm-12 col-md-4'><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4'l>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 
-        "order": [[ 1, "asc" ]], // will it sort only for that page?
-        // "paging":   false,
-        "lengthMenu": [[10, 50, 100, 150], [10, 50, 100, 150]] ,
-        // scrollY: 400
-        language: {
-        searchPlaceholder: "Search records",
-        search: "",
-      },
-      // "dom": '<"myCustomClass">rt<"top"lp><"clear">', // Positions table elements
+                "order": [[ 1, "asc" ]], // will it sort only for that page?
+                // "paging":   false,
+                "lengthMenu": [[10, 50, 100, 150], [10, 50, 100, 150]] ,
+                // scrollY: 400
+                language: {
+                searchPlaceholder: "Search records",
+                search: "",
+            },
+            // "dom": '<"myCustomClass">rt<"top"lp><"clear">', // Positions table elements
 
-    } );
+            } );
 
-} );
+        });
+        $(document).ready(function() {
+            $('#publishForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        const { url, title, type, desc } = response.data;
+                        sendMails(url, title, type, desc);
+                        showPostedModal();
+                    },
+                    error: function (response) {
+                        // Handle any errors
+                        alert("Error submitting form. Please try again.");
+                    }
+                });
+            });
+
+            function sendMails(url, title, type, desc) {
+                $.ajax({
+                    url: '/mails/new-app/send',
+                    method: 'POST',
+                    data: {
+                        url: url,
+                        title: title,
+                        type: type,
+                        desc: desc,
+                        _token: $('meta[name="csrf-token"]').attr('content') // CSRF token for Laravel
+                    },
+                    success: function(response) {
+                        showSentToast();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Failed to send emails:', error);
+                    }
+                });
+            }
+
+            function showPostedModal() {
+                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+            }
+
+            function showSentToast() {
+                var toastLiveExample = document.getElementById('liveToastSent');
+
+                // Initialize the toast with autohide set to false
+                if (toastLiveExample) {
+                    var toast = new bootstrap.Toast(toastLiveExample, {
+                        autohide: false
+                    });
+                    toast.show();
+                }
+            }
+
+            $('#successModal').on('hidden.bs.modal', function () {
+                $('#publishForm')[0].reset();
+            });
+        });
+
 </script>
 
 </html>
