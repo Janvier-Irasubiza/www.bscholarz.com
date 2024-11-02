@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RhythmBox;
 use App\Models\Staff;
+use App\Models\User;
+use App\Models\Comment;
 use Carbon\Carbon;
 use DB;
 use File;
@@ -632,5 +634,26 @@ class AdminController extends Controller {
             ));
     }
 
+
+    public function users($commentId) {
+        // Fetch all users (staff)
+        $users = Staff::all();
+    
+        // Add 'recommended' attribute to each user based on the specific comment ID
+        $usersWithRecommendation = $users->map(function ($user) use ($commentId) {
+            // Check if this user is recommended for the specified comment
+            $isRecommended = Comment::where('id', $commentId)
+                                    ->where('recommended_to', $user->id)
+                                    ->exists();
+    
+            // Add 'recommended' attribute to indicate if the user is recommended for this comment
+            $user->recommended = $isRecommended;
+    
+            return $user;
+        });
+    
+        // Return users
+        return response()->json($usersWithRecommendation);
+    }       
 
 }

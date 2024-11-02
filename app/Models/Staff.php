@@ -25,6 +25,7 @@ class Staff extends Authenticatable
         'role',
         'percentage',
         'work_phone',
+        'type',
         'profile_picture',
         'password',
     ];

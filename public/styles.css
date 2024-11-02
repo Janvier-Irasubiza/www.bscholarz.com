@@ -514,6 +514,12 @@ ul{
     display: inline-block;
 }
 
+.cstm-profile-pic {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+}
+
 .upload-file {
     position: absolute;
     font-size: 8px;
@@ -1802,6 +1808,10 @@ input:focus, select:focus, textarea:focus {
     font-size: 20px;
 }
 
+.f-25 {
+    font-size: 25px;
+}
+
 .f-500 {
     font-weight: 500 !important;
 }
@@ -1871,6 +1881,39 @@ input:focus, select:focus, textarea:focus {
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
+}
+
+.reply-div {
+    display: none;
+}
+
+.reply-div.hide {
+    display: none;
+}
+
+.reply-div.show {
+    display: block;
+}
+
+.g-1 {
+    gap: 1rem;
+}
+
+.ctm-button {
+    border: 1px solid rgba(38, 38, 38, 0.1)
+}
+
+.ctm-button:hover {
+    background-color: #eaeaea;
+}
+
+.ctm-button.active {
+    background-color: #eaeaea;
+    border: 2px solid rgb(0, 149, 0) !important
+}
+
+.ctm-button.inactive {
+    background-color: #eaeaea;
 }
 
 @media (max-width: 600px) {

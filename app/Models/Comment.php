@@ -9,7 +9,13 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['discipline_id', 'applicant_id', 'comment', 'status'];
+    protected $fillable = [
+        'discipline_id', 
+        'applicant_id',
+        'recommended_to',
+        'comment', 
+        'status',
+    ];
 
     public function discipline()
     {
@@ -20,4 +26,14 @@ class Comment extends Model
     {
         return $this->belongsTo(Applicant_info::class, 'applicant_id');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(CommentReply::class, 'comment_id');
+    }
+
+    public function admin() {
+        return $this->belongsTo(Staff::class, 'recommended_to');
+    }
+
 }

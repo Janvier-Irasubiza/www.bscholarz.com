@@ -10,10 +10,10 @@
     </header>
 
     @if(Auth::guard('staff') && !Auth::guard('staff')->user()->department == 'Marketing')
-    <div class="mt-4 p-3 border rounded">
-        Working percentage  <br>
-        <p class="text-muted mb-0" style="text-transform: none; font-size: 26px">{{ Auth::guard('staff')->user()->percentage }}% </p>
-    </div>
+        <div class="mt-4 p-3 border rounded">
+            Working percentage  <br>
+            <p class="text-muted mb-0" style="text-transform: none; font-size: 26px">{{ Auth::guard('staff')->user()->percentage }}% </p>
+        </div>
     @endif
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">

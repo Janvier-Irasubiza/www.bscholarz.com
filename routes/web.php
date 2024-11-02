@@ -172,6 +172,7 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::get('/app/comments', [ApplicationsController::class, 'comments'])->name('md.app-comments');
     Route::post('/comments/{id}/update-status', [ApplicationsController::class, 'updateStatus']);
     Route::delete('/comments/{id}', [ApplicationsController::class, 'delete']);
+    Route::delete('/reply/{Id}/delete', [ApplicationsController::class, 'delete_reply']);
     Route::get('/ads', [AdminController::class, 'ads']) -> name('md.ads');
     Route::get('/subs', [SubscriptionController::class, 'subs']) -> name('md.subs');
     Route::get('/subs/plans', [SubscriptionController::class, 'subs_plans']) -> name('md.subs-plans');
@@ -195,7 +196,12 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::post('/post-faq', [PagesController::class, 'post_faqs']) -> name('md.post-faq');
     Route::get('/delete-faq/{id}', [PagesController::class, 'delete_faq']) -> name('md.delete-faq');
     Route::get('/profile', [ProfileController::class, 'edit']) ->name('md.profile.edit');
+    Route::get('/apps/{app_id}/comments', [ApplicationsController::class, 'comments_view']) ->name('app.comments');
+    Route::post('/app/comments/reply', [ApplicationsController::class, 'comment_reply']) ->name('app.comments.reply');
 });
+
+Route::get('/users/{commentId}', [AdminController::class, 'users'])->middleware('staff')->name('users.get');
+Route::post('/comments/{commentId}/recommend/', [ApplicationsController::class, 'recommendTo']);
 
 Route::get('/subs/services', [SubscriptionController::class, 'subs_services']) -> name('subs-services.get');
 Route::get('/subs/services/{plan}', [SubscriptionController::class, 'subs_plan_services'])->name('subs-services-plan.get');

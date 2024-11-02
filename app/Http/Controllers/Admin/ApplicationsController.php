@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Models\Comment;
-use File; 
+use App\Models\CommentReply;
+use App\Models\Discipline;
+use File;
 use Illuminate\Http\Request;
 use DB;
 use Mail;
@@ -16,14 +18,22 @@ use Auth;
 
 class ApplicationsController extends Controller {
 
-    public function applications () {
-      $applications = DB::table('disciplines')
-      ->where('category', '<>', 'Custom')
-      ->orderBy('publish_date', 'ASC')
-      ->get();
-  
-        return view('admin.applications', compact('applications'));
+    public function applications(Request $request) {
+      $query = Discipline::where('category', '<>', 'Custom')
+          ->orderBy('publish_date', 'ASC');
+
+      if ($request->has('app') && $request->app != '') {
+          $search = $request->app;
+          $query->where(function($q) use ($search) {
+              $q->where('discipline_name', 'LIKE', "%{$search}%");
+          });
+      }
+
+      $applications = $query->paginate(10);
+
+      return view('admin.applications', compact('applications'));
     }
+
 
     public function application_info (Request $request) {
         $app_info = DB::table('disciplines') -> where('identifier', $request -> identifier) -> first();
@@ -35,23 +45,87 @@ class ApplicationsController extends Controller {
         return view ('admin.application-info', compact('app_info', 'comments'));
     }
 
+    public function comments_view(Request $request) {
+        $app_info = Discipline::where('identifier', $request -> app_id) -> first();
+        return view('admin.comments', compact('app_info'));
+    }
+
     public function comments() {
-      $comments = Comment::with('user')
-        ->get()
-        ->map(function($comment) {
-            return [
-                'id' => $comment->id,
-                'discipline_id' => $comment->discipline_id,
-                'applicant_id' => $comment->applicant_id,
-                'comment' => $comment->comment,
-                'status' => $comment->status,
-                'created_at' => $comment->created_at,
-                'updated_at' => $comment->updated_at,
-                'name' => $comment->user ? $comment->user->names : 'Unknown',
-                'profile' => $comment->user->profile_picture
-            ];
-        });
+        $comments = Comment::with(['user', 'replies.user'])
+            ->get()
+            ->map(function($comment) {
+                return [
+                    'id' => $comment->id,
+                    'discipline_id' => $comment->discipline_id,
+                    'applicant_id' => $comment->applicant_id,
+                    'comment' => $comment->comment,
+                    'status' => $comment->status,
+                    'created_at' => $comment->created_at,
+                    'updated_at' => $comment->updated_at,
+                    'name' => $comment->user ? $comment->user->names : 'Unknown',
+                    'profile' => $comment->user->profile_picture,
+                    'replies' => $comment->replies->map(function($reply) {
+                        return [
+                            'id' => $reply->id,
+                            'comment_id' => $reply->comment_id,
+                            'reply' => $reply->reply,
+                            'created_at' => $reply->created_at,
+                            'updated_at' => $reply->updated_at,
+                            'user_name' => $reply->user ? $reply->user->names : 'Unknown',
+                            'user_profile' => $reply->user ? $reply->user->profile_picture : null,
+                        ];
+                    })
+                ];
+            });
+
         return response()->json($comments);
+
+    }
+
+    public function recommendTo(Request $request, $commentId)
+    {
+        // Validate incoming request
+        $request->validate([
+            'user_id' => 'required|exists:staff,id',
+            'recommend' => 'nullable|boolean',
+        ]);
+    
+        $userId = $request->input('user_id');
+        $recommend = $request->input('recommend');
+    
+        // Find the comment by ID
+        $comment = Comment::findOrFail($commentId);
+    
+        // Check if recommendation should be canceled
+        if ($recommend === false) {
+            // Cancel the recommendation
+            $comment->recommended_to = null;
+            $message = 'Recommendation canceled successfully.';
+        } else {
+            // Recommend the user
+            $comment->recommended_to = $userId;
+            $message = 'Recommendation updated successfully.';
+        }
+    
+        $comment->save(); // Save changes
+    
+        return response()->json(['success' => true, 'message' => $message]);
+    }
+    
+
+    public function comment_reply(Request $request) {
+        $request->validate([
+            'comment_id' => 'required',
+            'reply' => 'required',
+        ]);
+
+        CommentReply::create([
+                'comment_id' => $request->comment_id,
+                'reply' => $request->reply,
+                'user_id' => auth()->guard('staff')->user()->id,
+        ]);
+
+        return back();
     }
 
     public function updateStatus(Request $request, $id)
@@ -71,6 +145,17 @@ class ApplicationsController extends Controller {
         $comment = Comment::find($id);
         if ($comment) {
             $comment->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
+    }
+
+    // Delete a reply
+    public function delete_reply($id)
+    {
+        $reply = CommentReply::find($id);
+        if ($reply) {
+            $reply->delete();
             return response()->json(['success' => true]);
         }
         return response()->json(['success' => false]);
