@@ -11,21 +11,35 @@
                     <div>
                         <div class="card">
                             <div class="card-header-tab card-header py-3 d-flex">
-                                <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-6">
+                                <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-5">
                                     Complete Transactions
                                 </div>
-                                <div class="btn-actions-pane-right text-capitalize text-right col-lg-6" style="border: 1px solid red">
+                                <div class="btn-actions-pane-right text-capitalize text-right col-lg-7">
                                     <div class="d-flex">
-                                        <div class="col-lg-6">
-                                            <button class="btn btn-primary" id="exportExcel">Export to Excel</button>
+                                        <div class="col-lg-9 text-start">
+                                            <label for=""><small>Sort by date</small></label>
+                                            <div class="sort-container flex gap-2">
+                                                <small>Start</small>
+                                                <div class="sort-div">
+                                                    <div><input type="date" name="" id="" class="p-1"></div>
+                                                </div>
+
+                                                <small>End</small>
+                                                <div class="sort-div">
+                                                    <div><input type="date" name="" id="" class="p-1"></div>
+                                                </div>
+                                                <div class="pb-1">
+                                                    <button class="btn btn-primary" style="padding: 3px 20px">Sort</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <button class="btn btn-primary" id="exportExcel">Export to Excel</button>
+                                        <div class="col-lg-3">
+                                            <button class="btn btn-primary mt-4" id="exportExcel">Export to Excel</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div style="border-top: none" class="d-block p-3 card-footer">
+                            <div style="border-top: none" class="d-block p-3 card-footer"> here
                                 <table id="example1" class="table align-middle mb-0 bg-white">
                                     <thead class="bg-light">
                                         <tr>

@@ -59,7 +59,7 @@
                             </p>
                         </a>
 
-                        <a href="{{ route('admin.sort-recs-all', ['assistant' => $member -> id]) }}">
+                        <a href="{{ Auth::user() ? route('admin.sort-recs-all', ['assistant' => $member -> id]) : route('accountant-sort-recs-all', ['assistant' => $member -> id]) }}">
                             <p class="fw-normal mb-1">
                                 <span class="badge rounded-pill px-3" style="color: #000">All applications</span>
                             </p>
