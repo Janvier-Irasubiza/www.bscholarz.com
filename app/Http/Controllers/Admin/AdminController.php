@@ -17,6 +17,8 @@ use File;
 use Mail;
 use App\Mail\DisbursedSalary;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+    use App\Models\Advert;
 
 class AdminController extends Controller {
 
@@ -372,102 +374,105 @@ class AdminController extends Controller {
 
     public function post_add(Request $request) {
 
-        $request -> validate([
-            'title' => ['required'],
-            'owner' => ['required'],
-            'owner_phone' => ['required'],
-            'ad_type' => ['required'],
-            'amount' => ['required'],
-            'payment_cycle' => ['required'],
-            'ex_date' => ['required'],
-            'status' => ['required'],
-            // 'media' => ['required', 'mimes:jpg,jpeg,png,gif,svg|max:5048'],
+        // Validate request data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'owner' => 'required|string|max:255',
+            'owner_phone' => 'required|string|max:20',
+            'ad_type' => 'required|string',
+            'amount' => 'required|numeric',
+            'payment_cycle' => 'required|string',
+            'ex_date' => 'required|date',
+            'status' => 'required|string',
+            'link' => 'nullable|string|max:255',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,svg|max:5048',
         ]);
-
-        $mediaName = time().'-'.$request -> file('media') -> getClientOriginalName();
-        $mediaType = $request -> file('media') -> getMimeType();
-        $request -> file('media') -> move(public_path('ads/'), $mediaName);
-
+    
+        // Initialize file details
+        $mediaName = null;
+        $mediaType = null;
+    
+        // Handle file upload if present
+        if ($request->hasFile('media') && $request->file('media')->isValid()) {
+            $mediaName = time() . '-' . $request->file('media')->getClientOriginalName();
+            $mediaType = $request->file('media')->getMimeType();
+            $request->file('media')->move(public_path('ads/'), $mediaName);
+        }
+    
+        // Prepare data for database insertion
         $advertData = [
-            'title' => $request -> title,
-            'owner' => $request -> owner,
-            'owner_phone' => $request -> owner_phone,
-            'type' => $request -> ad_type,
-            'amount' => $request -> amount,
-            'payment_circle' => $request -> payment_cycle,
-            'expiry_date' => $request -> ex_date,
+            'title' => $request->title,
+            'owner' => $request->owner,
+            'owner_phone' => $request->owner_phone,
+            'type' => $request->ad_type,
+            'amount' => $request->amount,
+            'payment_circle' => $request->payment_cycle,
+            'expiry_date' => $request->ex_date,
+            'status' => $request->status,
+            'link' => $request->link,
             'media' => $mediaName,
             'media_type' => $mediaType,
-            'status' => $request -> status
         ];
-
-        DB::table('adverts') -> insert($advertData);
-
-        return Auth::user() ? redirect() -> route('admin.ads') : redirect() -> route('md.ads');
-
+    
+        Advert::create($advertData);
+    
+        return Auth::user() ? redirect()->route('admin.ads') : redirect()->route('md.ads');
     }
+    
 
     public function add_info(Request $request) {
         $ad = DB::table('adverts') -> where('id', $request -> add_id) -> first();
         return view('admin.add-info', compact('ad'));
     }
 
-    public function update_ad (Request $request) {
-
-        $request -> validate([
-            'title' => ['required'],
-            'owner' => ['required'],
-            'owner_phone' => ['required'],
-            'ad_type' => ['required'],
-            'amount' => ['required'],
-            'payment_cycle' => ['required'],
-            'ex_date' => ['required'],
-            'status' => ['required'],
-            // 'media' => ['required', 'mimes:jpg,jpeg,png,gif,svg|max:5048'],
-        ]);
-
-        if ($request -> hasFile('media')) {
-            $mediaName = time().'-'.$request -> file('media') -> getClientOriginalName();
-            $request -> file('media') -> move(public_path('ads/'), $mediaName);
-
-            if (File::exists(public_path('ads/'.$request -> old_media))) {
-                File::delete(public_path('ads/'.$request -> old_media));
+    public function update_ad(Request $request) {
+        // Validate incoming request
+        try {
+            $validatedData = $request->validate([
+                'title' => 'required|string|max:255',
+                'owner' => 'required|string|max:255',
+                'owner_phone' => 'required|string|max:20',
+                'type' => 'required|string',
+                'amount' => 'required|numeric',
+                'payment_circle' => 'required|string',
+                'expiry_date' => 'required|date',
+                'status' => 'required|string',
+                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,svg|max:5048',
+            ]);
+    
+            // Prepare data for update
+            $advertData = array_filter($validatedData, function($key) {
+                return $key !== 'media'; // Exclude media from the update array for now
+            }, ARRAY_FILTER_USE_KEY);
+    
+            // Handle file upload if present
+            if ($request->hasFile('media')) {
+                $mediaName = time() . '-' . $request->file('media')->getClientOriginalName();
+                
+                if ($request->file('media')->isValid()) {
+                    Storage::disk('ads')->putFileAs('', $request->file('media'), $mediaName);
+                    // Optionally delete the old media if it exists
+                    if ($request->old_media && Storage::disk('ads')->exists($request->old_media)) {
+                        Storage::disk('ads')->delete($request->old_media);
+                    }
+                    $advertData['media'] = $mediaName; // Add media to the update data
+                    $advertData['media_type'] = $request->file('media')->getMimeType(); // Capture MIME type
+                } else {
+                    return back()->withErrors(['media' => 'The uploaded file is not valid.']);
+                }
             }
-
-            $advertData = [
-                'title' => $request -> title,
-                'owner' => $request -> owner,
-                'owner_phone' => $request -> owner_phone,
-                'type' => $request -> ad_type,
-                'amount' => $request -> amount,
-                'payment_circle' => $request -> payment_cycle,
-                'expiry_date' => $request -> ex_date,
-                'media' => $mediaName,
-                'media_type' => $request -> file('media') -> getMimeType(),
-                'status' => $request -> status
-            ];
-
-            DB::table('adverts') -> where('id', $request -> advert) -> limit(1) -> update($advertData);
+    
+            // Update advert in the database
+            Advert::where('id', $request->advert)->update($advertData);
+    
+            return back()->with('success', 'Advert updated successfully.');
+        } catch (\Throwable $th) {
+            \Log::error("Error sending messages: " . $th->getMessage());
+            return back()->with('error', 'An error occurred while updating the advert.');
         }
-
-        else {
-            $advertData = [
-                'title' => $request -> title,
-                'owner' => $request -> owner,
-                'owner_phone' => $request -> owner_phone,
-                'type' => $request -> ad_type,
-                'amount' => $request -> amount,
-                'payment_circle' => $request -> payment_cycle,
-                'expiry_date' => $request -> ex_date,
-                'media_type' => $request -> file('media') -> getMimeType(),
-                'status' => $request -> status
-            ];
-
-            DB::table('adverts') -> where('id', $request -> advert) -> limit(1) -> update($advertData);
-        }
-
-        return back();
     }
+
+    
 
     public function delete_ad(Request $request) {
         DB::table('adverts') -> where('id', $request -> ad_id) -> limit(1) -> delete();

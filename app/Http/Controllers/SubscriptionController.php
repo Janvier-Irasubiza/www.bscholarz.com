@@ -9,7 +9,9 @@ use App\Models\SubService;
 use App\Models\PlanService;
 use App\Models\SubscriberSubscription;
 use App\Exports\Subscribers;
+use App\Mail\SubsMail;
 use Maatwebsite\Excel\Facades\Excel;
+use Mail;
 
 class SubscriptionController extends Controller
 {
@@ -23,7 +25,7 @@ class SubscriptionController extends Controller
         $subscribers = [];
 
         if ($plan) {
-            $subscriptions = SubscriberSubscription::where('plan_id', $plan->id)->get();
+            $subscriptions = SubscriberSubscription::where('plan_id', $plan->id)->paginate(10);
             foreach ($subscriptions as $subscription) {
                 $subscriber = Subscriber::find($subscription->subscriber_id);
                 if ($subscriber) {
@@ -168,5 +170,84 @@ class SubscriptionController extends Controller
 
         return Excel::download(new Subscribers($plan), 'subscribers.xlsx');
     }
+
+    public function sendMessage(Request $request) {
+        try {
+            // Decode JSON strings if needed
+            $selectedPlans = $request->input('selected_plans', []);
+            $subject = $request->input('subject');
+            $comMethods = $request->input('contact_methods', []);
+            $message = $request->input('desc');
+    
+            // Decode JSON strings if they're not already arrays
+            if (is_string($selectedPlans)) {
+                $selectedPlans = json_decode($selectedPlans, true) ?: [];
+            }
+            if (is_string($comMethods)) {
+                $comMethods = json_decode($comMethods, true) ?: [];
+            }
+            
+            if (empty($selectedPlans)) {
+                return response()->json(['status' => 'error', 'message' => 'No plans selected.'], 400);
+            }
+    
+            if (empty($comMethods)) {
+                return response()->json(['status' => 'error', 'message' => 'No communication method selected.'], 400);
+            }
+        
+            $allSubscribers = [];
+        
+            foreach ($selectedPlans as $planName) {
+                $plan = SubPlan::where('name', $planName)->first();
+                if (!$plan) {
+                    return response()->json(['status' => 'error', 'message' => "Plan '{$planName}' not found."], 404);
+                }
+        
+                $subscriptions = SubscriberSubscription::where('plan_id', $plan->id)->get();
+                foreach ($subscriptions as $subscription) {
+                    $subscriber = Subscriber::find($subscription->subscriber_id);
+                    if ($subscriber) {
+                        $allSubscribers[] = [
+                            'subscriber' => $subscriber,
+                            'start_date' => $subscription->start_date,
+                            'end_date' => $subscription->end_date
+                        ];
+                    }
+                }
+            }
+        
+            if (empty($allSubscribers)) {
+                return response()->json(['status' => 'error', 'message' => 'No subscribers found for selected plans.'], 404);
+            }
+        
+            // Send messages to each subscriber in the list
+            foreach ($allSubscribers as $data) {
+                $subscriber = $data['subscriber'];
+                $this->sendMessageToSubscriber($subscriber, $subject, $message, $comMethods);
+            }
+        
+            return response()->json(['status' => 'success', 'message' => 'Messages sent successfully'], 200);
+        
+        } catch (\Exception $e) {
+            // Log the exception for debugging
+            \Log::error("Error sending messages: " . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'An error occurred while sending messages. Please try again later.'], 500);
+        }
+    }
+    
+    
+    protected function sendMessageToSubscriber($subscriber, $subject, $message, $comMethods) {
+        if (in_array('email', $comMethods)) {
+            // Ensure email exists and is valid before sending
+            if (!empty($subscriber->email)) {
+                Mail::to($subscriber->email)->send(new SubsMail($subject, $message, $subscriber->name));
+            }
+        }
+        
+        // if (in_array('sms', $comMethods)) {
+        //     // Logic for sending SMS
+        // }
+    }
+    
     
 }

@@ -26,8 +26,15 @@
                 </div>
             </div>
 
+
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ml-6">
+            <div class="hidden sm:flex sm:items-center sm:ml-6 gap-4 align-items-center">
+
+                <a href="{{ route('chats.index') }}" class="">
+                    <i class="fa-brands fa-rocketchat" style="font-size: 25px;"></i>
+                    <span class="badge badge-light nots">3</span>
+                </a>
+            
                 <x-dropdown align="right" width="48">
 
                     <x-slot name="trigger">

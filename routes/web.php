@@ -18,6 +18,7 @@ use App\Http\Controllers\ClientAuthController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\MdController;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\ChatsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -209,7 +210,9 @@ Route::post('/subs/services/add', [SubscriptionController::class, 'addServiceToP
 Route::delete('/subs/services/remove', [SubscriptionController::class, 'removeServiceFromPlan'])->name('subs-service.remove');
 Route::put('/subs/services/update', [SubscriptionController::class, 'updateService'])->name('subs-service.update');
 Route::delete('/subs/services/delete', [SubscriptionController::class, 'deleteService'])->name('subs-service.delete');
+Route::post('/subs/communicate', [SubscriptionController::class, 'sendMessage'])->name('subs.communicate');
 Route::post('/mails/new-app/send', [MailController::class, 'new_app_mail']) -> name('mails.new-app.send');
+Route::get('/chats', [ChatsController::class, 'index']) -> name('chats.index');
 
 Route::get('/rhythmbox', function () {
     return redirect() -> route('rhythmbox.dashboard');

@@ -19,7 +19,7 @@ class Applicant_info extends Authenticatable
      * @var array<int, string>
      */
 
-     protected $table='applicant_info';
+    protected $table='applicant_info';
 
     protected $fillable = [
         'names',
