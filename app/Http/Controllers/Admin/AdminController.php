@@ -11,6 +11,8 @@ use App\Models\RhythmBox;
 use App\Models\Staff;
 use App\Models\User;
 use App\Models\Comment;
+use App\Models\Message;
+use App\Models\MessageReply;
 use Carbon\Carbon;
 use DB;
 use File;
@@ -18,7 +20,8 @@ use Mail;
 use App\Mail\DisbursedSalary;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-    use App\Models\Advert;
+use App\Models\Advert;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller {
 
@@ -659,6 +662,110 @@ class AdminController extends Controller {
     
         // Return users
         return response()->json($usersWithRecommendation);
-    }       
+    }
+    
+    public function getUsers() {
+        // Fetch all users (staff)
+        $users = Staff::all();
+
+        // Return users
+        return response()->json($users);
+    }
+
+    public function getIssues() {
+        // Fetch all messages
+        $messages = Message::all();
+
+        // get sender and receiver
+        $messages = $messages->map(function ($message) {
+            $message->sender = Staff::find($message->sender);
+            return $message;
+        });
+        $messages = $messages->map(function ($message) {
+            $message->receiver = Staff::find($message->receiver);
+            return $message;
+        });
+
+        // Get last reply
+        $messages = $messages->map(function ($message) {
+            $message->lastReply = MessageReply::where('message_id', $message->id)->orderBy('created_at', 'desc')->first();
+            return $message;
+        });
+
+        return response()->json($messages);
+    }
+
+    public function getIssueConv(Request $request) {
+    
+        $conv = MessageReply::where('message_id', $request->issue)
+                            ->select(['id', 'reply', 'created_at', 'user_id'])
+                            ->get();
+
+        // Get user
+        $conv = $conv->map(function ($message) {
+            $message->user = Staff::find($message->user_id);
+            return $message;
+        });
+    
+        $response = [
+            'content' => $conv,
+            'user' => auth()->guard('staff')->user()->id,
+        ];
+    
+        return response()->json($response);
+    }
+    
+    public function updateModels() {
+        $this->addUUIDToModels();
+    }
+
+    private function addUUIDToModels() {
+
+        $models = [
+            'App\Models\User',
+            'App\Models\Staff',
+            'App\Models\Advert',
+            'App\Models\Applicant_info',
+            'App\Models\Comment',
+            'App\Models\CommentReply',
+            'App\Models\RhythmBox',
+            'App\Models\SubPlan',
+            'App\Models\Subscriber',
+            'App\Models\SubService',
+        ];
+
+        $results = [];
+
+        foreach ($models as $model) {
+            if (class_exists($model)) {
+                $count = 0;
+
+                $model::whereNull('uuid')->chunk(100, function ($records) use (&$count) {
+                    foreach ($records as $record) {
+                        $record->uuid = Str::uuid();
+                        $record->save();
+                        $count++;
+                    }
+                });
+
+                $results[] = [
+                    'model' => $model,
+                    'status' => 'success',
+                    'updated_records' => $count,
+                    'message' => $count > 0 ? "Added UUID to {$count} records." : "No records needed UUIDs."
+                ];
+            } else {
+                $results[] = [
+                    'model' => $model,
+                    'status' => 'error',
+                    'updated_records' => 0,
+                    'message' => "The model {$model} does not exist."
+                ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
 
 }

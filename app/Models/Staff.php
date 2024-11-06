@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class Staff extends Authenticatable
 {
@@ -18,6 +19,7 @@ class Staff extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'uuid',
         'names',
         'email',
         'phone_number',
@@ -29,6 +31,17 @@ class Staff extends Authenticatable
         'profile_picture',
         'password',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.

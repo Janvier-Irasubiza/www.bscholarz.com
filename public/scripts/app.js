@@ -28,27 +28,24 @@ $(document).ready(function() {
 function timeAgo(time) {
     const now = new Date();
     const commentTime = new Date(time);
-    const diff = Math.abs(now - commentTime) / 1000; // Difference in seconds
+    const diff = Math.abs(now - commentTime) / 1000;
 
     if (diff < 60) return 'now';
     if (diff < 3600) return `${Math.floor(diff / 60)} minute${Math.floor(diff / 60) > 1 ? 's' : ''} ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)} hour${Math.floor(diff / 3600) > 1 ? 's' : ''} ago`;
 
-    // For comments older than 1 day
     const days = Math.floor(diff / 86400);
     if (days === 1) return 'yesterday';
     return `${days} day${days > 1 ? 's' : ''} ago`;
 }
 
 function loadComments() {
-    // Make an AJAX request to the 'comments' route
     fetch('/md/app/comments') 
         .then(response => response.json())
         .then(data => {
             const modalBody = document.getElementById('commentsBody');
-            modalBody.innerHTML = ''; // Clear previous content
+            modalBody.innerHTML = ''; 
 
-            // Loop through comments and display them
             data.forEach(comment => {
                 const commentDiv = document.createElement('div');
                 commentDiv.className = 'border-bottom p-2';
@@ -532,40 +529,3 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
-// Chats
-document.querySelector('.chat-input').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        
-        // Get the input value
-        let message = e.target.value.trim();
-        
-        // Only send if the input isn't empty
-        if (message === '') return;
-
-        // Clear the input field
-        e.target.value = '';
-        
-        // Append the message to the chat-messages area
-        const messagesContainer = document.querySelector('.chat-messages');
-        
-        // Create a container for the new message
-        const messageContainer = document.createElement('div');
-        messageContainer.classList.add('flex', 'justify-end', 'mb-3');
-
-        // Create the message bubble
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('p-3', 'col-md-9', 'out-bg', 'rounded');
-        newMessage.textContent = message;
-
-        // Append the new message to the message container
-        messageContainer.appendChild(newMessage);
-        messagesContainer.appendChild(messageContainer);
-
-        // Scroll to the bottom of the messages container
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-});
-
-// Close the chat

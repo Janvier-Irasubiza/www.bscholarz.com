@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Str;
 
 class RhythmBox extends Authenticatable
 {
@@ -18,9 +19,10 @@ class RhythmBox extends Authenticatable
      * @var array<int, string>
      */
 
-     protected $table='rhythmbox';
+    protected $table='rhythmbox';
 
     protected $fillable = [ 
+        'uuid',
         'names',
         'email',
         'phone_number',
@@ -28,6 +30,17 @@ class RhythmBox extends Authenticatable
       	'last_activity',
         'password',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.

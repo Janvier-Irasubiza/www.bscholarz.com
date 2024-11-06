@@ -19,6 +19,9 @@ class Client
 
 
         if(!Auth::guard('client') -> check()){
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthenticated'], 401);
+            }
             return redirect() -> route('login') -> with('error', 'You have to Login first!');
         }
 
