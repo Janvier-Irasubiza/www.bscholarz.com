@@ -695,6 +695,12 @@ class AdminController extends Controller {
         return response()->json($messages);
     }
 
+    public function getTags(Request $request) {
+        // Fetch all tags
+        $tags = Message::findOrFail($request->issue)->select('app', 'request', 'account', 'user', 'advert', 'subscriber_id', 'sub_plan_id', 'sub_service_id')->first();
+        return response()->json($tags);
+    }
+
     public function getIssueConv(Request $request) {
     
         $conv = MessageReply::where('message_id', $request->issue)

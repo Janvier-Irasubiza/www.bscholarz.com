@@ -25,7 +25,7 @@ return new class extends Migration
             $table->biginteger('advert')->nullable();
             $table->foreignId('subscriber_id')->nullable()->constrained()->onDelete('cascade');
             $table->biginteger('sub_plan_id')->nullable()->constrained()->onDelete('cascade');
-            $table->biginteger('sub_service_is')->nullable()->constrained()->onDelete('cascade');
+            $table->biginteger('sub_service_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('status')->default('unread');
             $table->foreign('sender')->references('id')->on('staff')->onDelete('cascade');
             $table->foreign('app')->references('id')->on('disciplines')->onDelete('cascade');

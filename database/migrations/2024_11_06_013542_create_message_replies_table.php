@@ -18,7 +18,7 @@ return new class extends Migration
             $table->biginteger('user_id');
             $table->foreign('message_id')->references('id')->on('messages')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('staff')->onDelete('cascade');
-            $table->string('reply');
+            $table->text('reply');
             $table->string('status')->default('unread');
             $table->timestamps();
         });

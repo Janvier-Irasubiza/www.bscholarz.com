@@ -205,7 +205,8 @@ Route::get('/users/{commentId}', [AdminController::class, 'users'])->middleware(
 Route::get('/get-users', [AdminController::class, 'getUsers'])->middleware('staff');
 Route::post('/comments/{commentId}/recommend/', [ApplicationsController::class, 'recommendTo']);
 Route::get('/issues/get', [AdminController::class, 'getIssues'])->middleware('staff')->name('messages.get');
-Route::get('/issue/{issue}/conv', [AdminController::class, 'getIssueConv'])->name('issue.conv');
+Route::get('/issue/{issue}/conv', [AdminController::class, 'getIssueConv'])->middleware('staff')->name('issue.conv');
+Route::get('/tags/{issue}/', [AdminController::class, 'getTags'])->name('issue.tags');
 
 Route::get('/subs/services', [SubscriptionController::class, 'subs_services']) -> name('subs-services.get');
 Route::get('/subs/services/{plan}', [SubscriptionController::class, 'subs_plan_services'])->name('subs-services-plan.get');

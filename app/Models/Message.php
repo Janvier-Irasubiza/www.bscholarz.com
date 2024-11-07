@@ -20,9 +20,9 @@ class Message extends Model
         'account',
         'user',
         'advert',
-        'subscriber',
-        'sub_plan',
-        'sub_service',
+        'subscriber_id',
+        'sub_plan_id',
+        'sub_service_id',
         'status',
     ];
 
