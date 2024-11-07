@@ -44,7 +44,7 @@
                                 {{ __('Edit') }}
                             </a>
 
-                            <a class="underline text-sm hover:text-gray-600 dark:hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('delete-faq', ['id' => $faq -> id]) }}">
+                            <a class="underline text-sm hover:text-gray-600 dark:hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ Auth::user() ? route('delete-faq', ['id' => $faq -> id]) : route('md.delete-faq', ['id' => $faq -> id]) }}">
                                 {{ __('Delete') }}
                             </a>
 
@@ -87,7 +87,7 @@
 
                         </div>
                         
-                        <form action="{{ route('edit-faq') }}" method="post" class="space-y-2" >   @csrf                     
+                        <form action="{{ Auth::user() ? route('edit-faq') : route('md.edit-faq') }}" method="post" class="space-y-2" >   @csrf                     
 
                         <div class="modal-body">
                         
@@ -131,7 +131,7 @@
 
                         </div>
                         
-                        <form action="{{ route('post-faq') }}" method="post" class="space-y-2" >   @csrf                     
+                        <form action="{{ Auth::user() ? route('post-faq') : route('md.post-faq') }}" method="post" class="space-y-2" >   @csrf                     
 
                         <div class="modal-body">
                         

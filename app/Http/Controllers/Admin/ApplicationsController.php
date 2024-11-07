@@ -4,23 +4,161 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
-use File; 
+use App\Models\Comment;
+use App\Models\CommentReply;
+use App\Models\Discipline;
+use File;
 use Illuminate\Http\Request;
 use DB;
 use Mail;
 use App\Mail\Post;
 use Session;
+use App\Http\Controllers\MailController;
+use Auth;
 
 class ApplicationsController extends Controller {
 
-    public function applications () {
-        $applications = DB::table('disciplines') -> where('category', '<>', 'Custom') -> orderBy('publish_date', 'DESC') -> get();
-        return view('admin.applications', compact('applications'));
+    public function applications(Request $request) {
+      $query = Discipline::where('category', '<>', 'Custom')
+          ->orderBy('publish_date', 'ASC');
+
+      if ($request->has('app') && $request->app != '') {
+          $search = $request->app;
+          $query->where(function($q) use ($search) {
+              $q->where('discipline_name', 'LIKE', "%{$search}%");
+          });
+      }
+
+      $applications = $query->paginate(10);
+
+      return view('admin.applications', compact('applications'));
     }
+
 
     public function application_info (Request $request) {
         $app_info = DB::table('disciplines') -> where('identifier', $request -> identifier) -> first();
-        return view ('admin.application-info', compact('app_info'));
+        if ($app_info) {
+            $comments = Comment::where('discipline_id', $app_info->id)->count();
+        } else {
+          $comments = 0;
+        }
+        return view ('admin.application-info', compact('app_info', 'comments'));
+    }
+
+    public function comments_view(Request $request) {
+        $app_info = Discipline::where('identifier', $request -> app_id) -> first();
+        return view('admin.comments', compact('app_info'));
+    }
+
+    public function comments() {
+        $comments = Comment::with(['user', 'replies.user'])
+            ->get()
+            ->map(function($comment) {
+                return [
+                    'id' => $comment->id,
+                    'discipline_id' => $comment->discipline_id,
+                    'applicant_id' => $comment->applicant_id,
+                    'comment' => $comment->comment,
+                    'status' => $comment->status,
+                    'created_at' => $comment->created_at,
+                    'updated_at' => $comment->updated_at,
+                    'name' => $comment->user ? $comment->user->names : 'Unknown',
+                    'profile' => $comment->user->profile_picture,
+                    'replies' => $comment->replies->map(function($reply) {
+                        return [
+                            'id' => $reply->id,
+                            'comment_id' => $reply->comment_id,
+                            'reply' => $reply->reply,
+                            'created_at' => $reply->created_at,
+                            'updated_at' => $reply->updated_at,
+                            'user_name' => $reply->user ? $reply->user->names : 'Unknown',
+                            'user_profile' => $reply->user ? $reply->user->profile_picture : null,
+                        ];
+                    })
+                ];
+            });
+
+        return response()->json($comments);
+
+    }
+
+    public function recommendTo(Request $request, $commentId)
+    {
+        // Validate incoming request
+        $request->validate([
+            'user_id' => 'required|exists:staff,id',
+            'recommend' => 'nullable|boolean',
+        ]);
+    
+        $userId = $request->input('user_id');
+        $recommend = $request->input('recommend');
+    
+        // Find the comment by ID
+        $comment = Comment::findOrFail($commentId);
+    
+        // Check if recommendation should be canceled
+        if ($recommend === false) {
+            // Cancel the recommendation
+            $comment->recommended_to = null;
+            $message = 'Recommendation canceled successfully.';
+        } else {
+            // Recommend the user
+            $comment->recommended_to = $userId;
+            $message = 'Recommendation updated successfully.';
+        }
+    
+        $comment->save(); // Save changes
+    
+        return response()->json(['success' => true, 'message' => $message]);
+    }
+    
+
+    public function comment_reply(Request $request) {
+        $request->validate([
+            'comment_id' => 'required',
+            'reply' => 'required',
+        ]);
+
+        CommentReply::create([
+                'comment_id' => $request->comment_id,
+                'reply' => $request->reply,
+                'user_id' => auth()->guard('staff')->user()->id,
+        ]);
+
+        return back();
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $comment = Comment::find($id);
+        if ($comment) {
+            $comment->status = $request->status;
+            $comment->save();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
+    }
+
+    // Delete a comment
+    public function delete($id)
+    {
+        $comment = Comment::find($id);
+        if ($comment) {
+            $comment->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
+    }
+
+    // Delete a reply
+    public function delete_reply($id)
+    {
+        $reply = CommentReply::find($id);
+        if ($reply) {
+            $reply->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false]);
     }
 
     public function new_application () {
@@ -42,7 +180,7 @@ class ApplicationsController extends Controller {
             'specialty' => 'required',
           	'start_date' => 'required',
             'due_date' => 'required',
-            'price' => 'required',
+            // 'price' => 'required',
             'link' => 'required',
           	'link_to_institution' => 'required',
           	//link_to_institution and start_date
@@ -88,66 +226,55 @@ class ApplicationsController extends Controller {
       
       	if(!DB::table('disciplines') -> where('discipline_name', $request -> app_name) -> exists()){
         
-          if(DB::table('disciplines') -> insert($data)){
-          
-          $receipients = [];
-          
-          $users = DB::table('applicant_info') -> get();
-          $subs = DB::table('subscribers') -> get();
-          
-          $url = url(route('learnMore', ['discipline_id' => $identifier]));
-          $title = $request -> app_name;
-          $type = $request -> category;
-          $desc = $request -> short_desc;
-          
-          foreach($users as $user) {
-          
-            array_push($receipients, [
+          try{
+
+            DB::table('disciplines') -> insert($data);
             
-              'email' => $user -> email, 
-              
-            ]);
-            
-          }
+            $url = url(route('learnMore', ['discipline_id' => $identifier]));
+            $title = $request -> app_name;
+            $type = $request -> category;
+            $desc = $request -> short_desc;
+
+            $mail_data = [
+              'url' => $url,
+              'title' => $title,
+              'type' => $type,
+              'desc' => $desc
+            ];
+
+            // Send mails
+            // $mail_sender = new MailController();
+            // $mail_sender->new_app_mail($receipients, $url, $title, $type, $desc);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Application created successfully',
+                'data' => $mail_data
+              ], 201);
           
-          foreach($subs as $sub) {
-          
-            array_push($receipients, [
-            
-              'email' => $sub -> email, 
-              
-            ]);
-            
-          }
-          
-          foreach($receipients as $receipient) {
-          
-            Mail::to($receipient['email']) -> send(new Post($url, $title, $type, $desc));
+            // return Auth::user() 
+            //   ? redirect() -> route('admin.applications') 
+            //   : redirect() -> route('md.apps');
             
           }
         
-           return redirect() -> route('admin.applications');
-          
-        }
-      
-      else {
-      
-        return back() -> withInput($inputs);
-        
-      }
-          
+          catch (\Exception $e) {
+            return response()->json([
+              'status' => 'error',
+              'message' => 'Application created successfully',
+              'error' => $e->getMessage()
+            ], 500);
+          }
         }
       
       	else{
-          
           Session::put('failed', 'Application exists');
-        
-          return back() -> withInput($inputs);
-          
+          // return back() -> withInput($inputs);
+          return response()->json([
+            'status' => 'error',
+            'message' => 'Application exists',
+          ], 400);
         }
-
-        
-
     }
 
     public function edit_app(Request $request) {
@@ -164,7 +291,7 @@ class ApplicationsController extends Controller {
             'status' => ['required'],
             'specialty' => ['required'],
             'due_date' => ['required'],
-            'price' => ['required'],
+            // 'price' => ['required'],
           'link' => ['required'],
             // 'poster' => ['required', 'mimes:jpg,jpeg,png,gif,svg|max:5048'],
         ]);

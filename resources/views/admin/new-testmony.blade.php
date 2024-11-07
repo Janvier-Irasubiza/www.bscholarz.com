@@ -14,7 +14,7 @@
 
                     
                     <div>
-                       <a href="{{ route('testimonies') }}" class="d-flex gap-1 align-items-center back-btn"> <span class="fa-solid fa-angle-left" style="font-size: 23px; color: #595959"></span> Testmonials</a>
+                       <a href="{{ Auth::user() ? route('testimonies') : route('md.testimonies') }}" class="d-flex gap-1 align-items-center back-btn"> <span class="fa-solid fa-angle-left" style="font-size: 23px; color: #595959"></span> Testmonials</a>
                     </div>
 
                     <div>
@@ -24,7 +24,7 @@
                     </div>
                     </div>
                     <div class="px-5">
-    <form method="post" action="{{ route('post-testmony') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
+    <form method="post" action="{{ Auth::user() ? route('post-testmony') : route('md.post-testmony') }}" class="mt-6 px-5 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
         @csrf
 
         <x-input-label for="m_info" :value="__('Personal Info')" />
@@ -80,7 +80,7 @@
         <div class="mt-3">
             <x-input-label for="role" :value="__('Content')" />
             <small class="text-muted mb-0">Testmony full content</small>
-            <textarea id="content" rows="5" name="content" style="height: max-content; border: 2px solid #000; border-radius: 6px; padding: 6px; font-size: 14px" type="text" class="mt-1 block w-full" required placeholder="Motivation Content"></textarea>
+            <textarea id="content" rows="5" name="content" style="height: max-content; border: 2px solid #000; border-radius: 6px; padding: 6px; font-size: 14px" type="text" class="mt-1 block w-full" required placeholder="Motivation Content">{{ old('content') }}</textarea>
             <x-input-error class="mt-2" :messages="$errors->get('content')" />
         </div>
         </div>

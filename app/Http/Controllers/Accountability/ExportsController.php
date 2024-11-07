@@ -15,15 +15,21 @@ use File;
 use Mail;
 use App\Mail\DisbursedSalary;
 use Illuminate\Support\Facades\Cache;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\TransactionsExport;
 
 class ExportsController extends Controller {
-    public function exportCompleteTransactions() {
-        \Log::info('Exporting complete transactions');
+    public function exportCompleteTransactions(Request $request)
+    {
+        $pen_transactions = DB::table('applications')
+            ->where('payment_status', 'Waiting For Review')
+            ->get();
 
-        // Fetch all confirmed transactions
-        $complete_transactions = DB::table('applications')->where('payment_status', 'Confirmed')->get();
+        if ($request->query('download') === 'excel') {
+            return Excel::download(new TransactionsExport($pen_transactions), 'pending_transactions.xlsx');
+        }
 
-        return response()->json($complete_transactions);
+        return view('accountant.pending-transactions', compact('pen_transactions'));
     }
 
 

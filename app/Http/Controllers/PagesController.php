@@ -68,7 +68,7 @@ class PagesController extends Controller {
             'motivator_pp' => $image
         ]);
 
-        return redirect() -> route('testimonies');
+        return Auth::user() ? redirect() -> route('testimonies') : redirect() -> route('md.testimonies');
 
     }
 

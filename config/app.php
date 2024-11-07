@@ -171,6 +171,7 @@ return [
 
         // ReCaptcha
         Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
+        // Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ])->toArray(),
 

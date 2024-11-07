@@ -48,6 +48,10 @@ class StaffAuthController extends Controller
                 return redirect() -> route('fired-staff-notify');
             }
 
+            // elseif (Auth::guard('staff')->user()->type == "admin") {
+            //     return redirect() -> route('admin.dashboard');
+            // }
+
             elseif (Auth::guard('staff') -> user() -> department == "Marketing" || Auth::guard('staff') -> user() -> department == "marketing") {
                 DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
 

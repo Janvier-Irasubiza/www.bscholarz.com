@@ -7,22 +7,21 @@
                 <!-- Navigation Links -->
                 <div class="d-flex align-items-center">
 
-                <!-- Adimin -->
-        @if(Auth::user())
-            <h6 style="font-weight: 600">Administration</h6>
+                    <!-- Adimin -->
+                    @if(Auth::user())
+                        <h6 style="font-weight: 600">Administration</h6>
 
-        <!-- Marketing department -->
-        @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
-            <h6 style="font-weight: 600">Marketing</h6>
+                    <!-- Marketing department -->
+                    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
+                        <h6 style="font-weight: 600">Marketing</h6>
 
-        @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Applications')
-            <h6 style="font-weight: 600">Applications</h6>
+                    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Applications')
+                        <h6 style="font-weight: 600">Applications</h6>
 
-        <!-- this is for the accounting department -->
-        @else
-            <h6 style="font-weight: 600">Accounting</h6>
-
-        @endif
+                    <!-- this is for the accounting department -->
+                    @else
+                        <h6 style="font-weight: 600">Accounting</h6>
+                    @endif
 
                 </div>
             </div>
@@ -71,6 +70,17 @@
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+
+                        @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
+
+                        <x-dropdown-link style="color: #1b1b1b;" class="drop-btn" :href="route('md.profile.edit')">
+                            {{ __('Profile') }}
+                        </x-dropdown-link>
+
+                        <!-- Authentication -->
+                        <a style="color: #1b1b1b;" class="drop-btn block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out" href="{{ route('staff.logout') }}">
+                                Log Out
+                            </a>
 
                         @elseif(Auth::guard('staff'))
 
@@ -121,22 +131,22 @@
                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">
                 @if(Auth::user())
 
-                {{ Auth::user() -> name }}
+                    {{ Auth::user() -> name }}
 
                 @else
 
-                {{ Auth::guard('staff') -> user()->names }}
+                    {{ Auth::guard('staff') -> user()->names }}
 
                 @endif
             </div>
                 <div class="font-medium text-sm text-gray-500">
-                @if(Auth::user())
+                    @if(Auth::user())
 
-                    {{ Auth::user() -> name }}  
+                        {{ Auth::user() -> name }}  
 
                     @else
 
-                    {{ Auth::guard('staff') -> user()->email }}
+                        {{ Auth::guard('staff') -> user()->email }}
 
                     @endif
                 </div>
@@ -149,30 +159,30 @@
 
                 {{ Auth::user() -> name }}
 
-                <x-responsive-nav-link style="border: 1px solid" :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+                    <x-responsive-nav-link style="border: 1px solid" :href="route('profile.edit')">
+                        {{ __('Profile') }}
+                    </x-responsive-nav-link>
 
                 @endif
 
                 @if(Auth::user())
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
+                        <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
+                            this.closest('form').submit();">
+                                {{ __('Log Out') }}
+                        </x-responsive-nav-link>
+                    </form>
 
                 @else
 
-                <a style="color: #cc0000; font-weight: 600" class="drop-btn block w-full px-3 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out" href="{{ route('staff.logout') }}">
-                                Log Out
-                            </a>
+                    <a style="color: #cc0000; font-weight: 600" class="drop-btn block w-full px-3 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out" href="{{ route('staff.logout') }}">
+                        Log Out
+                    </a>
 
                 @endif
 
