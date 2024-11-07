@@ -10,10 +10,10 @@
     <div class="app-inner-layout__content">
                 <div class="tab-content">
                 <div>
-                <div class="card">
+                <div class="card" style="border: none">
                 <div class="card-header-tab card-header py-3 d-flex">
                 <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-8">
-                Adverts
+                  <strong class="f-23">Adverts</strong>
                 </div>
                 <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
                 <a href="{{ Auth::user() ? route('admin.publish-add') : route('md.publish-add') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
@@ -29,7 +29,7 @@
                 <div class="row row-cols-4 g-3">
 
                 @foreach($ads as $ad)
-  <div class="col">
+  <div class="col col-md-4">
     <div class="card">
 
     @if(substr($ad -> media_type, 0, 5) == 'image')
@@ -43,7 +43,7 @@
     @endif
 
       <div class="card-body">
-        <h5 class="card-title">{{ $ad -> title }} - 
+        <h5 class="card-title mb-0">{{ $ad -> title }} - 
 
         @if($ad -> status == 'active')
 
@@ -56,8 +56,10 @@
         @endif
 
         </h5>
-        <p class="text-muted mb-0 mt-0" style="font-size: 13px">{{ $ad -> type }}</p>
-        <p class="text-muted mb-0 mt-0" style="font-size: 13px">Epired after: {{ $ad -> expiry_date }}</p>
+        <p class="mt-0 mb-2 text-muted f-14">{{ $ad->type }}</p>
+        <p class="m-0 text-muted">Clicks: {{ $ad -> clicks }}</p>
+        <p class="m-0 text-muted">Posted on: {{ $ad -> created_at }}</p>
+        <p class="text-muted mb-0 mt-0">Epired after: {{ $ad -> expiry_date }}</p>
         <p class="text-muted mb-0 mt-1"><span style="font-weight: 600">{{ number_format($ad -> amount) }}</span> <small style="font-weight: 600">RWF</small> {{ $ad -> payment_circle }}</p>
 
       </div>    

@@ -91,6 +91,13 @@
             <x-input-error class="mt-2" :messages="$errors->get('status')" />
         </div>
 
+        <div>
+            <x-input-label for="status" :value="__('Link')" />
+            <small class="text-muted mb-0">Redirect link if applicable</small>
+            <input type="text" name="link" id="link" class="mt-1 block w-full" placeholder="Enter a rediret link">
+            <x-input-error class="mt-2" :messages="$errors->get('link')" />
+        </div>
+
         <div class="mt-3">
         <x-input-label for="media" :value="__('Media')" />
         <small class="text-muted mb-0">Advert media file</small>

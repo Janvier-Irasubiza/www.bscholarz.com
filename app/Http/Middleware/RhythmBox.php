@@ -18,6 +18,9 @@ class RhythmBox
     {
 
         if(!Auth::guard('rhythmbox') -> check()){
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthenticated'], 401);
+            }
             return redirect() -> route('rhythmbox.login');
         }
 

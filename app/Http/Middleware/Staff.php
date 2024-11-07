@@ -17,9 +17,12 @@ class Staff
     public function handle(Request $request, Closure $next): Response
     {
 
-        if(!Auth::guard('staff') -> check()){
-            return redirect() -> route('authenticate') -> with('error', 'You have to Login first!');
-        }
+        if (!Auth::guard('staff')->check()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthenticated'], 401);
+            }
+            return redirect()->route('authenticate')->with('error', 'You have to Login first!');
+        }        
 
         return $next($request);
     }

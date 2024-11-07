@@ -12,7 +12,10 @@
                     <h1 class="f-20 f-600">Subscriptions</h1>
                     <p class="text-muted mt-2">Subscribers</p>
                 </div>
-                <a style="" href="{{ route('md.subs-plans') }}" class="scd-btn">View Plans</a>
+                <div class="d-flex gap-2 align-items-center">
+                    <a style href class="scd-btn btn btn-primary py-1" data-bs-toggle="modal" data-bs-target="#composeMessage">Compose a message</a>
+                    <a style href="{{ route('md.subs-plans') }}" class="scd-btn py-1">View Plans</a>
+                </div>
             </div>
             
             <div class="mt-4">
@@ -23,7 +26,6 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="f-18 f-500"><strong>{{ $category }}</strong> Subscriptions</h1>
                     <div class="flex gap-3 align-items-center">
-                        <!-- <a style="" href="" class="scd-btn" data-bs-toggle="modal" data-bs-target="#composeMessage">Compose a message</a> -->
                         <a href="{{ route('md.subs', ['download' => 'excel', 'plan' => request('plan')]) }}" class="btn btn-primary">Download</a>
                     </div>
                 </div>
@@ -74,23 +76,86 @@
 
     <!-- <compose message> -->
     <div class="modal fade" id="composeMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" >
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="p-3 d-flex justify-content-between align-items-center"  style="border-bottom: 1px solid #e6e6e6">
+                <div class="p-3 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid #e6e6e6">
                     <div class="text-left">
                         <p class="m-0" style="font-size: 20px;">
-                            <strong>Compose a message</strong>
+                            <strong class="f-20">Compose a message</strong>
                         </p>
-                        <p class="text-muted">For <strong>{{ $category }}</strong> Subscribers</p>
+                        <p class="text-muted f-13">Communication to subscribers</p>
                     </div>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" style="font-weight: 500; font-size: 15px">CLOSE</button>
+                    <button class="btn btn-danger" data-bs-dismiss="modal" style="font-weight: 500; font-size: 15px">CLOSE</button>
                 </div>
-                <div class="modal-body text-left" id="">
-                    <form action="" method="post">
+                <div class="modal-body text-left">
+
+                    <form id="composeMessageForm" action="/subs/communicate" method="POST">
+                        @csrf
+
+                        <x-input-label for="names" style="text-align: left" class="text-left w-full" :value="__('Select recipients')" />
+                        <div class="mb-2 mt-0">
+                            <div class="flex gap-3 align-items-center">
+                                <!-- Button for Basic Subscribers -->
+                                <button type="button" class="w-full p-2 rounded mb-2 ctm-button" id="user-basic" onclick="toggleActive('basic')">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-grow-1 text-left">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <p class="f-16 fw-bold">Basic Subscribers</p>
+                                                    <p class="text-muted f-15 select-text">Click to select</p>
+                                                </div>
+                                                <div class="text-center" id="check-basic" style="display: none;">
+                                                    <i class="fa-solid fa-circle-check f-20 text-success"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+
+                                <!-- Button for Standard Subscribers -->
+                                <button type="button" class="w-full p-2 rounded mb-2 ctm-button" id="user-standard" onclick="toggleActive('standard')">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-grow-1 text-left">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <p class="f-16 fw-bold">Standard Subscribers</p>
+                                                    <p class="text-muted f-15 select-text">Click to select</p>
+                                                </div>
+                                                <div class="text-center" id="check-standard" style="display: none;">
+                                                    <i class="fa-solid fa-circle-check f-20 text-success"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+
+                                <!-- Button for Premium Subscribers -->
+                                <button type="button" class="w-full p-2 rounded mb-2 ctm-button" id="user-premium" onclick="toggleActive('premium')">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="flex-grow-1 text-left">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <p class="f-16 fw-bold">Premium Subscribers</p>
+                                                    <p class="text-muted f-15 select-text">Click to select</p>
+                                                </div>
+                                                <div class="text-center" id="check-premium" style="display: none;">
+                                                    <i class="fa-solid fa-circle-check f-20 text-success"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </button>
+                            </div>
+                            <p id="subscription-error" style="color: red; display: none; font-size: 14px;">Please select at least one subscriber plan.</p>
+                        </div>
+                        
+                        <input type="hidden" name="selected_plans[]" id="selected-plan-basic" value="Basic" disabled>
+                        <input type="hidden" name="selected_plans[]" id="selected-plan-standard" value="Standard" disabled>
+                        <input type="hidden" name="selected_plans[]" id="selected-plan-premium" value="Premium" disabled>
                         <div>
                             <x-input-label for="names" style="text-align: left" class="text-left w-full" :value="__('Subject')" />
                             <p style="font-size: 14px; text-align: left" class="text-muted mb-0 text-left w-full">Subject the communication</p>
-                            <x-text-input id="names" class="block mt-1 w-full" style="border-radius: 4px;" type="text" name="names" :value="old('names')" placeholder="Enter subject" required autofocus autocomplete="names" />
+                            <x-text-input id="names" class="block mt-1 w-full" style="border-radius: 4px;" type="text" name="subject" :value="old('subject')" placeholder="Enter subject" required autofocus autocomplete="subject" />
                             <x-input-error :messages="$errors->get('names')" class="mt-2" />
                         </div>
                         <div class="mt-3">
@@ -100,20 +165,25 @@
                             <x-input-error :messages="$errors->get('message')" class="mt-2" />
                         </div>
                         <div class="mt-3">
-                            <p style="font-size: 14px; text-align: left" class="text-muted mb-0 text-left w-full">Send email, or sms or both</p>
-                            <div class="d-flex justify-content-start gap-5 align-items-center">
-                                <div class>
-                                    <div>
-                                        <input type="checkbox" name="" id=""> Email
-                                    </div>
-                                    <div>
-                                        <input type="checkbox" name="" id=""> SMS
-                                    </div>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <input type="checkbox" name="contact_methods[]" id="email" value="email"> Email &nbsp;
+                                    <input type="checkbox" name="contact_methods[]" id="sms" value="sms"> SMS
                                 </div>
-                                <button type="submit" class="cst-primary-btn" style="font-weight: 500; font-size: 15px">SEND MESSAGE</button>
+
+                                <button type="submit" class="cst-primary-btn mt-2" style="font-weight: 500; font-size: 15px">SEND MESSAGE</button>
+                            </div>
+
+                            <p id="contact-method-error" style="color: red; display: none; font-size: 14px;">Please select at least one contact method (Email or SMS).</p>
+
+                        </div>
+
+                        <div class="" id="successMsgDiv" style="display: none;">
+                            <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+                                <p class="m-0" id="successMessage"></p>
                             </div>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>

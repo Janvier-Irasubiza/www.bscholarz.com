@@ -6,15 +6,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class CommentReply extends Model
+class Advert extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'uuid',
-        'comment_id',
-        'user_id',
-        'reply',
+        'title',
+        'owner',
+        'owner_phone',
+        'type',
+        'amount',
+        'payment_circle',
+        'amount_gen',
+        'posted_on',
+        'time_taken',
+        'expiry_date',
+        'media',
+        'media_type',
+        'status',
+        'link',
+        'clicks',
+    ];
+
+    protected $dates = [
+        'posted_on',
+        'taken_on',
+        'expiry_date',
     ];
 
     protected static function boot()
@@ -27,13 +45,4 @@ class CommentReply extends Model
             }
         });
     }
-
-    public function comment() {
-        return $this->belongsTo(Comment::class);
-    }
-
-    public function user() {
-        return $this->belongsTo(Staff::class);
-    }
-
 }

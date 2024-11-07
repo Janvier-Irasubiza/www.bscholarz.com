@@ -159,6 +159,7 @@
         <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
         <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
         <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<<<<<<< HEAD
 
         <script>
 
@@ -553,5 +554,9 @@
             }
 
         </script>
+=======
+        <script src="{{ asset('scripts/app.js') }}"></script>
+        <script src="{{ asset('scripts/conv.js') }}"></script>
+>>>>>>> 21c6bc9a9aab704f9b3178bd1fa337dea54c3ce7
     </body>
 </html>

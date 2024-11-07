@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class CommentReply extends Model
+class MessageReply extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+    protected $fillabel = [
         'uuid',
-        'comment_id',
+        'message_id',
         'user_id',
         'reply',
+        'status',
     ];
 
     protected static function boot()
@@ -28,8 +29,8 @@ class CommentReply extends Model
         });
     }
 
-    public function comment() {
-        return $this->belongsTo(Comment::class);
+    public function message() {
+        return $this->belongsTo(Message::class);
     }
 
     public function user() {

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\ClientResetPasswordNotification;
+use Illuminate\Support\Str;
 
 class Applicant_info extends Authenticatable
 {
@@ -19,9 +20,10 @@ class Applicant_info extends Authenticatable
      * @var array<int, string>
      */
 
-     protected $table='applicant_info';
+    protected $table='applicant_info';
 
     protected $fillable = [
+        'uuid',
         'names',
         'email',
         'password',
@@ -54,6 +56,17 @@ class Applicant_info extends Authenticatable
          * @param  string  $token
          * @return void
     */
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
 
     public function comments()
     {
