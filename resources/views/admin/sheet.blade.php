@@ -24,7 +24,7 @@
                     <div class="widget-subheading">Balance <small>(RWF)</small></div>
 
                     <div class="widget-numbers text-success"><span style="font-weight: 600">{{ number_format($balance -> sum('assistant_pending_commission')) }}</span></div>
-                    
+
                     <button data-toggle="modal" data-target="#history">View History</button>
 
                     </div>
@@ -34,8 +34,8 @@
                     <i class="fa-solid fa-sack-dollar" style="font-size: 25px"></i></div>
                     </div>
 
-                    </div>    
-                     
+                    </div>
+
                     </div>
                     </div>
 
@@ -45,7 +45,7 @@
 
                     <div style="border-top: none" class="d-block p-3 card-footer">
 
-                    <div class="d-flex">                    
+                    <div class="d-flex">
 
                     <div class="col-lg-5">
                     <x-input-label style="font-size: 17px; font-weight: 600" for="name" :value="__('Recordings')" />
@@ -59,7 +59,7 @@
                             </p>
                         </a>
 
-                        <a href="{{ route('admin.sort-recs-all', ['assistant' => $member -> id]) }}">
+                        <a href="{{ Auth::user() ? route('admin.sort-recs-all', ['assistant' => $member -> id]) : route('accountant-sort-recs-all', ['assistant' => $member -> id]) }}">
                             <p class="fw-normal mb-1">
                                 <span class="badge rounded-pill px-3" style="color: #000">All applications</span>
                             </p>
@@ -67,8 +67,8 @@
 
                     </div>
 
-                     <div class="col-lg-4 d-flex flex-row-reverse gap-2 align-items-center"> 
-                        
+                     <div class="col-lg-4 d-flex flex-row-reverse gap-2 align-items-center">
+
                       <div id="disburse" style="display: none">
                         <button>
                             <p class="fw-normal mb-1">
@@ -80,14 +80,14 @@
                       <div id="disburse_amt" style="display: none">
                       	<div class="m-0 p-0"><span style="font-weight: 600; font-size: 20px;" class="m-0 p-0" id="d_amount"> </span><small style="font-weight: 600;">RWF</small></div>
                        </div>
-                      
+
                     </div>
 
                     </div>
 
 
                     <div class="info-div mt-3 mb-4">
-                    
+
                     <table id="table" class="table align-middle mb-0 bg-white">
                         <thead class="bg-light">
 
@@ -103,9 +103,9 @@
                         </thead>
                         <tbody>
 
-                        @foreach ($completedApp as $request) 
+                        @foreach ($completedApp as $request)
 
-                        @if($request -> remittance_status == 'Paid')    
+                        @if($request -> remittance_status == 'Paid')
 
                         <tr style="background: #ca11112f;">
 
@@ -142,7 +142,7 @@
 
                             @php
 
-                                $atdg_amt_exp = explode(';', $request -> outstanding_paid_amount);      
+                                $atdg_amt_exp = explode(';', $request -> outstanding_paid_amount);
 
                                 $sum = 0;
 
@@ -150,7 +150,7 @@
 
                                     $number = explode('=>', $value);
                                     $sum += intval($number[0]);
-                                    
+
                                 }
 
                             @endphp
@@ -171,7 +171,7 @@
                             <p class="fw-normal mb-1">
                             <span class="badge bg-secondary rounded-pill px-3">{{ $request -> remittance_status }}</span>
                             </p>
-                            @endif 
+                            @endif
 
                             </td>
 
@@ -190,12 +190,12 @@
                             </td>
 
                             </tr>
-                            
+
                         </tbody>
                     </table>
-                    
+
                     </div>
-               
+
                     </div>
 
                     </form>
@@ -203,7 +203,7 @@
                     </div>
                     </div>
                     </div>
-                    
+
 
     </div>
 </div>
@@ -225,27 +225,27 @@
         </button>
       </div>
       <div class="modal-body pb-4">
-        
+
       <label for="email" style="text-align: left" class="text-left w-full">SInce: {{ $member -> created_at }} </label>
 
       <div class="widget-numbers text-success"><span style="font-weight: 600">{{ number_format($history -> sum('amount_disbursed')) }} <small>(frw)</small></span></div>
 
       <p>Has entered his/her account.</p>
-        
+
         @if($history)
         <div class="mt-2 card w-full" style="background: none">
-                      
-            
-                      
+
+
+
                     <div class="card-header-tab card-header py-3 d-flex justify-content-between">
                     <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
-                      <strong>Disbursements history</strong> 
+                      <strong>Disbursements history</strong>
                       </div>
-                      
+
                       <div>
                       	<a href="{{ route('staff.disbursements', ['assistant' => $member -> id]) }}" style="font-size: 15px"> View complete history</a>
                     </div>
-                    
+
                     </div>
                     <div style="border-top: none" class="d-block p-3 card-footer">
 
@@ -253,16 +253,16 @@
 
   <tbody>
     @foreach($history as $record)
-    
+
     <tr>
-      
+
       <td>
         <div class="d-flex align-items-center" style="margin: 0px">
           <div class="w-full" style="padding: 0px 5px">
             <p class="fw-bold mb-1">{{ number_format($record -> amount_disbursed) }} <small>RWF</small></p>
             <p class="text-muted mb-0" style="font-size: 15px"> Disbursed on: {{ $record -> date_time }} </p>
           </div>
-          
+
         </div>
       </td>
     </tr>
@@ -271,7 +271,7 @@
 
   </tbody>
 </table>
-                
+
                 </div>
                     </div>
         @endif
@@ -297,9 +297,9 @@ assistantCheck.forEach((element) => {
 
           disburse_amt.style.display = 'block';
           document.querySelector('#disburse').style.display = 'block';
-          
+
           amt += parseFloat($(this).attr('data-amount'));
-          
+
           amount.textContent = (amt).toLocaleString(undefined);
 
         }
@@ -307,19 +307,19 @@ assistantCheck.forEach((element) => {
         else {
 
           amt -= parseFloat($(this).attr('data-amount'));
-          
+
           amount.textContent = (amt).toLocaleString(undefined);
            if(amt == 0){
               disburse_amt.style.display = 'none';
             document.querySelector('#disburse').style.display = 'none';
               }
-        
+
         }
 
     });
-    
+
 });
-  
+
 </script>
 
 </x-app-layout>

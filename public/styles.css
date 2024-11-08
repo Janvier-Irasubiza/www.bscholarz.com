@@ -8,7 +8,7 @@ body::-webkit-scrollbar{
     background-color: #aed5e475;
   }
 
-::-webkit-scrollbar-thumb{  
+::-webkit-scrollbar-thumb{
     background-color:#a3ccdb;
     border-radius: 4px
   }
@@ -64,9 +64,9 @@ nav {
 }
 
 .client-footer {
-    position: fixed; 
-    margin-top: 80px; 
-    bottom: 0px; 
+    position: fixed;
+    margin-top: 80px;
+    bottom: 0px;
     background-color: #c0d9e2;
 }
 
@@ -149,11 +149,11 @@ ul{
 }
 
 .navigator:hover{
-    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 10px; 
+    /* box-shadow: rgba(0, 0, 0, 0.35) 0px 2px 10px;
     padding: 3px 16px;
     background: #aed5e475;
     border: 2px solid #a8a3a3a4;
-    margin-top: 0.5px; 
+    margin-top: 0.5px;
     font-weight: 600; */
 }
 
@@ -271,7 +271,7 @@ ul{
 .user-profile {
     width: 50px;
     height: 50px;
-    margin-left: auto; 
+    margin-left: auto;
 }
 
 .user-profile img {
@@ -523,7 +523,7 @@ ul{
 .upload-file {
     position: absolute;
     font-size: 8px;
-    opacity: 0; 
+    opacity: 0;
     height: 2em;
     left: 0px;
     z-index: 0;
@@ -578,7 +578,7 @@ img {
     background-color: #aed5e475;
 }
 
-.adds-card::-webkit-scrollbar-thumb{  
+.adds-card::-webkit-scrollbar-thumb{
     background-color:#a3ccdb;
     border-radius: 4px
   }
@@ -760,7 +760,7 @@ img {
 }
 
 .name-tag {
-    margin-right: auto; 
+    margin-right: auto;
     margin-left: 0px;
     display: flex;
     justify-content: right;
@@ -776,7 +776,7 @@ footer{
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     position: absolute;
     width: 100%;
-}   
+}
 
 
 .footer-title-content {
@@ -846,7 +846,7 @@ footer{
     position: relative;
     width: 71%;
     padding: 0px;
-    top: 65px; 
+    top: 65px;
 }
 
 .section-right-body{
@@ -982,9 +982,9 @@ footer{
 }
 
 .scholarship-learn-more {
-    text-decoration: none; 
-    color: #000; 
-    top: 0px; 
+    text-decoration: none;
+    color: #000;
+    top: 0px;
     padding: 5px;
     margin-right: auto;
     left: 0px;
@@ -999,9 +999,9 @@ footer{
 }
 
 .update-learn-more {
-    text-decoration: none; 
-    color: #0000eebd; 
-    top: 0px; 
+    text-decoration: none;
+    color: #0000eebd;
+    top: 0px;
     padding: 5px;
     margin-right: auto;
     left: 0px;
@@ -1011,7 +1011,7 @@ footer{
 
 .update-learn-more:hover {
     font-weight: 600;
-    color: #0000eebd; 
+    color: #0000eebd;
 }
 
 .scholarship-apply {
@@ -1045,6 +1045,11 @@ footer{
     background-color: #19ADB3 !important;
     font-weight: bold;
   color: ghostwhite;
+}
+
+.sort-div {
+    display: flex;
+    align-items: start;
 }
 
 .custom-apply-btn {
@@ -1276,13 +1281,13 @@ input[type="text"]:focus {
 }
 
 .client-info {
-    border: 4px solid #80ffaa3f; 
-    border-radius: 7px; 
+    border: 4px solid #80ffaa3f;
+    border-radius: 7px;
     box-shadow: 5px 5px 6px #888888;
 }
 
 .client-pp {
-    padding: 5px 10px; 
+    padding: 5px 10px;
     border-left: 1px solid #ec6c5559;
 }
 
@@ -1291,13 +1296,13 @@ input[type="text"]:focus {
 }
 
 .client-info-1 {
-    border: 4px solid #fff; 
-    border-radius: 7px; 
+    border: 4px solid #fff;
+    border-radius: 7px;
     box-shadow: 5px 5px 6px #888888;
 }
 
 .client-pp-1 {
-    padding: 5px 10px; 
+    padding: 5px 10px;
     border-left: 1px solid #ec6c5559;
 }
 
@@ -1502,13 +1507,13 @@ ul .sb-li:first-child {
 }
 
 .user-names {
-    font-size: 30px; 
+    font-size: 30px;
 }
 
 .client-footer .c-footer {
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid #a8a3a3; 
+    border-top: 1px solid #a8a3a3;
     width: 100%;
     padding: clamp(1vw, 2vw, 1rem) 3rem 0.6rem;
 }
@@ -1532,7 +1537,7 @@ ul .sb-li:first-child {
 }
 
 .poker-1 {
-    border-radius: 7px; 
+    border-radius: 7px;
     padding: 5px 0px;
     background-color: #f7f7f7;
 }
@@ -1567,7 +1572,7 @@ ul .sb-li:first-child {
     position: relative;
     width: 100%;
     padding: 0px;
-    top: 65px; 
+    top: 65px;
     transition: width 0.3s ease-in;
 }
 
@@ -1585,8 +1590,8 @@ ul .sb-li:first-child {
     padding: 5px 10px;
     display: block;
     position: relative;
-    z-index: 5 !important; 
-    left: 10px; 
+    z-index: 5 !important;
+    left: 10px;
     top: 85px;
     cursor: pointer;
 }
@@ -1628,7 +1633,7 @@ ul .sb-li:first-child {
 }
 
 .cst-input {
-    border-radius: 4px; 
+    border-radius: 4px;
     border-bottom: 1px solid #bfbfbf;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
@@ -1702,7 +1707,7 @@ ul .sb-li:first-child {
 #contactButton:hover {
     background-color: #f0f0f0;
     color: #333;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); 
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .popup {
@@ -1759,7 +1764,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* .nots-btn {
-    
+
 } */
 
 .nots {
@@ -1784,7 +1789,7 @@ input:focus, select:focus, textarea:focus {
     font-size: 12px;
 }
 
-.f-13{ 
+.f-13{
     font-size: 13px;
 }
 
@@ -2099,11 +2104,11 @@ input:focus, select:focus, textarea:focus {
 }
 
 @media (max-width: 600px) {
-  
+
   .freq-asked-questions-cstm {
-  
+
     padding: 10px 20px;
-    
+
   }
 
     .client-body-csmt-1 {
@@ -2141,7 +2146,7 @@ input:focus, select:focus, textarea:focus {
         width: 40%;
         margin: auto;
     }
-    
+
     .leave-message {
         padding: 10px;
     }
@@ -2149,12 +2154,12 @@ input:focus, select:focus, textarea:focus {
     .cstm-other-section {
         padding: 0px 15px
     }
-    
+
     .trends-summary {
         padding-top: 0px;
     }
-    
-    .footer-navigator { 
+
+    .footer-navigator {
         font-size: 13px;
         padding: 2px 8px;
         margin-right: 5px;
@@ -2168,7 +2173,7 @@ input:focus, select:focus, textarea:focus {
     .container-section{
         padding: 0px;
     }
-  
+
   	.no-gutters-div {
         padding: 13px 13px 13px 13px
     }
@@ -2196,7 +2201,7 @@ input:focus, select:focus, textarea:focus {
 
     .img-div {
         display: none;
-    } 
+    }
 
     .motiv-saying {
         text-align: left;
@@ -2248,7 +2253,7 @@ input:focus, select:focus, textarea:focus {
         justify-content: start;
     }
 
-    
+
     .button-section-btn {
         width: 100%;
     }
@@ -2289,19 +2294,19 @@ input:focus, select:focus, textarea:focus {
     }
 
     .user-names {
-        font-size: 25px; 
+        font-size: 25px;
     }
 
     .client-footer {
-        position: fixed; 
-        margin-top: 80px; 
-        bottom: 0px; 
+        position: fixed;
+        margin-top: 80px;
+        bottom: 0px;
         background-color: #c0d9e2;
         width: 100%
     }
 
     .client-footer .c-footer {
-        border-top: 1px solid #a8a3a3; 
+        border-top: 1px solid #a8a3a3;
         padding: clamp(0.5vw, 1vw, 0.6rem) 1.2rem 0.3rem;
     }
 
@@ -2335,23 +2340,23 @@ input:focus, select:focus, textarea:focus {
 
 @media (max-width: 1354px) {
 
-    
+
 
     h1, h2, h3 {
         font-size: 1em;
     }
-    
+
     .nav-right-content{
         width: 50%;
         margin-right: 10px;
         /* border: 2px solid red; */
      }
- 
+
      .section-right {
          width: 100%;
          margin-top: 0px;
      }
- 
+
      .sidebar {
          position: fixed;
          left: -590px;
@@ -2362,7 +2367,7 @@ input:focus, select:focus, textarea:focus {
          transition: left 0.3s ease-in-out;
          background: #d4e7ee;
      }
- 
+
      .sidebar.show {
          left: 0px;
          position: fixed;
@@ -2423,13 +2428,13 @@ input:focus, select:focus, textarea:focus {
     }
 }
 
-@media (max-width: 1290px) { 
+@media (max-width: 1290px) {
 
     .nav-section-right {
         margin-left: auto;
         margin-right: 10px;
     }
-    
+
     .nav-right-content{
         margin-left: auto;
         margin-right: 10px;
@@ -2447,7 +2452,7 @@ input:focus, select:focus, textarea:focus {
     .aft-btn {
         display: none;
     }
-    
+
     .aft-btn.show {
         display: block;
     }
@@ -2474,7 +2479,7 @@ input:focus, select:focus, textarea:focus {
          transition: left 0.3s ease-in-out;
          background: #d4e7ee;
      }
- 
+
      .sidebar.show {
          left: 0px;
          position: fixed;
@@ -2541,7 +2546,7 @@ input:focus, select:focus, textarea:focus {
         margin-left: auto;
         margin-right: 2em;
     }
-    
+
     .nav-right-content{
         margin-left: auto;
         margin-right: 10px;
@@ -2559,7 +2564,7 @@ input:focus, select:focus, textarea:focus {
     .aft-btn {
         display: none;
     }
-    
+
     .aft-btn.show {
         display: block;
     }
@@ -2586,7 +2591,7 @@ input:focus, select:focus, textarea:focus {
          transition: left 0.3s ease-in-out;
          background: #d4e7ee;
      }
- 
+
      .sidebar.show {
          left: 0px;
          position: fixed;
@@ -2653,7 +2658,7 @@ input:focus, select:focus, textarea:focus {
         margin-left: auto;
         margin-right: 0px;
     }
-    
+
     .nav-right-content{
         margin-left: auto;
         margin-right: 10px;
@@ -2671,7 +2676,7 @@ input:focus, select:focus, textarea:focus {
     .aft-btn {
         display: none;
     }
-    
+
     .aft-btn.show {
         display: block;
     }
@@ -2698,7 +2703,7 @@ input:focus, select:focus, textarea:focus {
             transition: left 0.3s ease-in-out;
             background: #d4e7ee;
         }
- 
+
      .sidebar.show {
          left: 0px;
          position: fixed;
@@ -2770,7 +2775,7 @@ input:focus, select:focus, textarea:focus {
 @media (max-width: 995px) {
 
     .nav-right-content{
-       width: 30%; 
+       width: 30%;
        margin-right: 10px;
     }
 
@@ -3118,8 +3123,8 @@ input:focus, select:focus, textarea:focus {
 
 @media (max-width: 720px) {
 
-    
-    
+
+
 
     .w-5 {
     max-width: 50%;
@@ -3228,8 +3233,8 @@ input:focus, select:focus, textarea:focus {
 
 @media (max-width: 540px) {
 
-    
-    
+
+
     .nav-right-content{
        width: 50%;
        margin-right: 18px;
@@ -3324,7 +3329,7 @@ input:focus, select:focus, textarea:focus {
 
 @media (max-width: 492px) {
 
-    
+
 
     .carousel-caption {
         height: auto;
@@ -3344,7 +3349,7 @@ input:focus, select:focus, textarea:focus {
     .trend-poster {
         display: none;
     }
-    
+
     .section-right {
         width: 100%;
         margin-top: 0px;
@@ -3435,7 +3440,7 @@ input:focus, select:focus, textarea:focus {
 
 @media (max-width: 414px) {
 
-    
+
 
     .nav-right-content{
        width: 60%;
@@ -3536,7 +3541,7 @@ input:focus, select:focus, textarea:focus {
 
 @media (max-width: 375px) {
 
-    
+
 
     .nav-right-content{
        width: 60%;
@@ -3635,7 +3640,7 @@ input:focus, select:focus, textarea:focus {
 
 @media (max-width: 360px) {
 
-    
+
 
     .nav-right-content{
        width: 60%;
@@ -3736,6 +3741,6 @@ input:focus, select:focus, textarea:focus {
     z-index: 10000;
 }
 
-/* .add-item {  
+/* .add-item {
     height: 10em;
 } */
