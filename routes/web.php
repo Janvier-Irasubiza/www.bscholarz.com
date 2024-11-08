@@ -55,6 +55,10 @@ Route::get('/ksp-apply', function() {
 }) -> name('ksp-apply');
 
 Route::get('/apply/{discipline}/payment', [PaymentsController::class, 'payment_view']) -> middleware('guest') -> name('app-payment');
+Route::get('/link/payment', [PaymentsController::class, 'payment_view']) -> middleware('guest') -> name('link.payment');
+Route::post('/request-payment', [PaymentsController::class, 'payment']) -> middleware('guest') -> name('request-payment');
+Route::post('/request/{request}/payment', [PaymentsController::class, 'pay_view']) -> middleware('guest') -> name('request.payment');
+Route::get('/payment/confirmation', [PaymentsController::class, 'confirmation'])->middleware('guest')->name('payment.confirmation');
 Route::post('/apply/payment/approve', [PaymentsController::class, 'approve_payment']) -> name('client.payment');
 Route::post('/user-request', [UserRequestController::class, 'user_request_application']) -> name('user-request-application');
 Route::get('/apply/{discipline}/approve', [PagesController::class, 'follow_up_options']) -> name('follow-up');
@@ -202,14 +206,14 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::post('/app/comments/reply', [ApplicationsController::class, 'comment_reply']) ->name('app.comments.reply');
 });
 
-Route::get('/users/{commentId}', [AdminController::class, 'users'])->middleware('staff')->name('users.get');
-Route::get('/get-users', [AdminController::class, 'getUsers'])->middleware('staff');
-Route::get('/get-user-info/{user}', [AdminController::class, 'getUserInfo'])->middleware('staff');
+Route::get('/users/{commentId}', [ChatsController::class, 'users'])->middleware('staff')->name('users.get');
+Route::get('/get-users', [ChatsController::class, 'getUsers'])->middleware('staff');
+Route::get('/get-user-info/{user}', [ChatsController::class, 'getUserInfo'])->middleware('staff');
 Route::post('/comments/{commentId}/recommend/', [ApplicationsController::class, 'recommendTo']);
-Route::get('/issues/get', [AdminController::class, 'getIssues'])->middleware('staff')->name('messages.get');
-Route::get('/issue/{issue}/conv', [AdminController::class, 'getIssueConv'])->middleware('staff')->name('issue.conv');
-Route::get('/tags/{issue}/', [AdminController::class, 'getTags'])->middleware('staff')->name('issue.tags');
-Route::post('/issue/reply', [AdminController::class, 'issueReply'])->middleware('staff')->name('issue.reply');
+Route::get('/issues/get', [ChatsController::class, 'getIssues'])->middleware('staff')->name('messages.get');
+Route::get('/issue/{issue}/conv', [ChatsController::class, 'getIssueConv'])->middleware('staff')->name('issue.conv');
+Route::get('/tags/{issue}/', [ChatsController::class, 'getTags'])->middleware('staff')->name('issue.tags');
+Route::post('/issue/reply', [ChatsController::class, 'issueReply'])->middleware('staff')->name('issue.reply');
 
 Route::get('/subs/services', [SubscriptionController::class, 'subs_services']) -> name('subs-services.get');
 Route::get('/subs/services/{plan}', [SubscriptionController::class, 'subs_plan_services'])->name('subs-services-plan.get');

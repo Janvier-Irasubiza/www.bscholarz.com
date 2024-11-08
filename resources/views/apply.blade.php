@@ -16,15 +16,15 @@
 
 </div>
 
-<form method="POST" action="{{ route('user-request-application') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('request-payment') }}" enctype="multipart/form-data">
     <div class="">
         <div class="px-4 pt-1">
         @csrf
 
         <div class="col-lg-4 mt-3">
         @if($discipline_info)
-            <input id="application_info" class="block mt-1 w-full" type="text" name="application_info" value="{{ $discipline_info -> id }}" style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required autocomplete="application_info" hidden/>
-            <input id="application_info" class="block mt-1 w-full" type="text" name="identifier" value="{{ $discipline_info -> identifier }}" style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required autocomplete="application_info" hidden/>
+            <input id="application_info" class="block mt-1 w-full" type="hidden" name="application_info" value="{{ $discipline_info -> id }}" style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required autocomplete="application_info"/>
+            <input id="application_info" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $discipline_info -> identifier }}" style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required autocomplete="application_info"/>
             <x-input-error :messages="$errors->get('application_info')" class="mt-2" />
         @endif
         </div>
@@ -56,7 +56,6 @@
 
         </div>
 
-        <!-- Password -->
         <div class="mt-3">
             <x-input-label for="phone_number" :value="__('Phone number')" />
             <input style = "padding: 6px 10px; border: 2px solid #4d4d4d; color: #000; border-radius: 6px" id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" value="{{ old('phone_number') }}" placeholder="Your phone number" required autocomplete="phone_number" />
@@ -65,7 +64,9 @@
 
 
     
-        <div class="button-section mt-4" style="margin-bottom: 20px">
+        <div class="button-section mt-4 justify-between" style="margin-bottom: 20px">
+            <a href="{{ route('link.payment') }}" class="underline">Get application link</a>
+
             <x-primary-button class="apply-btn button-section-btn">
                 {{ __('Request service') }}
             </x-primary-button>
