@@ -58,20 +58,6 @@
                 </li>
 
                 <li class="sb-li" style=" margin: 0px">
-                    <a href="{{ route('accountant-deptors') }}" class="sd-bar-link" >
-                    <div class="flex" style="">
-                        <div class="d-flex align-items-center mr-1">
-                            <i class="fa-solid fa-thumb-tack" style="font-size: 15px; margin-top: 2px; color: #000000a8"></i>
-                        </div>
-
-                        <div class="trend-content" style="text-align: left">
-                            <h5>Debts</h5>
-                        </div>
-                    </div>
-                </a>
-                </li>
-
-                <li class="sb-li" style=" margin: 0px">
                     <a href="{{ route('accountant-staff') }}" class="sd-bar-link" >
                     <div class="flex" style="">
                         <div class="d-flex align-items-center mr-1">
@@ -80,6 +66,34 @@
 
                         <div class="trend-content" style="text-align: left">
                             <h5>Employees</h5>
+                        </div>
+                    </div>
+                </a>
+                </li>
+
+                <li class="sb-li" style=" margin: 0px">
+                    <a href="{{ route('accountant.revenue') }}" class="sd-bar-link" >
+                        <div class="flex" style="">
+                            <div class="d-flex align-items-center mr-1">
+                                <i class="fa-solid fa-sack-dollar" style="font-size: 15px; margin-top: 1px; color: #000000a8"></i>
+                            </div>
+
+                            <div class="trend-content" style="text-align: left">
+                                <h5>Revenues</h5>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="sb-li" style=" margin: 0px">
+                    <a href="{{ route('accountant-deptors') }}" class="sd-bar-link" >
+                    <div class="flex" style="">
+                        <div class="d-flex align-items-center mr-1">
+                            <i class="fa-solid fa-thumb-tack" style="font-size: 15px; margin-top: 2px; color: #000000a8"></i>
+                        </div>
+
+                        <div class="trend-content" style="text-align: left">
+                            <h5>Debts</h5>
                         </div>
                     </div>
                 </a>

@@ -390,18 +390,18 @@ class AdminController extends Controller {
             'link' => 'nullable|string|max:255',
             'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,svg|max:5048',
         ]);
-    
+
         // Initialize file details
         $mediaName = null;
         $mediaType = null;
-    
+
         // Handle file upload if present
         if ($request->hasFile('media') && $request->file('media')->isValid()) {
             $mediaName = time() . '-' . $request->file('media')->getClientOriginalName();
             $mediaType = $request->file('media')->getMimeType();
             $request->file('media')->move(public_path('ads/'), $mediaName);
         }
-    
+
         // Prepare data for database insertion
         $advertData = [
             'title' => $request->title,
@@ -416,12 +416,12 @@ class AdminController extends Controller {
             'media' => $mediaName,
             'media_type' => $mediaType,
         ];
-    
+
         Advert::create($advertData);
-    
+
         return Auth::user() ? redirect()->route('admin.ads') : redirect()->route('md.ads');
     }
-    
+
 
     public function add_info(Request $request) {
         $ad = DB::table('adverts') -> where('id', $request -> add_id) -> first();
@@ -442,16 +442,16 @@ class AdminController extends Controller {
                 'status' => 'required|string',
                 'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,svg|max:5048',
             ]);
-    
+
             // Prepare data for update
             $advertData = array_filter($validatedData, function($key) {
                 return $key !== 'media'; // Exclude media from the update array for now
             }, ARRAY_FILTER_USE_KEY);
-    
+
             // Handle file upload if present
             if ($request->hasFile('media')) {
                 $mediaName = time() . '-' . $request->file('media')->getClientOriginalName();
-                
+
                 if ($request->file('media')->isValid()) {
                     Storage::disk('ads')->putFileAs('', $request->file('media'), $mediaName);
                     // Optionally delete the old media if it exists
@@ -464,10 +464,10 @@ class AdminController extends Controller {
                     return back()->withErrors(['media' => 'The uploaded file is not valid.']);
                 }
             }
-    
+
             // Update advert in the database
             Advert::where('id', $request->advert)->update($advertData);
-    
+
             return back()->with('success', 'Advert updated successfully.');
         } catch (\Throwable $th) {
             \Log::error("Error sending messages: " . $th->getMessage());
@@ -475,7 +475,7 @@ class AdminController extends Controller {
         }
     }
 
-    
+
 
     public function delete_ad(Request $request) {
         DB::table('adverts') -> where('id', $request -> ad_id) -> limit(1) -> delete();

@@ -16,6 +16,9 @@ use Mail;
 use App\Mail\DisbursedSalary;
 use Illuminate\Support\Facades\Cache;
 use App\Exports\TransactionsExport;
+use App\Exports\UnpaidApplicationsExport;
+use App\Exports\RevenueExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AccountabilityController extends Controller {
     public function accountant_dashboard() {
@@ -32,18 +35,6 @@ class AccountabilityController extends Controller {
         }
         $employees = DB::table('staff') -> where('role', '!=', 'Accountant') -> where('role', '!=', 'Admin') -> where('role', '!=', 'Marketing') -> whereIn('id', $staff_ids) -> get();
 
-        // foreach ($pen_transactions as $transaction) {
-        //     $assistant = DB::table('staff') -> where('id', $transaction -> assistant)->first();
-
-        //     if ($assistant) {
-        //         $transaction->assistant_names = $assistant->names;
-        //         $transaction->assistant_email = $assistant->email;
-        //     }
-        //     else {
-        //         $transaction->assistant_name = 'N/A';
-        //         $transaction->assistant_email = 'N/A';
-        //     }
-        // }
         // Initialize sorting variables with default values
         $sortBy = $request->input('sortBy', '');
         $employee = $request->input('employee', '');
@@ -166,36 +157,19 @@ class AccountabilityController extends Controller {
         return redirect() -> route('pending-transactions');
     }
 
-    public function accountant_deptors() {
-        $unpaid_applications = DB::table('applications') -> where('payment_status', 'Not yet paid') -> get();
+    public function accountant_deptors(Request $request) {
+        $unpaid_applications = DB::table('served_requests')
+            ->where('payment_status', 'Not yet paid')
+            ->orWhere('payment_status', 'Not paid')
+            ->get();
 
-        foreach ($unpaid_applications as $application) {
-            $deptor = DB::table('applicant_info')->where('id', $application->applicant)->first();
-
-            $discipline = DB::table('disciplines')->where('id', $application->discipline_id)->first();
-
-            if ($deptor) {
-                $application->deptor_names = $deptor->names;
-                $application->deptor_email = $deptor->email;
-                $application->deptor_phone = $deptor->phone_number;
-            } else {
-                $application->deptor_names = 'N/A';
-                $application->deptor_email = 'N/A';
-                $application->deptor_phone = 'N/A';
-            }
-
-            if ($discipline) {
-                $application->application_name = $discipline->discipline_name;
-                $application->application_org = $discipline->organization;
-            } else {
-                $application->application_name = 'N/A';
-                $application->application_org = 'N/A';
-            }
+        // Check if the request is for downloading the Excel file
+        if ($request->query('download') === 'excel') {
+            return Excel::download(new UnpaidApplicationsExport($unpaid_applications), 'unpaid_applications.xlsx');
         }
 
         return view('accountant.debtors', compact('unpaid_applications'));
     }
-
 
     public function getCompleteTransactions()
     {
@@ -205,4 +179,35 @@ class AccountabilityController extends Controller {
 
         return response()->json($complete_transactions); // Return data as JSON
     }
+
+    public function revenue(Request $request) {
+        // Fetch your revenue data
+        $app_incomes = DB::table('served_requests')
+            ->where('payment_status', 'Paid')
+            ->where('application_status', 'Complete')
+            ->get();
+
+        $todayApps = DB::table('served_requests')
+            ->where('payment_status', 'Paid')
+            ->where('application_status', 'Complete')
+            ->whereDate('served_on', Carbon::today())
+            ->get();
+
+        $todayAds = DB::table('adverts')
+            ->whereDate('posted_on', Carbon::today())
+            ->get();
+
+        $ads = DB::table('adverts')
+            ->where('status', 'active')
+            ->get();
+
+        // Check if the request is for downloading the Excel file
+        if ($request->query('download') === 'excel') {
+            return Excel::download(new RevenueExport($app_incomes), 'business_revenues.xlsx');
+        }
+
+        // Return the view with the data
+        return view('admin.revenue', compact('app_incomes', 'ads', 'todayApps', 'todayAds'));
+    }
+
 }
