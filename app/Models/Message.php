@@ -49,38 +49,6 @@ class Message extends Model
         return $this->belongsTo(Staff::class, 'receiver');
     }
 
-    public function account() {
-        return $this->belongsTo(Account::class, 'account');
-    }
-
-    public function user() {
-        return $this->belongsTo(Applicant_info::class, 'user');
-    }
-
-    public function app() {
-        return $this->belongsTo(Discipline::class, 'app');
-    }
-
-    public function transaction() {
-        return $this->belongsTo(Application::class, 'request');
-    }
-
-    public function advert() {
-        return $this->belongsTo(Advert::class, 'advert');
-    }
-
-    public function subscriber() {
-        return $this->belongsTo(Subscriber::class, 'subscriber');
-    }
-
-    public function sub_plan() {
-        return $this->belongsTo(SubPlan::class, 'sub_plan');
-    }
-
-    public function sub_service() {
-        return $this->belongsTo(SubService::class, 'sub_service');
-    }
-
     public function replies () {
         return $this->hasMany(MessageReply::class, 'message_id');
     }
