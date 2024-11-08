@@ -666,7 +666,7 @@ class AdminController extends Controller {
 
     public function getUsers() {
         // Fetch all users (staff)
-        $users = Staff::all();
+        $users = Staff::whereNot('id', auth()->guard('staff')->user()->id)->get();
 
         // Return users
         return response()->json($users);
@@ -720,6 +720,58 @@ class AdminController extends Controller {
 
         return response()->json($response);
     }
+
+    public function issueReply(Request $request) {
+
+        $request->merge(array_map(
+            fn($value) => $value === '' ? null : $value,
+            $request->all()
+        ));
+
+        $validatedData = $request->validate([
+            'chat' => 'integer|required',
+            'message' => 'string|required',
+            'app' => 'string|nullable',
+            'request' => 'string|nullable',
+            'account' => 'string|nullable',
+            'user' => 'string|nullable',
+            'advert' => 'string|nullable',
+            'subscriber_id' => 'string|nullable',
+            'sub_plan_id' => 'string|nullable',
+        ]);
+
+        $reply = new MessageReply;
+        $reply->message_id = $request->chat;
+        $reply->reply = $request->message;
+        $reply->user_id = auth()->guard('staff')->user()->id;
+        $reply->save();
+
+        $issue = Message::findOrFail($validatedData['chat']);
+        if ($issue) {
+            $nonNullData = array_filter($validatedData, function ($value) {
+                return !is_null($value);
+            });
+
+            unset($nonNullData['chat'], $nonNullData['message']);
+            $issue->update($nonNullData);
+        }
+
+        return response()->json(['success' => 'Reply sent'], 201);
+    }
+
+    public function getUserInfo(Request $request) {
+        $user = Staff::where('uuid', $request->user)->first();
+        $response = [
+            'receiver_id' => $user->id,
+            'receiver_names' => $user->names,
+            'receiver_role' => $user->role,
+            'sender_id' => auth()->guard('staff')->user()->id,
+            'sender_names' => auth()->guard('staff')->user()->names,
+        ];
+
+        return response()->json($response);
+    }
+
 
     public function updateModels() {
         $this->addUUIDToModels();

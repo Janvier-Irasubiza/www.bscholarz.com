@@ -44,6 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => console.error("Error:", error));
     }
 
+    getIssues();
+
     function getIssueContent(chatID, issue) {
 
         function fetchChatTags() {
@@ -113,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contentDiv.innerHTML = `
                     <div class="px-3 py-2 mb-3" style="position: sticky; top: 0px; background-color: #f0f0f049;">
                         <p class="f-15 mb-1">${issue}</p>
-                        <div class="tags mt-2"></div>
+                        <div class="tags mt-1 flex gap-2"></div>
                     </div>`;
 
             let issueContent = '';
@@ -155,17 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     $('.chat-area').html(defaultContent);
 
-    getIssues();
-
-    $(document).on('click', '.chat-btn', function () {
-        $('.chat-btn').not(this).removeClass('active-chat');
-        $(this).addClass('active-chat');
-
-        let issue = $(this).data('issue').length > 40 ? $(this).data('issue').substring(0, 40) + '...' : $(this).data('issue');
-        let sender = $(this).data('sender').length > 15 ? $(this).data('sender').substring(0, 15) + '...' : $(this).data('sender');
-        let receiver = $(this).data('receiver').length > 15 ? $(this).data('receiver').substring(0, 15) + '...' : $(this).data('receiver');
-        const chatID = $(this).data('chat'); 
-
+    function chatContent(issue, sender, receiver, chatID) {
         $('.chat-area').html(
             `<div class="chat-header border-b">
                     <div class="flex justify-between p-3 items-center bg-white">
@@ -205,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <!-- /tagger -->
 
                     <div class="">
-                    <form action="" method="post" style="background-color: #f0f0f0;" class="p-3">
+                    <form action="" method="post" id="newMessageForm" style="background-color: #f0f0f0;" class="p-3">
 
                         <!-- tags -->
                         <div class="flex gap-2 items-center">
@@ -301,6 +293,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         <!-- /tags -->
 
                         <div class="flex gap-3">
+                            <button type="button" class="f-20">
+                                <i class="fa-solid fa-gear"></i>
+                            </button>
+                            <input type="hidden" name="chat" id="chat" value="${chatID}">
                             <input type="hidden" name="app" id="app">
                             <input type="hidden" name="request" id="request">
                             <input type="hidden" name="account" id="account" >
@@ -309,8 +305,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             <input type="hidden" name="subscriber_id" id="subscriber_id" >
                             <input type="hidden" name="sub_plan_id" id="sub_plan_id" >
                             <input type="hidden" name="sub_service_id" id="sub_service_id" >
-                            <textarea rows="1" placeholder="Type here..." class="chat-input w-full p-2" autofocus></textarea>
-                            <button class="f-20">
+                            <textarea name="message" rows="1" placeholder="Type here..." class="chat-input w-full p-2" autofocus></textarea>
+                            <button type="submit" class="f-20">
                                 <i class="fa-solid fa-paper-plane"></i>
                             </button>
                         </div>
@@ -318,7 +314,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>`
         );
-        getIssueContent(chatID, $(this).data('issue'));
+
+        const issueData = $(this).data('issue');
+        getIssueContent(chatID, issueData);
+
+        setInterval(() => {
+            getIssueContent(chatID, issueData);
+            getIssues();
+            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+        }, 5000);
+
         $('.close-tagger').on('click', function () {
             $('.tag-div').toggleClass('show');
         });
@@ -351,31 +356,65 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        //     // Chats
-        // textarea?.addEventListener('keypress', function (e) {
-        //     if (e.key === 'Enter') {
-        //         e.preventDefault();
-                
-        //         let message = e.target.value.trim();
-        //         if (message === '') return;
+        // New message
 
-        //         e.target.value = '';
-                
-        //         const messagesContainer = document.querySelector('.chat-messages');
-                
-        //         const messageContainer = document.createElement('div');
-        //         messageContainer.classList.add('flex', 'justify-end', 'mb-3');
+        document.getElementById('newMessageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const message = e.target.querySelector('textarea[name="message"]').value.trim();
+            if (message === '') return;
+                        
+            const messagesContainer = document.querySelector('.chat-messages');
+            
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('flex', 'justify-end', 'mb-3', 'px-4');
+    
+            const newMessage = document.createElement('div');
+            newMessage.classList.add('p-3', 'col-md-9', 'out-bg', 'rounded');
+            newMessage.innerHTML = `<p class="text-muted f-14 mb-1">Sending...</p>` + message;
+    
+            messageContainer.appendChild(newMessage);
+            messagesContainer.appendChild(messageContainer);
+    
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;            
+            
+            const formData = new FormData(e.target);
+            
+            fetch('/issue/reply', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if ($('.tag-div').hasClass('show')) {
+                    $('.tag-div').removeClass('show');
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
 
-        //         const newMessage = document.createElement('div');
-        //         newMessage.classList.add('p-3', 'col-md-9', 'out-bg', 'rounded');
-        //         newMessage.textContent = message;
+            e.target.querySelector('textarea[name="message"]').value = '';
 
-        //         messageContainer.appendChild(newMessage);
-        //         messagesContainer.appendChild(messageContainer);
+        });
+    }
 
-        //         messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        //     }
-        // });
+    $(document).on('click', '.chat-btn', function () {
+        $('.chat-btn').not(this).removeClass('active-chat');
+        $(this).addClass('active-chat');
+
+        let issue = $(this).data('issue').length > 40 ? $(this).data('issue').substring(0, 40) + '...' : $(this).data('issue');
+        let sender = $(this).data('sender').length > 15 ? $(this).data('sender').substring(0, 15) + '...' : $(this).data('sender');
+        let receiver = $(this).data('receiver').length > 15 ? $(this).data('receiver').substring(0, 15) + '...' : $(this).data('receiver');
+        const chatID = $(this).data('chat'); 
+
+        chatContent(issue, sender, receiver, chatID);
+
     });
 
     $(document).on('click', '.tag-btn', function () {
@@ -398,16 +437,30 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.key === 'Enter') {
             enterTagId();
         }
-    });    
+    }); 
     
-    function enterTagId() {        
+    function addTag() {        
         let tagId = $('.tag-input');
         if (tagId.val() === '') return;
         $(`#${tagId.data('id')}`).val(tagId.val());
         $(`[data-field="${tagId.data('id')}"]`).addClass('active');
     }
 
-    $(document).on('click', '.enter-tag-btn', enterTagId);
+    function removeTag() {
+        let tagId = $('.tag-input');
+        if (tagId.val() === '') return;
+        $(`#${tagId.data('id')}`).val('');
+        $('.tag-input').val('');
+        $(`[data-field="${tagId.data('id')}"]`).removeClass('active');
+    }
+
+    $(document).on('click', '.enter-tag-btn', function () {
+        if ($(this).text() === 'Enter') {
+            addTag();
+        } else {
+            removeTag();
+        }
+    });
 
     $(document).on('click', '.close-chat', function () {
         $('.chat-area').html(defaultContent);
@@ -416,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $(document).on('click', '.btn-new-chat', function (event) {
         event.stopPropagation();
         $('.new-chat-container').toggleClass('show');
-
+    
         fetch('/get-users', {
             method: 'GET',
             headers: {
@@ -453,8 +506,202 @@ document.addEventListener('DOMContentLoaded', function () {
             $('.new-chat-container').toggleClass('error');
             $('.new-chat-container').html('<p class="text-muted">Something went wrong, try again later!</p>');
             console.error("Error:", error);
-        });
+        });        
     });
+    
+    // Add click event for dynamically created buttons inside the .new-chat-container
+    $(document).on('click', '.new-chat-container .ctm-button', function() {
+        const userId = $(this).data('user');
+        newChat(userId);
+    });
+    
+    function newChat(userId) {
+
+        fetch(`/get-user-info/${userId}`, {
+            method: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+        })
+        .then(response => {
+            if (response.status === 401) {
+                window.location.href = '/authenticate';
+                throw new Error('Unauthenticated');
+            }
+            return response.json();
+        })
+        .then(data => {            
+            let sender = data.sender_names;
+            let receiver = data.receiver_names;
+            let issue = '...';
+            let issueId = '';
+            let chatID = '';
+
+        $('.chat-area').html(
+            `<div class="chat-header border-b">
+                    <div class="flex justify-between p-3 items-center bg-white">
+                        <div class="flex gap-3">
+                            <div>
+                                <p class="f-20 mb-1">${issue}</p>
+                                <span class="f-13 text-muted p-2 ctm-button rounded" style="background: none">${sender}</span>
+                                <span class="f-13 text-muted ctm-button p-2 rounded" style="background: none">${receiver}</span>
+                            </div>
+                        </div>
+                        <button class="f-25 px-3 close-chat">
+                            <i class="fa-regular fa-circle-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages overflow-y-auto" style="flex-grow: 1;">
+                </div>
+
+                <div class="chat-input-container">
+                
+                <!-- tagger -->
+                        <div class="tag-div">
+                            <div class="tag-header">
+                                <div>
+                                    <p class="text-muted mt-1 f-15 tag-h-content" style="font-weight: 600"></p>
+                                </div>
+                                <button type="button" class="f-15 close-tagger">
+                                    <i class="fa-regular fa-circle-xmark"></i>
+                                </button>
+                            </div>
+                            <div class="tag-body mt-3">
+                                <input type="text" rows="1" placeholder="" class="w-full px-2 py-1 tag-input">
+                                <button class="f-15 py-1 btn enter-tag-btn">Enter</button>
+                            </div>
+                        </div>
+                        <!-- /tagger -->
+
+                    <div class="">
+                    <form action="" method="post" id="newMessageForm" style="background-color: #f0f0f0;" class="p-3">
+
+                        <!-- tags -->
+                        <div class="flex gap-2 items-center border-b mb-1">
+                        <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="Service" data-field="app" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">Service</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="Request" data-field="request" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">Request</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="Account" data-field="account" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">Account</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="User Account" data-field="user" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">User Account</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="Advert" data-field="advert" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">Advert</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="Subscriber" data-field="subscriber_id" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">Subscriber</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="Subscription Plan" data-field="sub_plan_id" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">Subscription Plan</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                            <button type="button" class="px-3 py-1 rounded mb-2 ctm-button tag-btn" data-text="Subscription Service" data-field="sub_service_id" data-value="">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="flex-grow-1 text-left">
+                                        <div class="d-flex justify-content-between gap-3 align-items-center">
+                                            <div>
+                                                <p class="f-12 text-muted">Subscription Service</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+                        </div>
+                        <!-- /tags -->
+
+                        <div class="flex gap-3">
+                         <input type="hidden" name="chat" id="chat" value="${chatID}">
+                            <input type="hidden" name="app" id="app">
+                            <input type="hidden" name="request" id="request">
+                            <input type="hidden" name="account" id="account" >
+                            <input type="hidden" name="user" id="user" >
+                            <input type="hidden" name="advert" id="advert" >
+                            <input type="hidden" name="subscriber_id" id="subscriber_id" >
+                            <input type="hidden" name="sub_plan_id" id="sub_plan_id" >
+                            <input type="hidden" name="sub_service_id" id="sub_service_id" >
+
+                            <button type="button" class="f-20">
+                                <i class="fa-solid fa-gear"></i>
+                            </button>
+                            <div class="w-full">
+                                ${issue !=='' ? `<input type="text" placeholder="What's the issue?" class="w-full px-2 py-1 issue-input mb-1">` : ''}
+                                <textarea name="message" rows="1" placeholder="Explain the issue" class="chat-input w-full p-2" autofocus></textarea>
+                            </div>
+                            <button type="submit" class="f-20">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                    </div>
+                </div>`
+        );
+    });
+        
+    }
+    
 
     $(document).on('click', function (event) {
         if (!$(event.target).closest('.new-chat-container').length && !$(event.target).is('.btn-new-chat')) {
@@ -463,5 +710,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 });
-
-

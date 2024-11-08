@@ -204,10 +204,12 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
 
 Route::get('/users/{commentId}', [AdminController::class, 'users'])->middleware('staff')->name('users.get');
 Route::get('/get-users', [AdminController::class, 'getUsers'])->middleware('staff');
+Route::get('/get-user-info/{user}', [AdminController::class, 'getUserInfo'])->middleware('staff');
 Route::post('/comments/{commentId}/recommend/', [ApplicationsController::class, 'recommendTo']);
 Route::get('/issues/get', [AdminController::class, 'getIssues'])->middleware('staff')->name('messages.get');
 Route::get('/issue/{issue}/conv', [AdminController::class, 'getIssueConv'])->middleware('staff')->name('issue.conv');
-Route::get('/tags/{issue}/', [AdminController::class, 'getTags'])->name('issue.tags');
+Route::get('/tags/{issue}/', [AdminController::class, 'getTags'])->middleware('staff')->name('issue.tags');
+Route::post('/issue/reply', [AdminController::class, 'issueReply'])->middleware('staff')->name('issue.reply');
 
 Route::get('/subs/services', [SubscriptionController::class, 'subs_services']) -> name('subs-services.get');
 Route::get('/subs/services/{plan}', [SubscriptionController::class, 'subs_plan_services'])->name('subs-services-plan.get');
@@ -217,7 +219,7 @@ Route::put('/subs/services/update', [SubscriptionController::class, 'updateServi
 Route::delete('/subs/services/delete', [SubscriptionController::class, 'deleteService'])->name('subs-service.delete');
 Route::post('/subs/communicate', [SubscriptionController::class, 'sendMessage'])->name('subs.communicate');
 Route::post('/mails/new-app/send', [MailController::class, 'new_app_mail']) -> name('mails.new-app.send');
-Route::get('/chats', [ChatsController::class, 'index']) -> name('chats.index');
+Route::get('/chats', [ChatsController::class, 'index'])->middleware('staff') -> name('chats.index');
 Route::post('/update', [AdminController::class, 'updateModels']) -> name('models.update');
 
 Route::get('/rhythmbox', function () {
