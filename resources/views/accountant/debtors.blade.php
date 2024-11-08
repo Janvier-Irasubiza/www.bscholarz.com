@@ -53,13 +53,8 @@
                                             <td class="text-center">
                                                 <div class="d-flex align-items-center justify-content-center">
                                                     <div class="action-btn mr-1">
-                                                        <button type="button" class="btn btn-link btn-sm btn-rounded action-btn debtorId" style="text-decoration: none; background-color: #0D6EFD; color: white; border-radius: 20px;">
+                                                        <a href="{{ route('remind-debtor', ['transaction' => $dept->application_id, 'applicant' => $dept->id, 'application' => $dept->discipline, 'agent' => $dept->assistant]) }}" type="button" class="btn btn-link btn-sm btn-rounded action-btn debtorId" style="text-decoration: none; background-color: #0D6EFD; color: white; border-radius: 20px;">
                                                             Remind
-                                                        </button>
-                                                    </div>
-                                                    <div class="action-btn ml-1">
-                                                        <a href="{{ route('transaction-review', ['transaction' => $dept->application_id, 'applicant' => $dept->id, 'application' => $dept->discipline, 'agent' => $dept->assistant]) }}" class="btn btn-link btn-sm btn-rounded clientId" value="application_id" style="text-decoration: none; background-color: #80ffaa; color: black; border-radius: 20px;">
-                                                            Rewiew
                                                         </a>
                                                     </div>
                                                 </div>
