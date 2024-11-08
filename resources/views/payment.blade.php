@@ -13,21 +13,20 @@
     <div class="d-flex justify-content-between align-items-center mb-4 py-3" style="border-bottom: 1px solid rgba(0, 0, 0, 0.151);">
         
     <div>
-    <div style="font-size: 24px" class="widget-subheading">{{ $app_info -> discipline_name }} </div>
-        <small class="mb-0" style="font-size: 15px">{{ $app_info -> discipline_organization }} - {{ $app_info -> discipline_country }}</small>
-    </div>
-
-    <div class="text-right">
-    <h1 style="font-size: 30px;" class="d-flex align-items-center"><p>{{ number_format($app_info -> service_fee ) }}</p> &nbsp; <small style="font-weight: 500; font-size: 25px"> RWF</small> </h1>
+    <div style="font-size: 24px" class="widget-subheading">{{ $service -> discipline_name }} </div>
+        <small class="mb-0" style="font-size: 15px">{{ $service -> organization }} - {{ $service -> country }}</small>
     </div>
 
     </div>
 
-        <!-- Email Address -->
         <div class="mt-3">
 
+        <div class="mb-3">
+          <h1 style="" class="f-20">Request fee: <strong>{{ number_format($amount ) }} RWF</strong> </h1>
+        </div>
+
         <span style="font-size: 15px">
-            Dear <span style="font-weight: 600">{{ $app_info -> names }}</span> you're requesting for <span style="font-weight: 600">{{ $app_info -> discipline_name }} in {{ $app_info -> discipline_organization }}</span> application
+            Dear <span style="font-weight: 600">{{ $client }}</span> you're requesting for <span style="font-weight: 600">{{ $service -> discipline_name }} in {{ $service -> discipline_organization }}</span> application
         </span>
           
           <div class="mt-4 px-3">
@@ -70,10 +69,10 @@
           <div class="mt-3">
         <x-input-label for="phone" :value="__('Phone number')" style="font-size: 15px"/>
         <small class="mb-0" style="color: #595959">Provide phone number you intend to use for this payment</small>
-        <input id="app_id" class="block mt-1 w-full" type="text" name="app_id" value="{{ $app_info -> application_id }}" autocomplete="app_id" hidden/>
-        <input id="identifier" class="block mt-1 w-full" type="text" name="identifier" value="{{ $app_info -> discipline_identifier }}" autocomplete="identifier" hidden/>
-        <input id="applicant" class="block mt-1 w-full" type="text" name="applicant" value="{{ $app_info -> id }}" autocomplete="applicant" hidden/>
-        <input id="amount" class="block mt-1 w-full" type="text" name="amount" value="{{ $app_info -> service_fee }}" autocomplete="amount" hidden/>
+        <input id="app_id" class="block mt-1 w-full" type="text" name="app_id" value="{{ $service -> application_id }}" autocomplete="app_id" hidden/>
+        <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $service -> identifier }}" autocomplete="identifier" />
+        <input id="applicant" class="block mt-1 w-full" type="text" name="applicant" value="{{ $service -> id }}" autocomplete="applicant" hidden/>
+        <input id="amount" class="block mt-1 w-full" type="text" name="amount" value="{{ $amount }}" autocomplete="amount" hidden/>
             <input id="momochk" type="radio" name="payment_method" value="momo" checked hidden>
         <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" placeholder="Phone number" required autofocus autocomplete="phone" />
             <x-input-error :messages="session('phone')" class="mt-2 text-left" />
@@ -92,7 +91,7 @@
           
           <div class="button-section mt-4 px-3 mb-4">
             <x-primary-button type="submit" class="apply-btn text-center" style="border: none">
-                {{ __('Process payment') }}
+                {{ __('Pay service') }}
             </x-primary-button>
         </div>
           
@@ -102,12 +101,12 @@
         @csrf
             
       	<div class="mt-3">
-        <input id="app_id" class="block mt-1 w-full" type="text" name="app_id" value="{{ $app_info -> application_id }}" autocomplete="app_id" hidden/>
-        <input id="identifier" class="block mt-1 w-full" type="text" name="identifier" value="{{ $app_info -> discipline_identifier }}" autocomplete="identifier" hidden/>
-        <input id="applicant" class="block mt-1 w-full" type="text" name="applicant" value="{{ $app_info -> id }}" autocomplete="applicant" hidden/>
-        <input id="amount" class="block mt-1 w-full" type="text" name="amount" value="{{ $app_info -> service_fee }}" autocomplete="amount" hidden/>
+        <input id="app_id" class="block mt-1 w-full" type="text" name="app_id" value="{{ $service -> application_id }}" autocomplete="app_id" hidden/>
+        <input id="identifier" class="block mt-1 w-full" type="text" name="identifier" value="{{ $service -> discipline_identifier }}" autocomplete="identifier" hidden/>
+        <input id="applicant" class="block mt-1 w-full" type="text" name="applicant" value="{{ $service -> id }}" autocomplete="applicant" hidden/>
+        <input id="amount" class="block mt-1 w-full" type="text" name="amount" value="{{ $service -> service_fee }}" autocomplete="amount" hidden/>
         <input id="momochk" type="radio" name="payment_method" value="cc" checked hidden>
-        <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="$app_info -> phone_number" placeholder="Phone number" required autofocus autocomplete="phone" hidden/>
+        <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="$service -> phone_number" placeholder="Phone number" required autofocus autocomplete="phone" hidden/>
             <x-input-error :messages="session('phone')" class="mt-2 text-left" />
         </div>
         

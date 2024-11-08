@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DB;
+use App\Models\Discipline;
 
 class PaymentsController extends Controller
 {
@@ -17,6 +18,43 @@ class PaymentsController extends Controller
 
         return view('payment', compact('app_info'));
     }
+
+    public function payment(Request $request) {
+      return redirect()->route('request.payment', ['request' => $request]);
+    }
+
+    public function pay_view($request) {
+      $service = Discipline::where('id', $request->input('application_info'))
+                           ->select('id', 'identifier', 'discipline_name', 'organization', 'country', 'category')
+                           ->first();
+  
+      $amount = 15000;
+      $client = $request->input('names');
+  
+      // Save data or perform other logic here...
+  
+      // Store data in session to retrieve it after redirecting
+      session([
+          'service' => $service,
+          'amount' => $amount,
+          'client' => $client
+      ]);
+  
+      // Redirect to a confirmation page after processing
+      return view('payment', compact('service', 'amount', 'client'));
+  }
+
+  public function confirmation() {
+    // Retrieve the data from the session
+    $service = session('service');
+    $amount = session('amount');
+    $client = session('client');
+
+    // Display the confirmation view with session data
+    return view('payment_confirmation', compact('service', 'amount', 'client'));
+}
+
+  
 
     public function approve_payment(Request $request) {
       
