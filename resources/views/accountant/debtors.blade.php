@@ -15,6 +15,7 @@
                                     <strong>Outstanding Payments</strong>
                                 </div>
                                 <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
+                                    <a href="{{ route('accountant-deptors', ['download' => 'excel']) }}" class="btn btn-primary" id="exportExcel">Export to Excel</a>
                                 </div>
                             </div>
                             <div style="border-top: none" class="d-block p-3 card-footer">
@@ -33,16 +34,16 @@
                                             <td>
                                                 <div class="d-flex align-items-center" style="margin: 0px">
                                                     <div class="" style="padding: 0px 5px">
-                                                        <p class="fw-bold mb-1">{{ $dept -> deptor_names }}</p>
-                                                        <p class="text-muted mb-0">{{ $dept -> deptor_email }} <br> {{ $dept -> deptor_phone }}</p>
+                                                        <p class="fw-bold mb-1">{{ $dept -> names }}</p>
+                                                        <p class="text-muted mb-0">{{ $dept -> email }} <br> {{ $dept -> phone_number }}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="d-flex align-items-center" style="margin: 0px">
                                                     <div class="" style="padding: 0px 5px">
-                                                        <p class="fw-bold mb-1">{{ $dept -> application_name }}</p>
-                                                        <p class="text-muted mb-0">{{ $dept -> application_org }}</p>
+                                                        <p class="fw-bold mb-1">{{ $dept -> discipline_name }}</p>
+                                                        <p class="text-muted mb-0">{{ $dept -> discipline_organization }}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -57,7 +58,7 @@
                                                         </button>
                                                     </div>
                                                     <div class="action-btn ml-1">
-                                                        <a href="{{ route('transaction-review', ['transaction' => $dept->app_id, 'applicant' => $dept->applicant, 'application' => $dept->discipline_id, 'agent' => $dept->assistant]) }}" class="btn btn-link btn-sm btn-rounded clientId" value="application_id" style="text-decoration: none; background-color: #80ffaa; color: black; border-radius: 20px;">
+                                                        <a href="{{ route('transaction-review', ['transaction' => $dept->application_id, 'applicant' => $dept->id, 'application' => $dept->discipline, 'agent' => $dept->assistant]) }}" class="btn btn-link btn-sm btn-rounded clientId" value="application_id" style="text-decoration: none; background-color: #80ffaa; color: black; border-radius: 20px;">
                                                             Rewiew
                                                         </a>
                                                     </div>

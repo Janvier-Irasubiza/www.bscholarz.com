@@ -60,7 +60,7 @@
                                     </form>
 
                                     <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
-                                        <a href="{{ route('export.transactions', ['download' => 'excel']) }}" class="btn btn-primary" id="exportExcel">Export to Excel</a>
+                                        <a href="{{ route('export.transactions', ['download' => 'excel', 'type' => 'complete']) }}" class="btn btn-primary" id="exportExcel">Export to Excel</a>
                                     </div>
                                 </div>
 

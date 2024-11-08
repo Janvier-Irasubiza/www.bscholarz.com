@@ -308,12 +308,14 @@ Route::prefix('accountant') -> group(function () {
     Route::get('/review/{transaction}/{applicant}/{application}/{agent}', [AccountabilityController::class, 'transaction_review']) -> name('transaction-review');
     Route::get('/debtors', [AccountabilityController::class, 'accountant_deptors']) -> name('accountant-deptors');
     Route::get('/complete-transactions', [AccountabilityController::class, 'complete_transactions']) -> name('complete-transactions');
-    Route::get('/get-complete-transactions', [ExportsController::class, 'exportCompleteTransactions'])->name('get-complete-transactions');
-    Route::post('/sort-transactions', [ExportsController::class, 'sortTransactions'])->name('sort-transactions');
     Route::get('/accountant/staff', [AdminController::class, 'organization']) -> name('accountant-staff');
     Route::get('/sheets/{assistant}', [AdminController::class, 'recordings']) -> name('employer-sheet');
     Route::get('/sheets/{assistant}/this-week', [AdminController::class, 'recordings']) -> name('accountant-sort-recs-this-week');
     Route::get('/sheets/{assistant}/all', [AdminController::class, 'sortRecsAll']) -> name('accountant-sort-recs-all');
-    Route::get('/accountant/export-transactions', [ExportsController::class, 'exportCompleteTransactions'])->name('export.transactions');});
     Route::get('/sort-pending-applications', [AccountabilityController::class, 'sort_pending_applications']) -> name('sort-pending-apps');
     Route::get('/sort-complete-applications', [AccountabilityController::class, 'complete_transactions']) -> name('sort-complete-apps');
+    Route::get('/accountant-revenues', [AdminController::class, 'revenue']) -> name('accountant.revenue');
+    Route::get('/revenue/debtors', [AdminController::class, 'debtors']) -> name('debtors');
+    Route::get('/accountant/export-transactions', [ExportsController::class, 'exportTransactions'])->name('export.transactions');
+    Route::get('/export-revenue', [AccountabilityController::class, 'revenue'])->name('export-revenues');
+});

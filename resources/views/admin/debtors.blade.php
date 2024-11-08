@@ -14,7 +14,7 @@
                     <div class="card-header-tab card-header py-3 d-flex">
                     <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-7">
                     Debtors sheet  <br>
-                    <p class="text-muted mb-0">Placeholder </p>
+                    <p class="text-muted mb-0">Clients who have refused to pay </p>
 
                     </div>
                     <div class="btn-actions-pane-right d-flex flex-row-reverse text-capitalize col-lg-5">
@@ -30,7 +30,7 @@
                     <i class="fa-solid fa-sack-dollar" style="font-size: 25px"></i></div>
                     </div>
 
-                    </div>                    
+                    </div>
                     </div>
                     </div>
 
@@ -39,7 +39,7 @@
                     <div style="border-top: none" class="d-block p-3 card-footer">
 
                     <div class="info-div mt-3 mb-4">
-                    
+
                     <table id="example1" class="table align-middle mb-0 bg-white">
                     <thead class="bg-light">
 
@@ -55,7 +55,7 @@
                         </thead>
                         <tbody>
 
-                        @foreach ($debtors as $request) 
+                        @foreach ($debtors as $request)
                         <tr>
                         <td>
                             <div class="d-flex align-items-center">
@@ -87,7 +87,7 @@
 
                         @php
 
-                        $atdg_amt_exp = explode(';', $request -> outstanding_paid_amount);      
+                        $atdg_amt_exp = explode(';', $request -> outstanding_paid_amount);
 
                         $sum = 0;
 
@@ -95,7 +95,7 @@
 
                             $number = explode('=>', $value);
                             $sum += intval($number[0]);
-                            
+
                         }
 
                         @endphp
@@ -103,17 +103,17 @@
                         <td class="text-left">
                         <p class="fw-normal mb-1">{{ number_format($request -> amount_not_paid) }} RWF</p>
                         <p class="text-muted mb-0" style="font-size: 13px"> Paid amount: {{ number_format($sum) }}</p>
-                        </td>   
+                        </td>
 
                         </tr>
 
                             @endforeach
-                            
+
                         </tbody>
                         </table>
-                                            
+
                     </div>
-               
+
                     </div>
 
                     </form>
@@ -121,7 +121,7 @@
                     </div>
                     </div>
                     </div>
-                    
+
 
     </div>
 </div>

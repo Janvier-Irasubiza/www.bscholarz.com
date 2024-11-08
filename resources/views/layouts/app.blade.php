@@ -159,7 +159,6 @@
         <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
         <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
         <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-<<<<<<< HEAD
 
         <script>
 
@@ -172,22 +171,22 @@
                     console.log('clicked');
                 });
 
-                $('#example1').DataTable({
-                    responsive: true,
-                    lengthChange: false,
-                    autoWidth: false,
-                    buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+                // $('#example1').DataTable({
+                //     responsive: true,
+                //     lengthChange: false,
+                //     autoWidth: false,
+                //     buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                // }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-                $('#example2').DataTable({
-                    paging: true,
-                    lengthChange: false,
-                    searching: false,
-                    ordering: true,
-                    info: true,
-                    autoWidth: false,
-                    responsive: true,
-                });
+                // $('#example2').DataTable({
+                //     paging: true,
+                //     lengthChange: false,
+                //     searching: false,
+                //     ordering: true,
+                //     info: true,
+                //     autoWidth: false,
+                //     responsive: true,
+                // });
             });
 
             function timeAgo(time) {
@@ -554,9 +553,7 @@
             }
 
         </script>
-=======
         <script src="{{ asset('scripts/app.js') }}"></script>
         <script src="{{ asset('scripts/conv.js') }}"></script>
->>>>>>> 21c6bc9a9aab704f9b3178bd1fa337dea54c3ce7
     </body>
 </html>
