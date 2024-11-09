@@ -324,5 +324,6 @@ Route::prefix('accountant') -> group(function () {
     Route::get('/accountant-revenues', [AdminController::class, 'revenue']) -> name('accountant.revenue');
     Route::get('/revenue/debtors', [AdminController::class, 'debtors']) -> name('debtors');
     Route::get('/accountant/export-transactions', [ExportsController::class, 'exportTransactions'])->name('export.transactions');
-    Route::get('/export-revenue', [AccountabilityController::class, 'revenue'])->name('export-revenues');
+    Route::get('/export-revenue', [AccountabilityController::class, 'revenue']) -> name('export-revenues');
+    Route::get('/accountant-remind', [AccountabilityController::class, 'remind_debtor']) -> name('remind-debtor');
 });

@@ -210,4 +210,8 @@ class AccountabilityController extends Controller {
         return view('admin.revenue', compact('app_incomes', 'ads', 'todayApps', 'todayAds'));
     }
 
+    public function remind_debtor() {
+        
+    }
+
 }
