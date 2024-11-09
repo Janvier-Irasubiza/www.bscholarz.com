@@ -60,6 +60,7 @@ Route::post('/request-payment', [PaymentsController::class, 'payment']) -> middl
 Route::post('/request/{request}/payment', [PaymentsController::class, 'pay_view']) -> middleware('guest') -> name('request.payment');
 Route::get('/payment/confirmation', [PaymentsController::class, 'confirmation'])->middleware('guest')->name('payment.confirmation');
 Route::post('/apply/payment/approve', [PaymentsController::class, 'approve_payment']) -> name('client.payment');
+Route::post('/request/payment/approve', [PaymentsController::class, 'pay']) -> name('request.pay');
 Route::post('/user-request', [UserRequestController::class, 'user_request_application']) -> name('user-request-application');
 Route::get('/apply/{discipline}/approve', [PagesController::class, 'follow_up_options']) -> name('follow-up');
 Route::get('/apply/{discipline}/approve', [PagesController::class, 'follow_up_options']) -> name('follow-up');

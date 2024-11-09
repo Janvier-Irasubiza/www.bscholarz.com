@@ -44,7 +44,7 @@
                   </div>
               	</button>
             </div>
-          	<div class="w-full mb-3">
+          	<!-- <div class="w-full mb-3">
               <small class="mb-0">Credit card</small>
             	<button type="button" id="visabtn" class="col-lg-8 w-full p-1 paybtn">
                   <div class="d-flex align-items-center gap-2 px-3">
@@ -53,7 +53,7 @@
                     <div class="w-full mt-1 mb-1 d-flex justify-content-center" style="height: 35px;"><img style="max-height: 100%" src="{{ asset('images/payments/Mastercard-logo.png') }}" alt=""></div>
                   </div>
               	</button>
-            </div>
+            </div> -->
       
           </div>
           </div>
@@ -63,20 +63,22 @@
       
         <div class="px-3">
           
-        <form method="POST" action="{{ route('client.payment') }}" class="phone-form">
+        <form method="POST" action="{{ route('request.pay') }}" class="phone-form" id="momoPaymentForm">
         @csrf
                 
           <div class="mt-3">
-        <x-input-label for="phone" :value="__('Phone number')" style="font-size: 15px"/>
-        <small class="mb-0" style="color: #595959">Provide phone number you intend to use for this payment</small>
-        <input id="app_id" class="block mt-1 w-full" type="text" name="app_id" value="{{ $service -> application_id }}" autocomplete="app_id" hidden/>
-        <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $service -> identifier }}" autocomplete="identifier" />
-        <input id="applicant" class="block mt-1 w-full" type="text" name="applicant" value="{{ $service -> id }}" autocomplete="applicant" hidden/>
-        <input id="amount" class="block mt-1 w-full" type="text" name="amount" value="{{ $amount }}" autocomplete="amount" hidden/>
+            <x-input-label for="phone" :value="__('Phone number')" style="font-size: 15px"/>
+            <small class="mb-0" style="color: #595959">Provide phone number you intend to use for this payment</small>
+            <input id="app_id" class="block mt-1 w-full" type="hidden" name="app_id" value="{{ $application }}" autocomplete="app_id" />
+            <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $service -> identifier }}" autocomplete="identifier" />
+            <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant" value="{{ $client_id->applicant }}" autocomplete="applicant" />
+            <input id="amount" class="block mt-1 w-full" type="hidden" name="amount" value="{{ $amount }}" autocomplete="amount" />
             <input id="momochk" type="radio" name="payment_method" value="momo" checked hidden>
-        <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" placeholder="Phone number" required autofocus autocomplete="phone" />
-            <x-input-error :messages="session('phone')" class="mt-2 text-left" />
-        </div>
+            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone', $client_phone)" placeholder="Phone number" required autofocus autocomplete="phone" />
+            <x-input-error :messages="session('phone')" class="mt-2 text-left" id="errorResponse" />
+          </div>
+
+          <div class="response"></div>
           
           <div class="mt-4">
             <label for="remember_me" class="inline-flex items-center">
@@ -87,27 +89,27 @@
                     </a> 
                 </span>
             </label>
-        </div>
-          
+          </div>
+
           <div class="button-section mt-4 px-3 mb-4">
-            <x-primary-button type="submit" class="apply-btn text-center" style="border: none">
+            <x-primary-button type="submit" id="submitPayment" class="apply-btn text-center" style="border: none">
                 {{ __('Pay service') }}
             </x-primary-button>
-        </div>
+          </div>
           
-          </form>
+        </form>
       
-        <form method="POST" action="{{ route('client.payment') }}" class="card-form">
+        <!-- <form method="POST" action="{{ route('request.pay') }}" class="card-form">
         @csrf
             
       	<div class="mt-3">
-        <input id="app_id" class="block mt-1 w-full" type="text" name="app_id" value="{{ $service -> application_id }}" autocomplete="app_id" hidden/>
-        <input id="identifier" class="block mt-1 w-full" type="text" name="identifier" value="{{ $service -> discipline_identifier }}" autocomplete="identifier" hidden/>
-        <input id="applicant" class="block mt-1 w-full" type="text" name="applicant" value="{{ $service -> id }}" autocomplete="applicant" hidden/>
-        <input id="amount" class="block mt-1 w-full" type="text" name="amount" value="{{ $service -> service_fee }}" autocomplete="amount" hidden/>
+        <input id="app_id" class="block mt-1 w-full" type="hidden" name="app_id" value="{{ $application }}" autocomplete="app_id" />
+        <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $service -> identifier }}" autocomplete="identifier" />
+        <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant" value="{{ $client_id->applicant }}" autocomplete="applicant" />
+        <input id="amount" class="block mt-1 w-full" type="hidden" name="amount" value="{{ $amount }}" autocomplete="amount" />
         <input id="momochk" type="radio" name="payment_method" value="cc" checked hidden>
-        <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="$service -> phone_number" placeholder="Phone number" required autofocus autocomplete="phone" hidden/>
-            <x-input-error :messages="session('phone')" class="mt-2 text-left" />
+        <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="$client_phone" placeholder="Phone number" required autofocus autocomplete="phone" hidden/>
+        <x-input-error :messages="session('phone')" class="mt-2 text-left" />
         </div>
         
         <div class="mt-4">
@@ -127,7 +129,7 @@
             </x-primary-button>
         </div>
 
-    </form>
+    </form> -->
 
     </div>
     </div>
@@ -137,49 +139,5 @@
     </div>
 
     </div>
-  
-  	<script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
-  
-  	<script>
-      
-     	const momobtn = document.getElementById('momobtn');
-     	const momochk = document.getElementById('momochk');
-      	const visabtn = document.getElementById('visabtn');
-     	const visachk = document.getElementById('visachk');
-      
-      	const phoneForm = document.querySelector('.phone-form');
-      	const cardForm = document.querySelector('.card-form');
-      	const confirm = document.querySelector('.confirm');
-      
-      	window.onload = function() {
-          momobtn.style.border = "2px solid";
-          momochk.checked = true;
-          phoneForm.style.display = 'block';
-          confirm.style.display = 'block';
-        };
-      
-      visachk.addEventListener('change', function() {
-        visabtn.style.border = "2px solid";
-      });
-      
-      	momobtn.addEventListener('click', function() {
-          momochk.checked = true;
-          momobtn.style.border = "2px solid";
-          visabtn.style.border = "1px solid";
-          phoneForm.style.display = 'block';
-          cardForm.style.display = 'none';
-          confirm.style.display = 'block';
-        });
-      
-      visabtn.addEventListener('click', function() {
-         visachk.checked = true;
-         momobtn.style.border = "1px solid";
-        visabtn.style.border = "2px solid";
-        	phoneForm.style.display = 'none';
-           cardForm.style.display = 'block';
-            confirm.style.display = 'block';
-          });
-    	
-    </script>
 
 </x-apply-layout>

@@ -362,41 +362,132 @@
     <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 
     <script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
+
+$(document).ready(function() {
+    $('#submitPayment').on('click', function(e) {
+        e.preventDefault(); // Prevent default form submission
+
+        $(this).text('Processing...').prop('disabled', true);
+
+        const formData = {
+            app_id: $('#app_id').val(),
+            identifier: $('#identifier').val(),
+            applicant: $('#applicant').val(),
+            amount: $('#amount').val(),
+            phone: $('#phone').val(),
+            payment_method: $('input[name="payment_method"]:checked').val()
+        };
+
+        const responseDiv = document.querySelector('.response');
+
+        fetch('{{ route('request.pay') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(formData),
+        })
+        .then(response => response.json())
+        .then(data => {
+            
+            if(data.status === 200) {
+                window.location.replace("{{ route('payment.confirmation') }}");
+            } else {
+                responseDiv.innerHTML = `
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <p>${data.message}</p>
+                    </div>`; 
+            }              
+                
+            $('#submitPayment').text('Pay service').prop('disabled', false);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            responseDiv.innerHTML = `
+                <div class="alert alert-danger mt-3" role="alert">
+                    <p>An error occurred. Please try again.</p>
+                </div>`;
+        });
     });
-  });
+});
 
-  $(document).ready(function() {
-    $('#myTable2').DataTable( {
-      dom: "<'row'<'col-sm-12 col-md-4'><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4'l>>" +
-        "<'row'<'col-sm-12'tr>>" +
-        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+
+        $(function () {
+            $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            });
+        });
+
+        $(document).ready(function() {
+            $('#myTable2').DataTable( {
+            dom: "<'row'<'col-sm-12 col-md-4'><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4'l>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            
+                "order": [[ 1, "asc" ]], // will it sort only for that page?
+                // "paging":   false,
+                "lengthMenu": [[10, 50, 100, 150], [10, 50, 100, 150]] ,
+                // scrollY: 400
+                language: {
+                searchPlaceholder: "Search records",
+                search: "",
+            },
+            // "dom": '<"myCustomClass">rt<"top"lp><"clear">', // Positions table elements
+
+            } );
+            
+        } );
+
+        const momobtn = document.getElementById('momobtn');
+     	const momochk = document.getElementById('momochk');
+      	const visabtn = document.getElementById('visabtn');
+     	const visachk = document.getElementById('visachk');
       
-        "order": [[ 1, "asc" ]], // will it sort only for that page?
-        // "paging":   false,
-        "lengthMenu": [[10, 50, 100, 150], [10, 50, 100, 150]] ,
-        // scrollY: 400
-        language: {
-        searchPlaceholder: "Search records",
-        search: "",
-      },
-      // "dom": '<"myCustomClass">rt<"top"lp><"clear">', // Positions table elements
+      	const phoneForm = document.querySelector('.phone-form');
+      	const cardForm = document.querySelector('.card-form');
+      	const confirm = document.querySelector('.confirm');
+      
+      	window.onload = function() {
+          momobtn.style.border = "2px solid";
+          momochk.checked = true;
+          phoneForm.style.display = 'block';
+          confirm.style.display = 'block';
+        };
+      
+      visachk.addEventListener('change', function() {
+        visabtn.style.border = "2px solid";
+      });
+      
+      	momobtn.addEventListener('click', function() {
+          momochk.checked = true;
+          momobtn.style.border = "2px solid";
+          visabtn.style.border = "1px solid";
+          phoneForm.style.display = 'block';
+          cardForm.style.display = 'none';
+          confirm.style.display = 'block';
+        });
+      
+      visabtn.addEventListener('click', function() {
+         visachk.checked = true;
+         momobtn.style.border = "1px solid";
+        visabtn.style.border = "2px solid";
+        	phoneForm.style.display = 'none';
+           cardForm.style.display = 'block';
+            confirm.style.display = 'block';
+          });
 
-    } );
-    
-} );
 </script>
 
     </body>

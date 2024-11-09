@@ -16,7 +16,7 @@
 
 </div>
 
-<form method="POST" action="{{ route('request-payment') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('user-request-application') }}" enctype="multipart/form-data">
     <div class="">
         <div class="px-4 pt-1">
         @csrf

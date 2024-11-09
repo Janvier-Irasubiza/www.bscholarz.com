@@ -641,7 +641,6 @@ class AdminController extends Controller {
                 'deadlinedAppsCount'
             ));
     }
-
     
     public function updateModels() {
         $this->addUUIDToModels();
@@ -660,6 +659,7 @@ class AdminController extends Controller {
             'App\Models\SubPlan',
             'App\Models\Subscriber',
             'App\Models\SubService',
+            'App\Models\Request',
         ];
 
         $results = [];
