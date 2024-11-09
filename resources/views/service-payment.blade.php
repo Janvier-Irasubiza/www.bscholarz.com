@@ -21,13 +21,12 @@
 
         <div class="mt-3">
 
-        <div class="mb-3">
-          <h1 style="" class="f-20">Request fee: <strong>{{ number_format($amount ) }} RWF</strong> </h1>
+        <div class="alert alert-success mt-3" role="alert">
+          <h1 style="" class="f-20">Request fee: <strong>{{ number_format($amount) }} RWF</strong> </h1>
+          <p class="mt-2">
+            Get an application link to apply for this service by yourself
+          </p>
         </div>
-
-        <span style="font-size: 15px">
-            Dear <span style="font-weight: 600">{{ $client }},</span> you're requesting for <span style="font-weight: 600">{{ $service -> discipline_name }} in {{ $service -> discipline_organization }}</span> application
-        </span>
           
           <div class="mt-4 px-3">
             <div style="border-bottom: 1px solid #f2f2f24b">
@@ -63,18 +62,16 @@
       
         <div class="px-3">
           
-        <form method="POST" action="{{ route('request.pay') }}" class="phone-form" id="momoPaymentForm">
+        <form method="POST" action="{{ route('link.pay') }}" class="phone-form">
         @csrf
                 
           <div class="mt-3">
             <x-input-label for="phone" :value="__('Phone number')" style="font-size: 15px"/>
             <small class="mb-0" style="color: #595959">Provide phone number you intend to use for this payment</small>
-            <input id="app_id" class="block mt-1 w-full" type="hidden" name="app_id" value="{{ $application }}" autocomplete="app_id" />
-            <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $service -> identifier }}" autocomplete="identifier" />
-            <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant" value="{{ $client_id->applicant }}" autocomplete="applicant" />
+            <input id="service" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $service->identifier }}" autocomplete="identifier" />
             <input id="amount" class="block mt-1 w-full" type="hidden" name="amount" value="{{ $amount }}" autocomplete="amount" />
             <input id="momochk" type="radio" name="payment_method" value="momo" checked hidden>
-            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone', $client_phone)" placeholder="Phone number" required autofocus autocomplete="phone" />
+            <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="old('phone')" placeholder="Phone number" required autofocus autocomplete="phone" />
             <x-input-error :messages="session('phone')" class="mt-2 text-left" id="errorResponse" />
           </div>
 
@@ -91,46 +88,14 @@
             </label>
           </div>
 
-          <div class="button-section mt-4 px-3 mb-4">
-            <x-primary-button type="submit" id="submitPayment" class="apply-btn text-center" style="border: none">
+          <div class="button-section justify-start mt-4 px-3 mb-4">
+            <x-primary-button type="submit" id="submitLinkPayment" class="apply-btn text-center" style="border: none">
                 {{ __('Pay service') }}
             </x-primary-button>
           </div>
           
         </form>
       
-        <!-- <form method="POST" action="{{ route('request.pay') }}" class="card-form">
-        @csrf
-            
-      	<div class="mt-3">
-        <input id="app_id" class="block mt-1 w-full" type="hidden" name="app_id" value="{{ $application }}" autocomplete="app_id" />
-        <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier" value="{{ $service -> identifier }}" autocomplete="identifier" />
-        <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant" value="{{ $client_id->applicant }}" autocomplete="applicant" />
-        <input id="amount" class="block mt-1 w-full" type="hidden" name="amount" value="{{ $amount }}" autocomplete="amount" />
-        <input id="momochk" type="radio" name="payment_method" value="cc" checked hidden>
-        <x-text-input id="phone" class="block mt-1 w-full" type="text" name="phone" :value="$client_phone" placeholder="Phone number" required autofocus autocomplete="phone" hidden/>
-        <x-input-error :messages="session('phone')" class="mt-2 text-left" />
-        </div>
-        
-        <div class="mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="agree" style="border-radius: 4px; border: 1.5px solid #505050" required>
-                <span class="ml-2 text-sm">By clicking process payment, you agree with  our 
-                    <a class="underline text-sm hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="">
-                        Terms and Conditions
-                    </a> 
-                </span>
-            </label>
-        </div>
-
-        <div class="button-section mt-4 px-3 mb-4">
-            <x-primary-button type="submit" class="apply-btn text-center" style="border: none">
-                {{ __('Continue to card Info') }}
-            </x-primary-button>
-        </div>
-
-    </form> -->
-
     </div>
     </div>
 

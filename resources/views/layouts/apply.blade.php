@@ -363,56 +363,105 @@
 
     <script>
 
-$(document).ready(function() {
-    $('#submitPayment').on('click', function(e) {
-        e.preventDefault(); // Prevent default form submission
+        $(document).ready(function() {
+            $('#submitPayment').on('click', function(e) {
+                e.preventDefault(); // Prevent default form submission
 
-        $(this).text('Processing...').prop('disabled', true);
+                $(this).text('Processing...').prop('disabled', true);
 
-        const formData = {
-            app_id: $('#app_id').val(),
-            identifier: $('#identifier').val(),
-            applicant: $('#applicant').val(),
-            amount: $('#amount').val(),
-            phone: $('#phone').val(),
-            payment_method: $('input[name="payment_method"]:checked').val()
-        };
+                const formData = {
+                    app_id: $('#app_id').val(),
+                    identifier: $('#identifier').val(),
+                    applicant: $('#applicant').val(),
+                    amount: $('#amount').val(),
+                    phone: $('#phone').val(),
+                    payment_method: $('input[name="payment_method"]:checked').val()
+                };
 
-        const responseDiv = document.querySelector('.response');
+                const responseDiv = document.querySelector('.response');
 
-        fetch('{{ route('request.pay') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(formData),
-        })
-        .then(response => response.json())
-        .then(data => {
-            
-            if(data.status === 200) {
-                window.location.replace("{{ route('payment.confirmation') }}");
-            } else {
-                responseDiv.innerHTML = `
-                    <div class="alert alert-danger mt-3" role="alert">
-                        <p>${data.message}</p>
-                    </div>`; 
-            }              
-                
-            $('#submitPayment').text('Pay service').prop('disabled', false);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            responseDiv.innerHTML = `
-                <div class="alert alert-danger mt-3" role="alert">
-                    <p>An error occurred. Please try again.</p>
-                </div>`;
+                fetch('{{ route('request.pay') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(formData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    
+                    if(data.status === 200) {
+                        window.location.replace("{{ route('payment.confirmation') }}");
+                    } else {
+                        responseDiv.innerHTML = `
+                            <div class="alert alert-danger mt-3" role="alert">
+                                <p>${data.message}</p>
+                            </div>`; 
+                    }              
+                        
+                    $('#submitPayment').text('Pay service').prop('disabled', false);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    responseDiv.innerHTML = `
+                        <div class="alert alert-danger mt-3" role="alert">
+                            <p>An error occurred. Please try again.</p>
+                        </div>`;
+                });
+            });
+
         });
-    });
-});
 
+        $(document).ready(function() {
+            // Intercept form submission
+            $('.phone-form').on('submit', function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                $('#submitLinkPayment').text('Processing...').prop('disabled', true);
+
+                const formData = {
+                    identifier: $('#service').val(),
+                    amount: $('#amount').val(),
+                    phone: $('#phone').val(),
+                    payment_method: $('input[name="payment_method"]:checked').val()
+                };
+
+                const responseDiv = document.querySelector('.response');
+
+                fetch('{{ route('link.pay') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(formData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 200) {
+                        window.location.replace("{{ route('link-pay.success') }}");
+                    } else {
+                        responseDiv.innerHTML = `
+                            <div class="alert alert-danger mt-3" role="alert">
+                                <p>${data.message}</p>
+                            </div>`;
+                    }
+                        
+                    $('#submitLinkPayment').text('Pay service').prop('disabled', false);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    responseDiv.innerHTML = `
+                        <div class="alert alert-danger mt-3" role="alert">
+                            <p>An error occurred. Please try again.</p>
+                        </div>`;
+                    $('#submitLinkPayment').text('Pay service').prop('disabled', false);
+                });
+            });
+        });
 
         $(function () {
             $("#example1").DataTable({

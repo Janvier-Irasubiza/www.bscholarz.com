@@ -65,7 +65,7 @@
 
     
         <div class="button-section mt-4 justify-between" style="margin-bottom: 20px">
-            <a href="{{ route('link.payment') }}" class="underline">Get application link</a>
+            <a href="{{ route('link.payment', ['app' => $discipline_info->identifier]) }}" class="underline">Get application link</a>
 
             <x-primary-button class="apply-btn button-section-btn">
                 {{ __('Request service') }}

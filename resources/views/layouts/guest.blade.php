@@ -101,6 +101,7 @@
             });
         });
     });
+    
 </script>
 
     </head>
@@ -114,7 +115,7 @@
             </a>
         </div>
 
-        <div class="sm-section">
+        <div class="sm-section" style="background: none">
             {{ $slot }}
         </div>
 

@@ -36,6 +36,16 @@ class PaymentsController extends Controller
       return view('payment', compact('service', 'amount', 'client', 'client_id', 'client_phone', 'application'));
     }
 
+    public function service_payment_view(Request $request) {
+
+      $service = Discipline::where('identifier', $request->app)
+                          ->select('id', 'identifier', 'discipline_name', 'organization', 'country', 'category')
+                          ->first();
+      
+      $amount = 15000;
+      return view('service-payment', compact('service', 'amount',));
+    }
+
     public function formatPhoneNumber($phoneNumber) {
       // Remove any spaces from the phone number
       $phoneNumber = str_replace(' ', '', $phoneNumber);
@@ -107,7 +117,7 @@ class PaymentsController extends Controller
 
       // Prepare api data
       $data = array(
-        'amount' => 10,
+        'amount' => $validatedData['amount'],
         'phone' => $phoneNumber,
         'key' => $apiKey
       );
@@ -128,7 +138,7 @@ class PaymentsController extends Controller
 
       if (curl_errno($curl)) {
         $error = curl_error($curl);
-        dd($error);
+        return response()->json(['message' => 'Something went wrong'], 500);
       }
 
       // Close the curl session
@@ -136,6 +146,13 @@ class PaymentsController extends Controller
 
       // Output the response
       $responseData = json_decode($response, true);
+
+      if (is_null($responseData)) {
+        return response()->json([
+            'message' => 'Operation Failed, Try again!'
+        ], 500);
+      }
+
       $status = $responseData['status'];
           
       if($status===200){
@@ -162,6 +179,85 @@ class PaymentsController extends Controller
           'message' => $responseData['data']['message']
         ]);
       }
+    }
+
+    public function link_pay(Request $request) {
+      // Validate inputs
+      $validatedData = $request->validate([
+        'identifier' => 'required|string|min:0',
+        'amount' => 'required|integer|min:0',
+        'phone' => 'required|string|max:30',
+        'payment_method' => 'required|string|max:255',
+      ]);
+
+      $phoneNumber = $this->formatPhoneNumber($validatedData['phone']);
+      if ($phoneNumber === null) {
+          return response()->json(['message' => 'Phone number must be 10 digits long after formatting.'], 400);
+      }
+      if ($phoneNumber === 1) {
+        return response()->json(['message' => 'Invalid phone number'], 400);
+      }
+      $apiKey = $this->getApiKey($phoneNumber);
+      if ($apiKey === null) {
+        return response()->json(['message' => 'Invalid phone number prefix'], 400);
+      }
+
+      // Prepare api data
+      $data = array(
+        'amount' => 10,
+        'phone' => $phoneNumber,
+        'key' => $apiKey
+      );
+      $encData = json_encode($data);
+      
+      // Initialize curl
+      $curl = curl_init();
+
+      // Set curl options
+      curl_setopt($curl, CURLOPT_URL, 'https://pay.itecpay.rw/api/pay');
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($curl, CURLOPT_POST, true);
+      curl_setopt($curl, CURLOPT_POSTFIELDS, $encData);
+      curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+      // Execute the request
+      $response = curl_exec($curl);
+      if (curl_errno($curl)) {
+        $error = curl_error($curl);
+        return response()->json(['message' => 'Something went wrong'], 500);
+      }
+
+      // Close the curl session 
+      curl_close($curl);
+
+      // Output the response
+      $responseData = json_decode($response, true);
+
+      if (is_null($responseData)) {
+        return response()->json([
+            'message' => 'Operation Failed, Try again!'
+        ], 500);
+      }
+
+      $status = $responseData['status'];
+
+      if($status===200){
+          $amount = $responseData['data']['amount'];
+          $uniqueId = $responseData['data']['transID'];
+          $service = Discipline::where('identifier', $validatedData['identifier'])->first();
+
+          Session::put('service_link', $service->link);
+
+          return response()->json([
+            'status' => $status,
+            'message' => 'Payment successful',
+          ]);
+      } else {
+          return response()->json([
+            'status' => $status,
+            'message' => $responseData['data']['message']
+          ]);
+        }
     }
 
       public function payment(Request $request) {
@@ -195,15 +291,20 @@ class PaymentsController extends Controller
 
       public function confirmation() {
 
-        // Retrieve the data from the session
-        // $service = session('service');
-        // $amount = session('amount');
-
         $client = session('client');
         $applicant = Applicant_info::where('uuid', $client)->first();
 
         // Display the confirmation view with session data
         return view('follow-up', compact('applicant'));
+      }
+
+      public function confirm(Request $request) {
+
+        // Retrieve the data from the session
+        $link = session('service_link');
+
+        // Display the confirmation view with session data
+        return view('confirmation', compact('link'));
       }
 
     
