@@ -1,6 +1,6 @@
 @section('title', 'Create account')
 
-<x-guest-notify-layout>
+<x-guest-layout>
 
 <div class="client-body w-full h-middle">
 

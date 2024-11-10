@@ -55,11 +55,14 @@ Route::get('/ksp-apply', function() {
 }) -> name('ksp-apply');
 
 Route::get('/apply/{discipline}/payment', [PaymentsController::class, 'payment_view']) -> middleware('guest') -> name('app-payment');
-Route::get('/link/payment', [PaymentsController::class, 'payment_view']) -> middleware('guest') -> name('link.payment');
+Route::get('/link/payment/{app}', [PaymentsController::class, 'service_payment_view']) -> middleware('guest') -> name('link.payment');
+Route::post('/link-pay', [PaymentsController::class, 'link_pay']) -> middleware('guest') -> name('link.pay');
+Route::get('/request/success', [PaymentsController::class, 'confirm']) -> middleware('guest') -> name('link-pay.success');
 Route::post('/request-payment', [PaymentsController::class, 'payment']) -> middleware('guest') -> name('request-payment');
 Route::post('/request/{request}/payment', [PaymentsController::class, 'pay_view']) -> middleware('guest') -> name('request.payment');
 Route::get('/payment/confirmation', [PaymentsController::class, 'confirmation'])->middleware('guest')->name('payment.confirmation');
 Route::post('/apply/payment/approve', [PaymentsController::class, 'approve_payment']) -> name('client.payment');
+Route::post('/request/payment/approve', [PaymentsController::class, 'pay']) -> name('request.pay');
 Route::post('/user-request', [UserRequestController::class, 'user_request_application']) -> name('user-request-application');
 Route::get('/apply/{discipline}/approve', [PagesController::class, 'follow_up_options']) -> name('follow-up');
 Route::get('/apply/{discipline}/approve', [PagesController::class, 'follow_up_options']) -> name('follow-up');

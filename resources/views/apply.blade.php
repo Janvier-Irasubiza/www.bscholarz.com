@@ -16,7 +16,7 @@
 
 </div>
 
-<form method="POST" action="{{ route('request-payment') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('user-request-application') }}" enctype="multipart/form-data">
     <div class="">
         <div class="px-4 pt-1">
         @csrf
@@ -65,7 +65,7 @@
 
     
         <div class="button-section mt-4 justify-between" style="margin-bottom: 20px">
-            <a href="{{ route('link.payment') }}" class="underline">Get application link</a>
+            <a href="{{ route('link.payment', ['app' => $discipline_info->identifier]) }}" class="underline">Get application link</a>
 
             <x-primary-button class="apply-btn button-section-btn">
                 {{ __('Request service') }}
