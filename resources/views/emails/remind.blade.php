@@ -5,12 +5,11 @@
 
   <br>
     <p class="mb-0">You still have a payment to make!<br> <br>
-  		{{ $title }} - {{ $type }}
   	</p> <br>
 
-             <p>{{ $desc }}<br><br>
+             <p>Dear {{ $client }}<br><br>
 
-               For more details, click the button bellow:
+               You have not yet paid for {{ $app }}
 
   				</p>
 

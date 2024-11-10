@@ -80,39 +80,44 @@
 
 
                                             <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                <form action="#" method="POST">
-                                                @csrf
-                                                    <div class="modal-content" style="top: 100px">
-                                                    <div class="modal-header">
-                                                        <strong><h1 style="font-size: 14px" class="modal-title fs-5" id="exampleModalLabel">Transaction Clarification</h1></strong>
-                                                        <button type="button" class="btn-close bg-danger" data-bs-dismiss="modal" aria-label="Close"><i style="font-size: 24px; margin-left: 0px; margin-top: -10px" class="fa-solid fa-xmark"></i></button>
-                                                    </div>
-                                                    <div class="modal-body">
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <form action="{{ route('send-clarification-message') }}" method="POST">
+                                                            @csrf
+                                                            <div class="modal-content" style="top: 100px">
+                                                                <div class="modal-header">
+                                                                    <strong><h1 style="font-size: 14px" class="modal-title fs-5" id="exampleModalLabel">Transaction Clarification</h1></strong>
+                                                                    <button type="button" class="btn-close bg-danger" data-bs-dismiss="modal" aria-label="Close">
+                                                                        <i style="font-size: 24px; margin-left: 0px; margin-top: -10px" class="fa-solid fa-xmark"></i>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="">
+                                                                        <x-input-label for="title" :value="__('Title')" />
+                                                                        <input style="padding: 6px 10px; border: 2px solid #4d4d4d; color: #808080; border-radius: 6px" id="title" class="block mt-1 w-full" type="text" name="title" placeholder="Give a title to your concern" required />
+                                                                        <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                                                                    </div>
 
-                                                        <div class="">
-                                                            <x-input-label for="title" :value="__('Title')" />
-                                                            <input style = "padding: 6px 10px; border: 2px solid #4d4d4d; color: #808080; border-radius: 6px" id="title" class="block mt-1 w-full" type="text" name="title" :value="(username)" placeholder="Give a title to your concern" autocomplete="title" required/>
-                                                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                                                        </div>
+                                                                    <div class="mt-3">
+                                                                        <x-input-label for="desc" :value="__('Concern description')" />
+                                                                        <textarea style="padding: 6px 10px; border: 2px solid #4d4d4d; color: #808080; border-radius: 6px" id="desc" class="block mt-1 w-full" name="desc" placeholder="Describe your concern" required></textarea>
+                                                                        <x-input-error :messages="$errors->get('desc')" class="mt-2" />
+                                                                    </div>
 
-                                                        <div class="mt-3">
-                                                            <x-input-label for="desc" :value="__('Concern description')" />
-                                                            <textarea style = "padding: 6px 10px; border: 2px solid #4d4d4d; color: #808080; border-radius: 6px" id="desc" class="block mt-1 w-full" type="text" name="desc" :value="desc" placeholder="Describe your concern" autocomplete="desc" required></textarea>
-                                                            <x-input-error :messages="$errors->get('desc')" class="mt-2" />
-                                                        </div>
+                                                                    <!-- Hidden inputs for agent information and application details -->
+                                                                    <input type="hidden" name="agent_id" value="{{ $agent_info->id }}">
+                                                                    <input type="hidden" name="application_id" value="{{ $transaction_info->app_id }}">
 
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border: 2px solid #000; color: #000; font-weight: bold">CANCEL</button>
+                                                                    <button type="submit" class="btn btn-secondary bg-success" style="border: none; color: #000; font-weight: bold">CLARIFY</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border: 2px solid #000; color: #000; font-weight: bold">CANCEL</button>
-                                                        <button type="button submit" class="btn btn-secondary bg-success" style="border: none; color: #000; font-weight: bold">CLARIFY</button>
-                                                    </div>
-                                                    </div>
-                                                </form>
-
                                                 </div>
-                                                </div>
+
 
 
 

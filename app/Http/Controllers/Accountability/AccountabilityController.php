@@ -14,15 +14,34 @@ use DB;
 use File;
 use Mail;
 use App\Mail\DisbursedSalary;
+use App\Mail\Remind;
 use Illuminate\Support\Facades\Cache;
 use App\Exports\TransactionsExport;
 use App\Exports\UnpaidApplicationsExport;
 use App\Exports\RevenueExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Crypt;
+use App\Models\Message;
 
 class AccountabilityController extends Controller {
-    public function accountant_dashboard() {
-        return view('accountant.dashboard');
+    public function accountant_dashboard(Request $request) {
+        $clarifications = DB::table('served_requests') -> where('payment_status', 'Agent Needs To Clarify') -> get();
+
+        $clarifications_unique = DB::table('served_requests') -> where('payment_status', 'Agent Needs To Clarify') -> groupBy('discipline_identifier', 'discipline_name') -> get();
+        $staff_ids = [];
+        foreach($clarifications as $app){
+            $staff_ids[] = $app -> assistant;
+        }
+        $employees = DB::table('staff') -> where('role', '!=', 'Accountant') -> where('role', '!=', 'Admin') -> where('role', '!=', 'Marketing') -> whereIn('id', $staff_ids) -> get();
+
+        // Initialize sorting variables with default values
+        $sortBy = $request->input('sortBy', '');
+        $employee = $request->input('employee', '');
+        $application = $request->input('application', '');
+        $startDate = $request->input('start_date', '');
+        $endDate = $request->input('end_date', '');
+
+        return view('accountant.dashboard', compact('clarifications', 'clarifications_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
     }
 
     public function pending_transactions(Request $request) {
@@ -158,10 +177,7 @@ class AccountabilityController extends Controller {
     }
 
     public function accountant_deptors(Request $request) {
-        $unpaid_applications = DB::table('served_requests')
-            ->where('payment_status', 'Not yet paid')
-            ->orWhere('payment_status', 'Not paid')
-            ->get();
+        $unpaid_applications = DB::table('served_requests') -> where('payment_status', 'Not yet paid') -> orWhere('payment_status', 'Not paid') -> get();
 
         // Check if the request is for downloading the Excel file
         if ($request->query('download') === 'excel') {
@@ -210,8 +226,63 @@ class AccountabilityController extends Controller {
         return view('admin.revenue', compact('app_incomes', 'ads', 'todayApps', 'todayAds'));
     }
 
-    public function remind_debtor() {
-        
+    public function remind_debtor(Request $request)
+    {
+        try {
+            $unpaid_applications = DB::table('served_requests')->where('application_id', $request->transaction)->first();
+            $encryptedApplicationId = Crypt::encryptString($unpaid_applications->application_id);
+
+            $url = route('app-payment', [
+                'discipline' => $unpaid_applications->discipline,
+                'client' => $unpaid_applications->names,
+                'client_phone' => $unpaid_applications->phone_number,
+                'application_id' => $encryptedApplicationId,
+            ]);
+
+            $app = $unpaid_applications->discipline_name;
+            $client = $unpaid_applications->names;
+
+            Mail::to($unpaid_applications->email)->send(new Remind($url, $app, $client));
+
+            // Flash success message
+            session()->flash('success', 'A reminder email has been sent successfully!');
+
+            return redirect()->route('accountant-deptors');
+        } catch (\Exception $e) {
+            \Log::error('Email send error: ' . $e->getMessage());
+
+            // Flash error message
+            session()->flash('error', 'Failed to send reminder email.');
+
+            return redirect()->route('accountant-deptors');
+        }
     }
+
+    public function sendClarificationMessage(Request $request)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'desc' => 'required|string',
+            'agent_id' => 'required|exists:staff,id',
+            'application_id' => 'required|exists:served_requests,application_id',
+        ]);
+
+        if(DB::table('applications') -> where('app_id', $request->input('application_id')) -> update(['payment_status' => 'Agent Needs To Clarify'])) {
+            $message = Message::create([
+                'issue' => $request->input('title'),
+                'sender' => 25,
+                'receiver' => $request->input('agent_id'),
+                'app' => $request->input('application_id'),
+                'request' => $request->input('desc'),
+                'account' => "Accountant",
+                'status' => 'pending',
+                ]);
+            }
+
+        session() -> flash('success', 'A clarification request has been sent to the agent! this transaction will now be found on your dashboard, under "Waiting for clarificarion"');
+        return redirect() -> route('pending-transactions');
+    }
+
 
 }

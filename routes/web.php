@@ -309,6 +309,7 @@ require __DIR__.'/auth.php';
 
 Route::prefix('accountant') -> group(function () {
     Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard']) -> name('accountant-dashboard');
+    Route::get('/clarifications', [AccountabilityController::class, 'accountant_dashboard']) -> name('sort-clarifications');
     Route::get('/transactions', [AccountabilityController::class, 'pending_transactions']) -> name('pending-transactions');
     Route::post('/approve/{application_id}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
     Route::get('/review/{transaction}/{applicant}/{application}/{agent}', [AccountabilityController::class, 'transaction_review']) -> name('transaction-review');
@@ -324,5 +325,6 @@ Route::prefix('accountant') -> group(function () {
     Route::get('/revenue/debtors', [AdminController::class, 'debtors']) -> name('debtors');
     Route::get('/accountant/export-transactions', [ExportsController::class, 'exportTransactions'])->name('export.transactions');
     Route::get('/export-revenue', [AccountabilityController::class, 'revenue']) -> name('export-revenues');
-    Route::get('/accountant-remind', [AccountabilityController::class, 'remind_debtor']) -> name('remind-debtor');
+    Route::get('/accountant-remind/{transaction}', [AccountabilityController::class, 'remind_debtor']) -> name('remind-debtor');
+    Route::post('/send-clarification-message', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
 });

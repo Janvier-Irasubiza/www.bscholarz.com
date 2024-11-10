@@ -9,24 +9,22 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class Remind extends Maillable
+class Remind extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $url;
-  	public $title;
-  	public $type;
-  	public $desc;
+  	public $app;
+  	public $client;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($url, $title, $type, $desc)
+    public function __construct($url, $app, $client)
     {
-      	$this->url = $url;
-      	$this->title = $title;
-      	$this->type = $type;
-      	$this->desc = $desc;
+        $this->url = $url;
+        $this->client = $client;
+        $this->app = $app;
     }
 
     /**
