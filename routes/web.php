@@ -96,9 +96,9 @@ Route::prefix('client') -> middleware(['client']) -> group(function() {
 
 Route::get('client-logout', [AuthenticatedSessionController::class, 'client_destroy']) -> name('client.logout');
 
-// Route::get('/admin', function () {
-//     return redirect() -> route('admin.dashboard');
-// });
+Route::get('/admin', function () {
+    return redirect() -> route('admin.dashboard');
+});
 
 Route::prefix('admin') -> group(function () {
     Route::get('/auth', [AdminController::class, 'login']) -> name('admin.auth');
