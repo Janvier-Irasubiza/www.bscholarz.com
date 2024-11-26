@@ -117,7 +117,7 @@ class PaymentsController extends Controller
 
       // Prepare api data
       $data = array(
-        'amount' => $validatedData['amount'],
+        'amount' => 10,
         'phone' => $phoneNumber,
         'key' => $apiKey
       );
