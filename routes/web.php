@@ -96,9 +96,9 @@ Route::prefix('client') -> middleware(['client']) -> group(function() {
 
 Route::get('client-logout', [AuthenticatedSessionController::class, 'client_destroy']) -> name('client.logout');
 
-Route::get('/admin', function () {
-    return redirect() -> route('admin.dashboard');
-});
+// Route::get('/admin', function () {
+//     return redirect() -> route('admin.dashboard');
+// });
 
 Route::prefix('admin') -> group(function () {
     Route::get('/auth', [AdminController::class, 'login']) -> name('admin.auth');
@@ -217,7 +217,6 @@ Route::get('/issues/get', [ChatsController::class, 'getIssues'])->middleware('st
 Route::get('/issue/{issue}/conv', [ChatsController::class, 'getIssueConv'])->middleware('staff')->name('issue.conv');
 Route::get('/tags/{issue}/', [ChatsController::class, 'getTags'])->middleware('staff')->name('issue.tags');
 Route::post('/issue/reply', [ChatsController::class, 'issueReply'])->middleware('staff')->name('issue.reply');
-
 Route::get('/subs/services', [SubscriptionController::class, 'subs_services']) -> name('subs-services.get');
 Route::get('/subs/services/{plan}', [SubscriptionController::class, 'subs_plan_services'])->name('subs-services-plan.get');
 Route::post('/subs/services/add', [SubscriptionController::class, 'addServiceToPlan'])->name('subs-service.add');
@@ -251,7 +250,6 @@ Route::prefix('rhythmbox') -> middleware('rhythmbox', 'atrack') -> group(functio
     Route::get('/sheets/{assistant}/all', [RhythmBoxController::class, 'sortRecsAll']) -> name('rhythmbox.sort-recs-all');
     Route::get('/admin', [RhythmBoxController::class, 'admin']) -> name('rhythmbox.admin');
     Route::get('/rba', [RhythmBoxController::class, 'rba']) -> name('rba');
-
   	Route::get('/recyclebin', [RhythmBoxController::class, 'recycle_bin']) -> name('rhythmbox.recycle');
   	Route::get('/recover/{customer_info}/{application_info}', [RhythmBoxController::class, 'recover_deleted']) -> name('recovery');
 });
@@ -263,7 +261,6 @@ Route::get('/staffpanel', function () {
 Route::get('/staff-disbursements/{assistant}', [PagesController::class, 'staff_disbursements']) -> name('staff.disbursements');
 
 Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () {
-
     Route::get('/dashboard', [StaffController::class, 'staff_dashboard']) -> name('staff-dashboard');
     Route::get('/customer-details/{customer_info}/{application_info}', [StaffController::class, 'customer_details']) -> name('customer-details');
     Route::get('/record-activity', [StaffController::class, 'record_activity']) -> name('record-activity');
@@ -289,11 +286,8 @@ Route::prefix('staff') -> middleware('staff', 'strack') -> group(function () {
     Route::post('staff-create-client', [ClientAuthController::class, 'staff_create_client']) -> name('staff-create-client');
     Route::post('/client-info-update', [PagesController::class, 'profile_info_update']) -> name('client-info-update');
     Route::get('/profile', [ProfileController::class, 'edit']) ->name('staff.profile.edit');
-
   	Route::get('/unreachable/{application_id}/{applicant}', [StaffController::class, 'unreachable']) -> name('unreachable');
   	Route::post('/request-to-pay', [StaffController::class, 'request_to_pay']) -> name('request-to-pay');
-
-
 });
 
 Route::get('/failed-session', function () {
@@ -307,8 +301,6 @@ Route::post('error', function () {return view('error');}) -> name('error');
 Route::get('notice', function () {return view('error');}) -> name('notice');
 
 Route::post('/send-email', 'App\Http\Controllers\Dev\SendEmailController@sendEmail')->name('send.email');
-
-require __DIR__.'/auth.php';
 
 Route::prefix('accountant') -> group(function () {
     Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard']) -> name('accountant-dashboard');
@@ -331,3 +323,5 @@ Route::prefix('accountant') -> group(function () {
     Route::get('/accountant-remind/{transaction}', [AccountabilityController::class, 'remind_debtor']) -> name('remind-debtor');
     Route::post('/send-clarification-message', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
 });
+
+require __DIR__.'/auth.php';

@@ -67,7 +67,7 @@
                 </a>
             </li>
 
-            <li class="sb-li" style="margin: 0px">
+            <!-- <li class="sb-li" style="margin: 0px">
                 <a href="{{ route('md.testimonies') }}" class="sd-bar-link" >
                     <div class="flex" style="">
                         <div class="d-flex align-items-center mr-1">
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                 </a>
-            </li>
+            </li> -->
 
             <li class="sb-li" style="margin: 0px">
                 <a href="{{ route('md.faqs') }}" class="sd-bar-link" >
