@@ -56,9 +56,7 @@
                                                 <div class="widget-numbers text-success"><span
                                                         class="active-ads">---</span></div>
                                                 <div class="widget-description text-focus">
-                                                    <u class="a-ads">1 Active</u> &nbsp; <u><span
-                                                            class="x-ads"></span>
-                                                        Expired</u>
+                                                    <u><span class="a-ads">---</span> Active</u> &nbsp; <u><span class="x-ads"></span> Expired</u>
                                                 </div>
                                             </div>
                                         </div>
