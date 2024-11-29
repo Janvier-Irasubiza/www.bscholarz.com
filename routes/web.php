@@ -177,6 +177,7 @@ Route::get('/md', function () {
 
 Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::get('/dashboard', [MdController::class, 'dashboard'])->name('md.dashboard');
+    Route::get('/index', [MdController::class, 'index'])->name('md.index');
     Route::get('/apps', [ApplicationsController::class, 'applications'])->name('md.apps');
     Route::get('/new-app', [ApplicationsController::class, 'new_application']) -> name('md.new-application');
     Route::post('/post-new-app', [ApplicationsController::class, 'post_new_app']) -> name('md.post-new-app');
