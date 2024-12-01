@@ -3,35 +3,104 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Comment;
+use App\Models\Staff;
+use App\Models\Message;
+use App\Models\MessageReply;
+use App\Mail\Support;
+use Mail;
 
 class ChatsController extends Controller
 {
-    function  index() {
-        return view('chats.chat');
+    function index()
+    {
+
+        $messages = Message::where('sender', auth('staff')->user()->id)
+            ->orWhere('receiver', auth('staff')->user()->id)
+            ->orderBy("created_at", "desc")
+            ->paginate(10);
+
+        return view('chats.chat', compact('messages'));
     }
 
-    public function users($commentId) {
+    public function requestSupportForm()
+    {
+        $staff = Staff::all();
+        return view('chats.request', compact('staff'));
+    }
+
+    public function requestSupport(Request $request)
+    {
+        $validatedData = $request->validate([
+            'issue' => 'required|string',
+            'issue_desc' => 'required|string',
+            'receiver' => 'required|integer'
+        ]);
+
+        $message = new Message();
+        $message->issue = $validatedData['issue'];
+        $message->sender = auth('staff')->user()->id;
+        $message->receiver = $validatedData['receiver'];
+        $message->save();
+
+        $messageReply = new MessageReply();
+        $messageReply->message_id = $message->id;
+        $messageReply->reply = $validatedData['issue_desc'];
+        $messageReply->user_id = auth('staff')->user()->id;
+        $messageReply->save();
+
+        $user = Staff::find($validatedData['receiver']);
+
+        // Send Email
+        Mail::to($user->email)->send(new Support($validatedData['issue'], $validatedData['issue_desc']));
+
+        return redirect()->route('chats.index')->with('success', 'Your Support Request Was Sent');
+    }
+
+    public function chat(Request $request)
+    {
+        $message = Message::where('uuid', $request->chat)
+            ->with([
+                'replies' => function ($query) {
+                    $query->with('user');
+                }
+            ])
+            ->first();
+
+        if ($message && $message->replies) {
+            foreach ($message->replies as $reply) {
+                $reply->status = 'read';
+                $reply->save();
+            }
+        }
+
+        return view('chats.chat-conv', compact('message'));
+    }
+
+    public function users($commentId)
+    {
         // Fetch all users (staff)
         $users = Staff::all();
-    
+
         // Add 'recommended' attribute to each user based on the specific comment ID
         $usersWithRecommendation = $users->map(function ($user) use ($commentId) {
             // Check if this user is recommended for the specified comment
             $isRecommended = Comment::where('id', $commentId)
-                                    ->where('recommended_to', $user->id)
-                                    ->exists();
-    
+                ->where('recommended_to', $user->id)
+                ->exists();
+
             // Add 'recommended' attribute to indicate if the user is recommended for this comment
             $user->recommended = $isRecommended;
-    
+
             return $user;
         });
-    
+
         // Return users
         return response()->json($usersWithRecommendation);
     }
-    
-    public function getUsers() {
+
+    public function getUsers()
+    {
         // Fetch all users (staff)
         $users = Staff::whereNot('id', auth()->guard('staff')->user()->id)->get();
 
@@ -39,7 +108,8 @@ class ChatsController extends Controller
         return response()->json($users);
     }
 
-    public function getIssues() {
+    public function getIssues()
+    {
         // Fetch all messages
         $messages = Message::all();
 
@@ -62,39 +132,74 @@ class ChatsController extends Controller
         return response()->json($messages);
     }
 
-    public function getTags(Request $request) {
+    public function getTags(Request $request)
+    {
         // Fetch all tags
         $tags = Message::findOrFail($request->issue)->select('app', 'request', 'account', 'user', 'advert', 'subscriber_id', 'sub_plan_id', 'sub_service_id')->first();
         return response()->json($tags);
     }
 
-    public function getIssueConv(Request $request) {
-    
+    public function getIssueConv(Request $request)
+    {
+
         $conv = MessageReply::where('message_id', $request->issue)
-                            ->select(['id', 'reply', 'created_at', 'user_id'])
-                            ->get();
+            ->select(['id', 'reply', 'created_at', 'user_id'])
+            ->get();
 
         // Get user
         $conv = $conv->map(function ($message) {
             $message->user = Staff::find($message->user_id);
             return $message;
         });
-    
+
         $response = [
             'content' => $conv,
             'user' => auth()->guard('staff')->user()->id,
         ];
-    
+
         return response()->json($response);
     }
 
-    public function issueReply(Request $request) {
-        
+    public function reply(Request $request)
+    {
+        $validatedData = $request->validate([
+            'chat' => 'integer|required|exists:messages,id', // Ensure 'chat' exists in the messages table
+            'message' => 'string|required|min:1', // Prevent empty messages
+        ]);
+
+        // Fetch the authenticated user
+        $user = auth()->guard('staff')->user();
+
+        if (!$user) {
+            return back()->withErrors(['error' => 'Unauthorized user.']); // Handle unauthenticated users
+        }
+
+        // Find the message and create the reply
+        $message = Message::findOrFail($validatedData['chat']);
+        $reply = new MessageReply();
+
+        $reply->user_id = $user->id; // Assign the user ID
+        $reply->message_id = $message->id; // Assign the message ID
+        $reply->reply = $validatedData['message']; // Assign the reply text
+        $reply->save();
+
+        $user = Staff::find($message->receiver);
+
+        // Send Email
+        Mail::to($user->email)->send(new Support($message->issue, $validatedData['message']));
+
+        return back()->with('success', 'Reply added successfully!'); // Redirect back with a success message
+    }
+
+
+    public function issueReply(Request $request)
+    {
+
         $request->merge(array_map(
             fn($value) => $value === '' ? null : $value,
             $request->all()
         ));
-    
+
         $validatedData = $request->validate([
             'chat' => 'integer|required',
             'message' => 'string|required',
@@ -109,7 +214,7 @@ class ChatsController extends Controller
 
         $reply = new MessageReply;
         $reply->message_id = $request->chat;
-        $reply->reply = $request->message; 
+        $reply->reply = $request->message;
         $reply->user_id = auth()->guard('staff')->user()->id;
         $reply->save();
 
@@ -122,11 +227,12 @@ class ChatsController extends Controller
             unset($nonNullData['chat'], $nonNullData['message']);
             $issue->update($nonNullData);
         }
-    
+
         return response()->json(['success' => 'Reply sent'], 201);
     }
 
-    public function getUserInfo(Request $request) {
+    public function getUserInfo(Request $request)
+    {
         $user = Staff::where('uuid', $request->user)->first();
         $response = [
             'receiver_id' => $user->id,
@@ -138,5 +244,5 @@ class ChatsController extends Controller
 
         return response()->json($response);
     }
-    
+
 }

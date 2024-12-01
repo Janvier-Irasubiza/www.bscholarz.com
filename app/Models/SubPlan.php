@@ -10,7 +10,7 @@ class SubPlan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['uuid', 'name', 'price', 'duration_months'];
+    protected $fillable = ['uuid', 'name', 'price', 'duration_months', 'text'];
 
     protected static function boot()
     {
@@ -24,9 +24,17 @@ class SubPlan extends Model
     }
 
     public function services()
-    {
-        return $this->belongsToMany(Service::class, 'plan_services');
-    }
+{
+    return $this->hasManyThrough(
+        SubService::class,         // Final model (target)
+        PlanService::class,        // Intermediate model
+        'plan_id',                // Foreign key on plan_services linking to sub_plans
+        'id',                    // Foreign key on sub_services linking to plan_services
+        'id',                     // Local key on sub_plans
+        'service_id'        // Local key on plan_services
+    );
+}
+
 
     public function subscribers()
     {

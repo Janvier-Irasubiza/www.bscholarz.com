@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="border-b w-8">
+<nav x-data="{ open: false }" class="border-b w-8" style="background-color: #DEE8F7;">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -10,22 +10,13 @@
                     <!-- Adimin -->
                     @if(Auth::user())
                         <h6 style="font-weight: 600">Administration</h6>
-
-                    <!-- Marketing department -->
-                    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
-                        <h6 style="font-weight: 600">Marketing</h6>
-
-                    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Applications')
-                        <h6 style="font-weight: 600">Applications</h6>
-
                     <!-- this is for the accounting department -->
                     @else
-                        <h6 style="font-weight: 600">Accounting</h6>
+                        <h6 style="font-weight: 600">{{ Auth::guard('staff')->user()->department }}</h6>
                     @endif
 
                 </div>
             </div>
-
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6 gap-4 align-items-center">

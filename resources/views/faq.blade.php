@@ -17,7 +17,7 @@
                       @foreach($faqs as $faq)    
                       <div class="faq mb-2" style="border: 1px solid #d9d9d9">
                           <div class="question">
-                              <h3>{{ $faq -> question }}</h3>
+                          <h3 class="muted-text" style="font-weight: normal" >{{ $faq->question }}</h3>
 
                               <svg width="15" height="10" viewBox="0 0 42 25">
                                   <path d="M3 3L21 21L39 3" stroke="white" stroke-width="2" stroke-linecap="round"/>
@@ -25,9 +25,9 @@
 
                           </div>
 
-                          <div class="answer">
-                              <p>{{ $faq -> answer }}</p>
-                          </div>
+                          <div class="answer text-muted">
+                            <p>{{ $faq->answer }}</p>
+                        </div>
 
                       </div>
                       @endforeach

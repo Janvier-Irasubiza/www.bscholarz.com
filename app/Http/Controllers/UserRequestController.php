@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Notifications;
+use App\Http\Controllers\Utils;
 use App\Models\Applicant_info;
 use Illuminate\Http\Request;
 use App\Mail\RequestReceived;
@@ -148,7 +150,7 @@ class UserRequestController extends Controller {
   
       // Send notification email
       Mail::to($request->email)->send(new RequestReceived($url, $request->names, $app));
-  
+
       // Set success message
       Session::put('scss', 'Your request was successfully sent!');
 

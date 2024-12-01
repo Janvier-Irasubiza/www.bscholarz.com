@@ -235,7 +235,7 @@
     </head>
     <body class="font-sans antialiased">
 
-    @include('layouts.staff-sidebar')
+        @include('layouts.staff-sidebar')
 
         <div class="min-h-screen">
 

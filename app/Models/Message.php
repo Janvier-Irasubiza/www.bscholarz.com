@@ -41,16 +41,25 @@ class Message extends Model
         'tags' => 'array',
     ];
 
-    public function sender() {
+    public function sender()
+    {
         return $this->belongsTo(Staff::class, 'sender');
     }
 
-    public function receiver() {
+    public function receiver()
+    {
         return $this->belongsTo(Staff::class, 'receiver');
     }
 
-    public function replies () {
+    public function replies()
+    {
         return $this->hasMany(MessageReply::class, 'message_id');
     }
+
+    public function latestReply()
+    {
+        return $this->hasOne(MessageReply::class)->latestOfMany();
+    }
+
 
 }

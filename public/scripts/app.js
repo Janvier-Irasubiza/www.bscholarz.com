@@ -101,7 +101,6 @@ function loadComments() {
                             
                             <div id="reply-${comment.id}" class="reply-div" style="display: none;">
                                 <form action="{{ route('app.comments.reply') }}" method="POST"> 
-                                @csrf
                                 <div class="d-flex gap-2 justify-content-between align-items-center mt-3 mb-3">
                                     <input type="hidden" name="comment_id" class="form-control py-1" value="${comment.id}" readonly>
                                     <input type="text" name="reply" class="form-control py-1" placeholder="Reply to ${comment.name}" autofocus required>
@@ -144,6 +143,63 @@ $(document).on('click', '.reply-btn', function() {
         button.text("Reply");
     }
 });
+
+function replyToComment(commentId) {
+    // Find the reply input and the form for the given comment ID
+    const replyInput = document.querySelector(`#reply-${commentId} input[name="reply"]`);
+    const form = document.querySelector(`#reply-${commentId} form`);
+    
+
+    // Get the reply text
+    const replyText = replyInput.value.trim();
+
+    if (!replyText) {
+        alert("Reply cannot be empty!"); // Validation
+        return;
+    }
+
+    // Prepare form data for submission
+    const formData = new FormData(form);
+
+    // Disable the button to prevent duplicate submissions
+    const submitButton = document.querySelector(`#reply-${commentId} button[type="submit"]`);
+    submitButton.disabled = true;
+
+    // Send a POST request using fetch
+    fetch("/md/app/comments/reply", {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest', // Indicates an AJAX request
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // CSRF token if needed
+        },
+        body: formData, // Form data to send
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            loadComments();
+            console.log("Server response:", data);
+
+            // Optionally hide the reply input and reset the form
+            document.querySelector(`#reply-${commentId}`).style.display = 'none';
+            form.reset();
+            document.querySelector(`button[data-comment-id="${commentId}"]`).textContent = "Reply";
+        })
+        .catch(error => {
+            // Handle error
+            alert("Failed to submit reply. Please try again.");
+            console.error("Error:", error);
+        })
+        .finally(() => {
+            // Re-enable the submit button
+            submitButton.disabled = false;
+        });
+}
+
 
 // Listen for the modal show event
 var repliesModal = document.getElementById('users');

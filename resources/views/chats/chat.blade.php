@@ -1,37 +1,63 @@
-@section('title', 'Chats')
+@section('title', 'Support')
 
 <x-app-layout>
     <x-slot name="header"></x-slot>
 
-    <div class="chat-container flex">
-        <!-- Sidebar -->
-        <div class="chat-sidebar w-1/2 bg-gray-200 overflow-y-auto" style="height: calc(100vh - 5.3rem);">
-            <div class="p-3 pb-0">
-                <div class="flex justify-between items-center mb-3 border-bottom pb-2">
-                    <h3 class="f-20">Chats</h3>
-                    <button class="f-20 border px-3 rounded btn-new-chat ctm-button">+</button>
-                </div>
-                <input type="text" placeholder="Search..." class="search-input p-2 py-1 w-full">
-                <div class="flex items-center gap-1 mt-2 mb-3">
-                    <button class="ctm-button px-3 py-1 rounded f-12 text-muted">All</button>
-                    <button class="ctm-button px-3 py-1 rounded f-12 text-muted">By me</button>
-                    <button class="ctm-button px-3 py-1 rounded f-12 text-muted">To me</button>
-                </div>
+    <div class="chat-container flex bg-white">
+        <div class="dashboard-container col-lg-10 px-5">
+            <div class="d-flex justify-content-between align-items-center">
+                <header class="dashboard-header text-left">
+                    <h1>Welcome to the Support Page</h1>
+                    <p>Here is a quick summary of your application features.</p>
+                </header>
+                <a href="{{ route('support.new') }}" class="continue-btn px-4 py-2 text-white">Request Support</a>
             </div>
 
-            <!-- new chat -->
-            <div class="new-chat-container">
-            </div>
-            <!-- /new chat -->
-            
-            <!-- Chat List -->
-            <div class="chat-list">
-            </div>
-        </div>
+            @if(Session::has('success'))
 
-        <!-- Chat Area -->
-        <div class="chat-area flex-1">
-            <!-- Chat content area -->
+                        <div class="alert alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
+                            style="font-size: 17px" role="alert">
+                            <div>
+                                {{ Session::get('success') }}
+                            </div>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true" class="fa fa-times" style="font-size: 18px"></span>
+                            </button>
+                        </div>
+
+                        @php
+
+                            Session::forget('success');
+
+                        @endphp
+
+            @endif
+
+            <div class="cards-container mt-5">
+                @foreach ($messages as $message)
+                    @if ($message->replies->count() > 0)
+                        <a href="{{ route('chats.conv', ['chat' => $message->uuid]) }}"
+                            style="{{ $message->latestReply && $message->latestReply->status === 'unread' ? 'font-weight: 600;' : '' }}">
+                            <div class="border rounded-lg p-4 mb-3">
+                                <div class="d-flex align-items-center gap-2 justify-content-between">
+                                    <h2 class="muted-text" style="font-size: 1.4em">{{ $message->issue }}</h2>
+                                    <p class="text-muted" id="time-{{ $message->latestReply->id }}"></p>
+                                    <script>
+                                        document.getElementById("time-{{ $message->id }}").innerHTML = new Date('{{ $message->latestReply->created_at }}').toLocaleTimeString();
+                                    </script>
+
+                                </div>
+                                <p class="text-muted mt-1" style="font-size: 1em">{{ $message->latestReply->reply }}</p>
+                            </div>
+                        </a>
+                    @endif
+                @endforeach
+
+                <div class="mt-3 custom-pagination">
+                    {{ $messages->links() }}
+                </div>
+
+            </div>
         </div>
     </div>
 </x-app-layout>

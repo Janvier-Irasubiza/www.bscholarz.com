@@ -12,4 +12,6 @@ class PlanService extends Pivot
     protected $table = 'plan_services';
 
     use HasFactory;
+
+    // public function 
 }

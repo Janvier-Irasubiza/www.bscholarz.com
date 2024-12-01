@@ -12,13 +12,13 @@
             <div class="col-lg-4 py-5">
             <div class="d-flex justify-content-center py-5">
                 <ul class="mt-3" style="padding: 5px 0px 5px 0px; " id="list-example">
-                    <li class="" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-1" class="abt-list list-group-item list-group-item-action active" style="text-decoration: none; color: #000">Description</a></h4></li>
-                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-2" class="abt-list list-group-item list-group-item-action" style="text-decoration: none; color: #000">Objectives</a></h4></li>
-                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-3" class="abt-list list-group-item list-group-item-action" style="text-decoration: none; color: #000">Services</a></h4></li>
-                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-4" class="abt-list list-group-item list-group-item-action" style="text-decoration: none; color: #000">Vision</a></h4></li>
-                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-5" class="abt-list list-group-item list-group-item-action" style="text-decoration: none; color: #000">Mission</a></h4></li>
-                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-6" class="abt-list list-group-item list-group-item-action" style="text-decoration: none; color: #000">Goals</a></h4></li>
-                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-7" class="abt-list list-group-item list-group-item-action" style="text-decoration: none; color: #000">Values</a></h4></li>
+                    <li class="" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-1" class="abt-list list-group-item list-group-item-action active muted-text" style="text-decoration: none;">Description</a></h4></li>
+                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-2" class="abt-list list-group-item list-group-item-action muted-text" style="text-decoration: none; ">Objectives</a></h4></li>
+                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-3" class="abt-list list-group-item list-group-item-action muted-text" style="text-decoration: none; ">Services</a></h4></li>
+                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-4" class="abt-list list-group-item list-group-item-action muted-text" style="text-decoration: none; ">Vision</a></h4></li>
+                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-5" class="abt-list list-group-item list-group-item-action muted-text" style="text-decoration: none; ">Mission</a></h4></li>
+                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-6" class="abt-list list-group-item list-group-item-action muted-text" style="text-decoration: none; ">Goals</a></h4></li>
+                    <li class="mt-3" style=""><h4 style="margin-bottom: 0px"><a href="#list-item-7" class="abt-list list-group-item list-group-item-action muted-text" style="text-decoration: none;">Values</a></h4></li>
                 </ul>
             </div>
             </div>
@@ -27,11 +27,11 @@
             <div class="abt-sect-desc" data-spy="scroll" data-target="#list-example" data-offset="140">
                 <div class="pb-5" id="list-item-1" data-offset="100">
                 <div class="pb-3 py-2">
-                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #1E4682; padding: 0px 0px 0px 15px; height: 25px">BScholarz</h2>
+                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #5d3fd3; padding: 0px 0px 0px 15px; height: 25px">BScholarz</h2>
                 </div>
 
                 <div>
-                    <p>
+                    <p class="muted-text">
                     BSCHOLARZ, a registered company under the Rwanda Development Board, it is a leading professional education consultancy. <br>
                     Our mission is to empower Rwandan students to secure scholarships within Rwanda and abroad while assisting international students in finding prestigious universities and scholarships in Rwanda. <br>
                     We specialize in simplifying the complex processes associated with visa applications, international fellowships, training, research programs, and IT-related services. <br>
@@ -42,11 +42,11 @@
 
                 <div class="pb-5" id="list-item-2" data-offset="100">
                 <div class="pb-3">
-                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #1E4682; padding: 0px 0px 0px 15px; height: 25px">Objectives</h2>
+                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #5d3fd3; padding: 0px 0px 0px 15px; height: 25px">Objectives</h2>
                 </div>
 
                 <div>
-                    <p>
+                    <p class="muted-text">
                     We are dedicated to facilitating scholarship opportunities for Rwandan students, 
                     both domestically and internationally, in order to broaden access to quality education. <br> 
                     We aim to support international students in discovering prestigious universities and scholarship 
@@ -67,11 +67,11 @@
 
                 <div class="pb-5" id="list-item-3" data-offset="100">
                 <div class="pb-3">
-                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #1E4682; padding: 0px 0px 0px 15px; height: 25px">Sevices</h2>
+                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #5d3fd3; padding: 0px 0px 0px 15px; height: 25px">Sevices</h2>
                 </div>
 
                 <div>
-                    <p>
+                    <p class="muted-text">
                     We offer a range of specialized services to further support our mission. <br> 
                     Our Scholarship Assistance program is designed to guide Rwandan students through the intricate 
                     process of securing scholarships, both nationally and internationally. <br> 
@@ -102,11 +102,11 @@
 
                 <div class="pb-5" id="list-item-4" data-offset="100">
                 <div class="pb-3">
-                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #1E4682; padding: 0px 0px 0px 15px; height: 25px">Vision</h2>
+                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #5d3fd3; padding: 0px 0px 0px 15px; height: 25px">Vision</h2>
                 </div>
 
                 <div>
-                    <p>
+                    <p class="muted-text">
                     BSCHOLARZ envisions a future where education knows no boundaries and opportunities are within reach for all. <br>
                     We aim to become a global leader in professional education consulting, serving as a beacon of hope and guidance for 
                     students and professionals worldwide. <br>
@@ -119,11 +119,11 @@
 
                 <div class="pb-5" id="list-item-5" data-offset="100">
                 <div class="pb-3">
-                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #1E4682; padding: 0px 0px 0px 15px; height: 25px">Mission</h2>
+                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #5d3fd3; padding: 0px 0px 0px 15px; height: 25px">Mission</h2>
                 </div>
 
                 <div>
-                    <p>
+                    <p class="muted-text">
                     At BSCHOLARZ, our mission is to be a trusted and unwavering partner in the pursuit of educational and career dreams. <br>
                     We are dedicated to empowering Rwandan students by assisting them in securing scholarships, both within Rwanda and abroad, 
                     while connecting international students with prestigious universities and scholarships in Rwanda. <br>
@@ -136,11 +136,11 @@
 
                 <div class="pb-5" id="list-item-6" data-offset="100">
                 <div class="pb-3">
-                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #1E4682; padding: 0px 0px 0px 15px; height: 25px">Goals</h2>
+                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #5d3fd3; padding: 0px 0px 0px 15px; height: 25px">Goals</h2>
                 </div>
 
                 <div>
-                    <p>
+                    <p class="muted-text">
                     We aim to achieve a scholarship success rate of 100% for Rwandan students, demonstrating our unwavering 
                     dedication to increasing access to quality education. <br> Through the establishment of partnerships with
                     numerous prestigious universities in Rwanda, we aspire to expand our network and enhance the array of 
@@ -167,11 +167,11 @@
 
                 <div class="" id="list-item-7" data-offset="100">
                 <div class="pb-3">
-                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #1E4682; padding: 0px 0px 0px 15px; height: 25px">Values</h2>
+                    <h2 class="d-flex align-items-center" style="border-left: 4px solid black; color: #5d3fd3; padding: 0px 0px 0px 15px; height: 25px">Values</h2>
                 </div>
 
                 <div>
-                    <p>
+                    <p class="muted-text">
                     We firmly believe in the transformative power of education, committing ourselves to 
                     empowering students to access quality education, secure scholarships, and unlock their 
                     full potential. <br> Our dedication to accessibility drives us to make educational 

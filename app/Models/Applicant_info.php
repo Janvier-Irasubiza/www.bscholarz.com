@@ -26,6 +26,7 @@ class Applicant_info extends Authenticatable
         'uuid',
         'names',
         'email',
+        'phone_number',
         'password',
         'created_by',
     ];

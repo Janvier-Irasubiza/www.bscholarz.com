@@ -13,17 +13,16 @@ class StaffAuthController extends Controller
      * Handle an authentication attempt.
      */
 
-     public function signin() {
+    public function signin()
+    {
 
-        if (!Auth::guard('staff') -> user()) {
+        if (!Auth::guard('staff')->user()) {
             return view('auth.staff-login');
+        } else {
+            return redirect()->route('staff-dashboard');
         }
 
-        else {
-            return redirect() -> route('staff-dashboard');
-        }
-
-     }
+    }
 
     public function authenticate_staff(Request $request): RedirectResponse
     {
@@ -32,12 +31,12 @@ class StaffAuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $staffInfo = $request -> all();
+        $staffInfo = $request->all();
 
-        if (Auth::guard('staff') -> attempt(['email' => $staffInfo['email'], 'password' => $staffInfo['password']])) {
+        if (Auth::guard('staff')->attempt(['email' => $staffInfo['email'], 'password' => $staffInfo['password']])) {
             $request->session()->regenerate();
 
-            if (Auth::guard('staff') -> user() -> working_status == 'Fired' || Auth::guard('staff') -> user() -> working_status == 'fired') {
+            if (Auth::guard('staff')->user()->working_status == 'Fired' || Auth::guard('staff')->user()->working_status == 'fired') {
 
                 Auth::guard('staff')->logout();
 
@@ -45,31 +44,26 @@ class StaffAuthController extends Controller
 
                 $request->session()->regenerateToken();
 
-                return redirect() -> route('fired-staff-notify');
+                return redirect()->route('fired-staff-notify');
             }
 
             // elseif (Auth::guard('staff')->user()->type == "admin") {
             //     return redirect() -> route('admin.dashboard');
             // }
+            elseif (Auth::guard('staff')->user()->department == "Marketing" || Auth::guard('staff')->user()->department == "marketing") {
+                DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
 
-            elseif (Auth::guard('staff') -> user() -> department == "Marketing" || Auth::guard('staff') -> user() -> department == "marketing") {
-                DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
+                return redirect()->route('md.dashboard');
+            } elseif (Auth::guard('staff')->user()->department == "Accountability" || Auth::guard('staff')->user()->department == "accountability") {
+                DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
 
-                return redirect() -> route('md.dashboard');
-            }
+                return redirect()->route('accountant-dashboard');
+            } elseif (auth('staff')->user()->department == 'Development' || auth('staff')->user()->department == 'development') {
+                return redirect()->route('dev.index');
+            } else {
 
-            elseif (Auth::guard('staff') -> user() -> department == "Accountability" || Auth::guard('staff') -> user() -> department == "accountability") {
-                DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
-
-                return redirect() -> route('accountant-dashboard');
-            }
-
-            else {
-
-                DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Online']);
-
-                return redirect() -> route('staff-dashboard');
-
+                DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
+                return redirect()->route('staff-dashboard');
             }
 
         }

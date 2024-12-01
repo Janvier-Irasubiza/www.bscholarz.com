@@ -21,7 +21,7 @@
 
             .sm-section {
                 margin: auto;
-                width: 35%;
+                width: 45%;
                 display: flex;
                 align-items: center;
             }
@@ -34,7 +34,7 @@
                 
                 .sm-section {
                     margin: auto;
-                    width: 85%;
+                    width: 100%;
                     display: flex;
                     border-radius: 7px;
                 }

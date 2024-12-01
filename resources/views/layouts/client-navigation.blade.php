@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="border-b w-full">
+<nav x-data="{ open: false }" class="border-bottom w-full" style="position: relative;">
     <!-- Primary Navigation Menu -->
     <div class="d-nav d-flex align-items-center">
         <div class="flex justify-between nav-content w-full">
@@ -6,7 +6,7 @@
 
                 <!-- Navigation Links -->
                 <div class="d-flex align-items-center">
-                    <a style="font-size: 20px" style="color: unset !important;" href="{{ route('client.client-dashboard') }}">Dashboard</a>
+                    <a style="font-size: 1.6em; color: unset !important;" href="{{ route('client.client-dashboard') }}">Dashboard</a>
                 </div>
             </div>
 
@@ -15,15 +15,15 @@
                 <x-dropdown align="right" width="48">
 
                     <x-slot name="trigger">
-                        <button style="border: 2px solid #1b1b1bc4" class="inline-flex items-center px-3 py-2 text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                        <button style="" class="inline-flex items-center px-3 py-2 text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                             <div class="d-flex align-items-center gap-2" style="color: #1b1b1b">
 
-                            {{ Auth::guard('client') -> user()->names }}
+                           <span style="font-size: 1.3em"> {{ Auth::guard('client') -> user()->names }} </span>
                             
                             <div class="user-profile p-0 m-0" style="height: 40px; width: 40px; padding: 0px">
 
                             @if(!is_null(Auth::guard('client') -> user() -> profile_picture))
-                            <img id="uploadPreview" class="profile-pic-cstm m-0 p-0" src="{{ asset('profile_pictures') }}/{{ Auth::guard('client') -> user() -> profile_picture }}">
+                                <img id="uploadPreview" class="profile-pic-cstm m-0 p-0" src="{{ asset('profile_pictures') }}/{{ Auth::guard('client') -> user() -> profile_picture }}">
                             @else
 
                             <img src="{{ asset('images/profile.png') }}" alt="User-Account">
