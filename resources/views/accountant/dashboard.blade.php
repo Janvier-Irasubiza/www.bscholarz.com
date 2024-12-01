@@ -16,44 +16,43 @@
                                     Overview
                                 </div>
                             </div>
-                            <div class="no-gutters flex-section justify-content-between px-2 py-3">
-                                <div class="col-sm-6 col-md-4 col-xl-4">
-                                    <div style="border: none" class="card no-shadow rm-border bg-transparent widget-chart text-left">
-                                        <div class="d-flex">
-                                            <div class="icon-wrapper col-lg-3 d-flex align-items-center justify-content-center mr-1">
-                                                <div class="icon-wrapper-bg opacity-9 rounded-circle p-3" style="background: #5AB8A4;">
-                                                    <i class="fa-solid fa-people-group" style="font-size: 25px"></i>
-                                                </div>
-                                            </div>
-                                            <div style="" class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Customers</div>
-                                                <div class="widget-numbers"><span>----</span></div>
-                                                <div class="widget-description opacity-8 text-focus">
-                                                    Ready to be served
-                                                </div>
-                                            </div>
+                            <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3">
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
+                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
+                                        <div class="justify-content-center" style="border: 1px solid">
+                                            <div class="widget-numbers">22222</div>
                                         </div>
-                                    </div>
-                                    <div class="divider m-0 d-md-none d-sm-block"></div>
-                                </div>
-                                <div class="col-sm-12 col-md-4 col-xl-4">
-                                    <div style="border: none" class="card no-shadow rm-border bg-transparent widget-chart text-left">
-                                        <div class="d-flex justify-content-end">
-                                            <div class="icon-wrapper col-lg-3 d-flex align-items-center justify-content-center mr-1">
-                                                <div class="icon-wrapper-bg opacity-9 rounded-circle p-3" style="background: #80ffaa;">
-                                                    <i class="fa-solid fa-person-circle-check" style="font-size: 25px"></i>
-                                                </div>
-                                            </div>
-                                            <div class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Clients</div>
-                                                <div class="widget-numbers text-success"><span>----</span></div>
-                                                <div class="widget-description text-focus">
-                                                    Served customers
-                                                </div>
-                                            </div>
+                                        <div class="justify-content-center" style="border: 1px solid">
+                                            This is me
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="sum-card rounded p-2 col-lg-3 pb-3">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
+                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
+                                        <div class="justify-content-center" style="border: 1px solid">
+                                            This is me
+                                        </div>
+                                        <div class="justify-content-center" style="border: 1px solid">
+                                            This is me
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
+                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
+                                        <div class="justify-content-center" style="border: 1px solid">
+                                            This is me
+                                        </div>
+                                        <div class="justify-content-center" style="border: 1px solid">
+                                            This is me
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
                         </div>

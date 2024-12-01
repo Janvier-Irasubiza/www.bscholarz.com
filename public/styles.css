@@ -2712,7 +2712,7 @@ input:focus, select:focus, textarea:focus {
     padding: 16px;
     border-radius: 5px 5px 0px 0px;
     position: relative;
-    box-shadow: 
+    box-shadow:
         0px -5px 5px rgba(0, 0, 0, 0.1),
         5px 0px 5px rgba(0, 0, 0, 0.1);
     display: none;
@@ -2746,7 +2746,7 @@ input:focus, select:focus, textarea:focus {
 
 .new-chat-container {
     background-color: #f0f0f0;
-    box-shadow: 
+    box-shadow:
         0px -5px 20px rgba(0, 0, 0, 0.1),
         5px 0px 5px rgba(0, 0, 0, 0.1),
         -5px 0px 5px rgba(0, 0, 0, 0.1),
@@ -2803,6 +2803,11 @@ input:focus, select:focus, textarea:focus {
 
 .active-chat {
     background-color: #eaeaea;
+}
+
+.sum-card {
+    max-width: 100%;
+    border: 1px solid red;
 }
 
 @media (max-width: 600px) {
