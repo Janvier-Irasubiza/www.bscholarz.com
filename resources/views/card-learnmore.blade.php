@@ -94,8 +94,8 @@
                 </div>
 
                     @if(!is_null($discipline -> website_link))    
-                  <div class="mt-3 p-0">
-                    <a href="{{ route('visit-official-institution', ['website_link' => $discipline -> website_link]) }}" target="black">Visit Official Institution's Website</a>
+                  <div class="mt-3 p-0"> 
+                    <a href="{{ route('link.payment', ['app' => $discipline->identifier]) }}" >Request Application Link</a>
                   </div>
                   @endif
 

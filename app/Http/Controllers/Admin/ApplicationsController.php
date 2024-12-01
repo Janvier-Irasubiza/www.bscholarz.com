@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Models\Comment;
@@ -229,6 +230,7 @@ class ApplicationsController extends Controller {
           try{
 
             DB::table('disciplines') -> insert($data);
+            Cache::forget('dashboard_data');
             
             $url = url(route('learnMore', ['discipline_id' => $identifier]));
             $title = $request -> app_name;

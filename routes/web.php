@@ -170,8 +170,14 @@ Route::prefix('admin') -> group(function () {
   	Route::get('/confirm-d/{application_id}', [AdminController::class, 'confirm_delete']) -> name('confirm-d');
 });
 
+
+Route::get('/md', function () {
+    return redirect() -> route('md.dashboard');
+});
+
 Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::get('/dashboard', [MdController::class, 'dashboard'])->name('md.dashboard');
+    Route::get('/index', [MdController::class, 'index'])->name('md.index');
     Route::get('/apps', [ApplicationsController::class, 'applications'])->name('md.apps');
     Route::get('/new-app', [ApplicationsController::class, 'new_application']) -> name('md.new-application');
     Route::post('/post-new-app', [ApplicationsController::class, 'post_new_app']) -> name('md.post-new-app');

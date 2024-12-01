@@ -46,9 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     getIssues();
 
-    function getIssueContent(chatID, issue) {
-
-        function fetchChatTags() {
+    function fetchChatTags() {
             fetch(`/tags/${chatID}`, {
                 method: 'GET',
                 headers: {
@@ -95,6 +93,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error("Error:", error));
         }
 
+    function getIssueContent(chatID, issue) {
+
         fetch(`/issue/${chatID}/conv`, {
             method: 'GET',
             headers: {
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>`;
 
             let issueContent = '';
-            fetchChatTags();
+            fetchChatTags(chatID);
         
             data.content.forEach(conv => {
                 issueContent += 
@@ -317,12 +317,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const issueData = $(this).data('issue');
         getIssueContent(chatID, issueData);
-
-        setInterval(() => {
-            getIssueContent(chatID, issueData);
-            getIssues();
-            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
-        }, 5000);
 
         $('.close-tagger').on('click', function () {
             $('.tag-div').toggleClass('show');
