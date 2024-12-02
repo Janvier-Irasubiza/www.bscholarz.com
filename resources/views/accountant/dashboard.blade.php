@@ -16,47 +16,47 @@
                                     Overview
                                 </div>
                             </div>
-                            <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3">
+                            <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3" style="padding-right: 32px !important">
                                 <div class="sum-card rounded p-2 col-lg-4 pb-3">
                                     <h1 class="card-header-title fw-700 text-center f-20">Business Revenues</h1>
                                     <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
                                         <!-- Left Column -->
                                         <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
                                             <h4>Total Income</h4>
-                                            <div class="widget-numbers">{{ number_format(2224422) }} K</div>
+                                            <div class="widget-numbers">{{ number_format($total_revenues) }} K</div>
                                         </div>
                                         <!-- Right Column -->
                                         <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
                                             <div>
                                                 <small style="font-size: 10px">Today</small>
-                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; RWF</strong></div>
+                                                <div style="font-size: 13px"><strong>{{ number_format($today_revenues) }} &nbsp; RWF</strong></div>
                                             </div>
                                             <div class="mb-1">
                                                 <small style="font-size: 10px">This week</small>
-                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; RWF</strong></div>
+                                                <div style="font-size: 13px"><strong>{{ number_format($this_week_revenues) }} &nbsp; RWF</strong></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
 
-                                <div class="sum-card rounded p-2 col-lg-4 pb-3">
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3" style="margin-right: 0px">
                                     <h1 class="card-header-title fw-700 text-center f-20">Business Productivity</h1>
                                     <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
                                         <!-- Left Column -->
                                         <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
                                             <h4>Service Requests</h4>
-                                            <div class="widget-numbers">{{ number_format(2222) }}</div>
+                                            <div class="widget-numbers">{{ number_format($total_requests) }}</div>
                                         </div>
                                         <!-- Right Column -->
                                         <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
                                             <div>
                                                 <small style="font-size: 10px">Today</small>
-                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Requests</strong></div>
+                                                <div style="font-size: 13px"><strong>{{ number_format($today_requests) }} &nbsp; Requests</strong></div>
                                             </div>
                                             <div class="mb-1">
                                                 <small style="font-size: 10px">This week</small>
-                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Requests</strong></div>
+                                                <div style="font-size: 13px"><strong>{{ number_format($this_week_requests) }} &nbsp; Requests</strong></div>
                                             </div>
                                         </div>
                                     </div>
@@ -68,17 +68,17 @@
                                         <!-- Left Column -->
                                         <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
                                             <h4>Total Services</h4>
-                                            <div class="widget-numbers">{{ number_format(22222) }}</div>
+                                            <div class="widget-numbers">{{ number_format($total_services) }}</div>
                                         </div>
                                         <!-- Right Column -->
                                         <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
                                             <div>
                                                 <small style="font-size: 10px">Ready</small>
-                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Services</strong></div>
+                                                <div style="font-size: 13px"><strong>{{ number_format($ready_services) }} &nbsp; Services</strong></div>
                                             </div>
                                             <div class="mb-1">
                                                 <small style="font-size: 10px">Upcoming</small>
-                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Services</strong></div>
+                                                <div style="font-size: 13px"><strong>{{ number_format($upcoming_services) }} &nbsp; Services</strong></div>
                                             </div>
                                         </div>
                                     </div>
