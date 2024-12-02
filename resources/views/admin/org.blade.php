@@ -18,13 +18,15 @@
             <div
               class="btn-actions-pane-right text-capitalize text-right d-flex justify-content-end gap-3 align-items-center  col-lg-4">
 
-              <a href="{{ route('admin.departments') }}" style="color: ghostwhite"
-                class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-secondary">
-                <span class="mr-2 opacity-7">
-                  <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
-                </span>
-                <span class="mr-1">Departments</span>
-              </a>
+              @if (Auth::user())
+          <a href="{{ route('admin.departments') }}" style="color: ghostwhite"
+          class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-secondary">
+          <span class="mr-2 opacity-7">
+            <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+          </span>
+          <span class="mr-1">Departments</span>
+          </a>
+        @endif
 
               <a href="{{ route('admin.hire') }}" style="color: ghostwhite"
                 class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn apply-btn">
@@ -103,8 +105,8 @@
       <span class="badge bg-success rounded-pill px-3">{{ $member->working_status }}</span>
 
       &nbsp;
-      <a data-id="{{ $member->id }}" data-names="{{ $member->names }}"
-        data-email="{{ $member->email }}" data-phone="{{ $member->phone_number }}"
+      <a data-id="{{ $member->id }}" data-names="{{ $member->names }}" data-email="{{ $member->email }}"
+        data-phone="{{ $member->phone_number }}"
         style="border-radius: 6px; padding: 1px 10px; font-size: 12px; text-decoration: none; color: ghostwhite"
         class="btn btn-danger btn-sm btn-rounded mr-1 assistantInfo" data-toggle="modal"
         data-target="#seek">Invalidate</a>

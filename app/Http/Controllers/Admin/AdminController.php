@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Department;
+use App\Models\Discipline;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -288,20 +289,130 @@ class AdminController extends Controller
         Carbon::setWeekEndsAt(Carbon::FRIDAY);
 
         $member = DB::table('staff')->where('id', $request->assistant)->first();
-        $completedApp = DB::table('served_requests')->where('assistant', $request->assistant)->where('application_status', 'Complete')->whereBetween('served_on', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->orderBy('served_on', 'desc')->get();
+        
         $balance = DB::table('served_requests')->where('assistant', $request->assistant)->where('application_status', 'Complete')->get();
         $history = DB::table('disbursement_history')->where('assistant', $request->assistant)->limit(2)->orderBy('date_time', 'DESC')->get();
-        return view('admin.sheet', compact('member', 'completedApp', 'balance', 'history'));
+
+        // Get filter inputs from the request
+        $sortBy = $request->input('sortBy', ''); // e.g., 'name', 'date', etc.
+        $employee = $request->employee ?? null; // Staff ID or name
+        $application = $request->application ?? null; // Discipline or application status
+        $startDate = $request->start_date ?? null; // Start date for filtering
+        $endDate = $request->end_date ?? null; // End date for filtering
+
+        try {
+            // Fetch the current member
+            $member = Staff::find($request->assistant);
+
+            $completedAppQuery = DB::table('served_requests')
+            ->where('assistant', $request->assistant)
+            ->where('application_status', 'Complete')
+            ->whereBetween('served_on', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+            ->orderBy('served_on', 'desc');
+
+
+            // dd($request->all());
+
+            if (!is_null($application)) {
+                $completedAppQuery->where('discipline', $application);
+            }
+            if (!is_null($startDate) && !is_null($endDate)) {
+                $completedAppQuery->whereBetween('served_on', [$startDate, $endDate]);
+            }
+
+            // Fetch the filtered and sorted results
+            $completedApp = $completedAppQuery->paginate(10);
+
+            // Fetch history
+            $history = DB::table('disbursement_history')
+                ->where('assistant', $request->assistant)
+                ->limit(2)
+                ->orderBy('date_time', 'DESC')
+                ->get();
+
+            // Fetch all employees and applications
+            $employees = Staff::all();
+            $apps = Discipline::all();
+
+            return view('admin.sheet', compact(
+                'member',
+                'completedApp',
+                'balance',
+                'history',
+                'employees',
+                'sortBy',
+                'employee',
+                'application',
+                'startDate',
+                'endDate',
+                'apps'
+            ));
+
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function sortRecsAll(Request $request)
     {
-        $member = DB::table('staff')->where('id', $request->assistant)->first();
-        $completedApp = DB::table('served_requests')->where('assistant', $request->assistant)->where('application_status', 'Complete')->orderBy('served_on', 'desc')->get();
-        $history = DB::table('disbursement_history')->where('assistant', $request->assistant)->limit(2)->orderBy('date_time', 'DESC')->get();
+        // Get filter inputs from the request
+        $sortBy = $request->input('sortBy', ''); // e.g., 'name', 'date', etc.
+        $employee = $request->employee ?? null; // Staff ID or name
+        $application = $request->application ?? null; // Discipline or application status
+        $startDate = $request->start_date ?? null; // Start date for filtering
+        $endDate = $request->end_date ?? null; // End date for filtering
 
-        return view('admin.sheet-all-apps', compact('member', 'completedApp', 'history'));
+        try {
+            // Fetch the current member
+            $member = Staff::find($request->assistant);
+
+            // Build query for completed applications
+            $completedAppQuery = DB::table('served_requests')
+                ->where('assistant', $request->assistant)
+                ->where('application_status', 'Complete');
+
+            // dd($request->all());
+
+            if (!is_null($application)) {
+                $completedAppQuery->where('discipline', $application);
+            }
+            if (!is_null($startDate) && !is_null($endDate)) {
+                $completedAppQuery->whereBetween('served_on', [$startDate, $endDate]);
+            }
+
+            // Fetch the filtered and sorted results
+            $completedApp = $completedAppQuery->paginate(10);
+
+            // Fetch history
+            $history = DB::table('disbursement_history')
+                ->where('assistant', $request->assistant)
+                ->limit(2)
+                ->orderBy('date_time', 'DESC')
+                ->get();
+
+            // Fetch all employees and applications
+            $employees = Staff::all();
+            $apps = Discipline::all();
+
+            // Return the view with data
+            return view('admin.sheet-all-apps', compact(
+                'member',
+                'completedApp',
+                'history',
+                'employees',
+                'sortBy',
+                'employee',
+                'application',
+                'startDate',
+                'endDate',
+                'apps'
+            ));
+
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
+
 
     public function assistantPayment(Request $request)
     {

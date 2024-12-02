@@ -349,7 +349,7 @@ Route::get('notice', function () {
 
 Route::post('/send-email', 'App\Http\Controllers\Dev\SendEmailController@sendEmail')->name('send.email');
 
-Route::prefix('accountant')->group(function () {
+Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard'])->name('accountant-dashboard');
     Route::get('/clarifications', [AccountabilityController::class, 'accountant_dashboard'])->name('sort-clarifications');
     Route::get('/transactions', [AccountabilityController::class, 'pending_transactions'])->name('pending-transactions');

@@ -39,6 +39,93 @@
                     </div>
                     </div>
 
+                    <div class="col-lg-5 p-4">
+                    <x-input-label style="font-size: 17px; font-weight: 600" for="name" :value="__('Recordings')" />
+                    <p class="text-muted mb-0" style="font-size: 13px">Served requests by {{ $member -> names }} </p>
+                    </div>
+
+
+                    <div class="px-4 d-flex justify-content-between align-items-center">
+                    <form method="get" action="{{ Auth::user() ? route('admin.sheet', ['assistant' => '$emplyee']) : route('employer-sheet', ['assistant' => '$emplyee']) }}" style="display: contents;">
+                            <div class="sort-sect col-lg-8 d-flex gap-2">
+                                <div class="btn btn-primary" id="sortButton" onclick="showSortOptions()">
+                                    Sort Entries
+                                </div>
+                                <div class="col-lg-3" id="sortByContainer" style="display: none;">
+                                    <select id="sortBy" name="sortBy" class="w-full" required
+                                        style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px"
+                                        onchange="showRelevantInputs()">
+                                        <option value="">Sort By</option>
+                                        <option value="date" {{ $sortBy == 'date' ? 'selected' : '' }}>Date</option>
+                                        <option value="application" {{ $sortBy == 'application' ? 'selected' : '' }}>
+                                            Application</option>
+                                    </select>
+                                </div>
+                                <div id="employeeInput" class="col-lg-4" style="display: none;">
+                                    <select id="employee" name="employee" class="w-full"
+                                        style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
+                                        <option value="">Select Employee</option>
+                                        @foreach ($employees as $staff)
+                                            <option value="{{ $staff->id }}" {{ $employee == $staff->id ? 'selected' : '' }}>
+                                                {{ $staff->names }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div id="applicationInput" class="col-lg-4" style="display: none;">
+                                    <select id="application" name="application" class="w-full"
+                                        style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
+                                        <option value="">Select Application</option>
+                                        @foreach ($apps as $app)
+                                            <option value="{{ $app->id }}">
+                                                {{ $app->discipline_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <input type="text" name="assistant" value="{{ $member -> id }}" hidden>
+
+                                <div id="dateInputs" class="col-lg-5 d-flex gap-2" style="display: none !important">
+                                    <div>
+                                        <x-input-label for="start_date" :value="__('From')"
+                                            style="font-size: 10px; margin-top: -7px" />
+                                        <input class="block w-full px-1 p-0" type="date" name="start_date"
+                                            id="start_date" value="{{ $startDate }}"
+                                            style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;" />
+                                    </div>
+                                    <div>
+                                        <x-input-label for="end_date" :value="__('To')"
+                                            style="font-size: 10px; margin-top: -7px" />
+                                        <input class="block w-full px-1 p-0" type="date" name="end_date" id="end_date"
+                                            value="{{ $endDate }}"
+                                            style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;" />
+                                    </div>
+                                </div>
+                                <div id="sortBtn" class="sort-btn" style="display: none">
+                                    <button type="submit" class="border bg-success px-2 py-1 rounded text-white"
+                                        style="margin-top: 2px">Sort</button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="d-flex gap-2">
+                        <a href="{{ Auth::user() ? route('admin.sheet', ['assistant' => $member -> id]) : route('employer-sheet', ['assistant' => $member -> id]) }}">
+                            <p class="fw-normal mb-1">
+                                <span class="badge rounded-pill px-3" style="color: #000; background: #cccccc">This Month</span>
+                            </p>
+                        </a>
+
+                        <a href="{{ Auth::user() ? route('admin.sort-recs-all', ['assistant' => $member -> id]) : route('accountant-sort-recs-all', ['assistant' => $member -> id]) }}">
+                            <p class="fw-normal mb-1">
+                                <span class="badge rounded-pill px-3" style="color: #000;">All applications</span>
+                            </p>
+                        </a>
+
+                    </div>
+
+                    </div>
+
                     <form action="{{ route('admin.pay-assistant') }}" method="post"> @csrf
 
                     <input type="text" name="assistant" value="{{ $member -> id }}" hidden>
@@ -47,27 +134,7 @@
 
                     <div class="d-flex">
 
-                    <div class="col-lg-5">
-                    <x-input-label style="font-size: 17px; font-weight: 600" for="name" :value="__('Recordings')" />
-                    <p class="text-muted mb-0" style="font-size: 13px">Served requests by {{ $member -> names }} </p>
-                    </div>
-
-                    <div class="col-lg-3 d-flex gap-2">
-                        <a href="{{ route('admin.sort-recs-this-week', ['assistant' => $member -> id]) }}">
-                            <p class="fw-normal mb-1">
-                                <span class="badge rounded-pill px-3" style="color: #000; background: #cccccc">This week</span>
-                            </p>
-                        </a>
-
-                        <a href="{{ Auth::user() ? route('admin.sort-recs-all', ['assistant' => $member -> id]) : route('accountant-sort-recs-all', ['assistant' => $member -> id]) }}">
-                            <p class="fw-normal mb-1">
-                                <span class="badge rounded-pill px-3" style="color: #000">All applications</span>
-                            </p>
-                        </a>
-
-                    </div>
-
-                     <div class="col-lg-4 d-flex flex-row-reverse gap-2 align-items-center">
+                     <div class="w-full d-flex flex-row-reverse gap-2 align-items-center">
 
                       <div id="disburse" style="display: none">
                         <button>
@@ -84,8 +151,7 @@
                     </div>
 
                     </div>
-
-
+                    
                     <div class="info-div mt-3 mb-4">
 
                     <table id="table" class="table align-middle mb-0 bg-white">
@@ -319,6 +385,89 @@ assistantCheck.forEach((element) => {
     });
 
 });
+
+ // Initialize DataTable with buttons
+ $(document).ready(function () {
+
+// Keep selected options visible
+const sortBy = '{{ $sortBy }}';
+const employee = '{{ $employee }}';
+const application = '{{ $application }}';
+
+if (sortBy) {
+    $('#sortByContainer').show();
+    $('#sortBy').val(sortBy);
+    showRelevantInputs(); // Show the relevant inputs based on sortBy value
+}
+
+if (employee) {
+    $('#employeeInput').show();
+    $('#employee').val(employee);
+}
+
+if (application) {
+    $('#applicationInput').show();
+    $('#application').val(application);
+}
+
+// Export to Excel functionality
+document.getElementById('exportExcel').addEventListener('click', function () {
+    // Create a new workbook and add a worksheet
+    const wb = XLSX.utils.book_new();
+
+    // Get the table data and convert it to a worksheet
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('example1'));
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Transactions Waiting For Clarification');
+
+    // Write the workbook to a file
+    XLSX.writeFile(wb, 'Transactions_Waiting_For_Clarification.xlsx');
+});
+
+
+// Add event listeners to show the sort button when inputs change
+$('#sortBy, #employee, #application, #start_date, #end_date').on('change', function () {
+    $('#sortBtn').show();
+});
+
+$('#sortBy').on('change', function () {
+    $('#employee').val('');
+    $('#application').val('');
+    $('#start_date').val('');
+    $('#end_date').val('');
+    $('#sortBtn').show();
+})
+});
+
+// Show the sort options when the button is clicked
+function showSortOptions() {
+document.getElementById('sortByContainer').style.display = 'block';
+document.getElementById('sortBtn').style.display = 'block';
+}
+
+// Show relevant inputs based on sorting selection
+function showRelevantInputs() {
+document.getElementById('dateInputs').style.setProperty('display', 'none', 'important');
+document.getElementById('employeeInput').style.display = 'none';
+document.getElementById('applicationInput').style.display = 'none';
+
+const sortBy = document.getElementById('sortBy').value;
+if (sortBy === 'date') {
+    document.getElementById('dateInputs').style.display = 'flex';
+} else if (sortBy === 'employee') {
+    document.getElementById('employeeInput').style.display = 'block';
+} else if (sortBy === 'application') {
+    document.getElementById('applicationInput').style.display = 'block';
+}
+}
+
+// Show success modal if there is a success message
+@if (session('success'))
+$(document).ready(function () {
+    $('#successModal').modal('show');
+});
+@endif
 
 </script>
 

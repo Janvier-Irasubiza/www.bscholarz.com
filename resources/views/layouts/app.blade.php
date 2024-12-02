@@ -168,7 +168,7 @@
         @include('layouts.partials.md-sidebar')
 
         <!-- Marketing department -->
-    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Accountability' || Auth::guard('staff')->user()->department == 'accountability')
+    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Accountability' || Auth::guard('staff')->user()->department == 'accountability' || Auth::guard('staff')->user()->department == 'Accounting' || Auth::guard('staff')->user()->department == 'accounting')
         @include('layouts.acc-sidebar')
 
     @else
