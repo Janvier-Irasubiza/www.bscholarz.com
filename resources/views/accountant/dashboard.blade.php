@@ -18,37 +18,68 @@
                             </div>
                             <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3">
                                 <div class="sum-card rounded p-2 col-lg-4 pb-3">
-                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
-                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            <div class="widget-numbers">22222</div>
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Revenues</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Total Income</h4>
+                                            <div class="widget-numbers">{{ number_format(2224422) }} K</div>
                                         </div>
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Today</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; RWF</strong></div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">This week</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; RWF</strong></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="sum-card rounded p-2 col-lg-3 pb-3">
-                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
-                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Productivity</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Service Requests</h4>
+                                            <div class="widget-numbers">{{ number_format(2222) }}</div>
                                         </div>
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Today</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Requests</strong></div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">This week</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Requests</strong></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="sum-card rounded p-2 col-lg-4 pb-3">
-                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
-                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Store</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Total Services</h4>
+                                            <div class="widget-numbers">{{ number_format(22222) }}</div>
                                         </div>
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Ready</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Services</strong></div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">Upcoming</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format(22222) }} &nbsp; Services</strong></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -256,6 +287,25 @@
                 $('#successModal').modal('show');
             });
         @endif
+
+        function formatNumber(value) {
+            if (value >= 1_000_000_000) {
+                return (value / 1_000_000_000).toFixed(1) + ' B'; // Billions
+            } else if (value >= 1_000_000) {
+                return (value / 1_000_000).toFixed(1) + ' M'; // Millions
+            } else if (value >= 1_000) {
+                return (value / 1_000).toFixed(1) + ' K'; // Thousands
+            } else {
+                return value.toString(); // Less than 1,000
+            }
+        }
+
+        // Apply formatting to all elements with the "widget-numbers" class
+        document.querySelectorAll('.widget-numbers').forEach(function (element) {
+            const value = parseInt(element.textContent.replace(/\D/g, '')); // Extract numeric value
+            element.textContent = formatNumber(value);
+        });
+
     </script>
 
 
