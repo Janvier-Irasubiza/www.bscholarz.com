@@ -54,7 +54,7 @@ class StaffAuthController extends Controller
                 DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
 
                 return redirect()->route('md.dashboard');
-            } elseif (Auth::guard('staff')->user()->department == "Accountability" || Auth::guard('staff')->user()->department == "accountability") {
+            } elseif (Auth::guard('staff')->user()->department == "Accountability" || Auth::guard('staff')->user()->department == "accountability" || Auth::guard('staff')->user()->department == "Accounting" || Auth::guard('staff')->user()->department == "accounting") {
                 DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
 
                 return redirect()->route('accountant-dashboard');

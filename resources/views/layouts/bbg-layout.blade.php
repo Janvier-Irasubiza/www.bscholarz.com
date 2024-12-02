@@ -442,20 +442,17 @@
                                 </div>
 
                                 <a href="{{ route('login') }}">
-                                    <div class="user-profile">
 
-                                        @if(Auth::guard('client')->user())
+
+                                    @if(Auth::guard('client')->user() && Auth::guard('client')->user()->profile_picture)
+                                        <div class="user-profile">
 
                                             <img src="{{ asset('profile_pictures') }}/{{ Auth::guard('client')->user()->profile_picture }}"
                                                 alt="">
-
-                                        @else
-
-                                            <img src="{{ asset('images/profile.png') }}" alt="User-Account">
-
-                                        @endif
-
-                                    </div>
+                                        </div>
+                                    @else
+                                        <i class="fa-regular fa-user" style="font-size: 1.7em"></i>
+                                    @endif
                                 </a>
                             </div>
 
@@ -703,8 +700,8 @@
 
                                             <div class="mt-4 text-right d-flex justify-content-end">
                                                 <!-- <a class="underline text-sm hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="">
-                                                {{ __('Or see tips & tricks') }}
-                                            </a> -->
+                                                                    {{ __('Or see tips & tricks') }}
+                                                                </a> -->
                                                 <button type="submit"
                                                     style="padding: 5px 30px; font-size: 13px; font-weight: 600; color: ghostwhite; text-transform: uppercase"
                                                     class="btn apply-btn">Submit</button>
@@ -1001,7 +998,7 @@
         tooltips.forEach(t => {
             new bootstrap.Tooltip(t)
         });
-        
+
 
 
 

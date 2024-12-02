@@ -249,9 +249,15 @@ class PagesController extends Controller
         $app = Discipline::where('identifier', $request->discipline_id)->first();
 
         $comments = Comment::where('discipline_id', $app->id)
-                            ->where('status', 'active')
-                            ->with('replies')
-                            ->get();
+            ->where(function ($query) use ($app) {
+                $query->where('status', 'active');
+                if (Auth::guard('client')->check()) {
+                    $query->orWhere('applicant_id', Auth::guard('client')->user()->id);
+                }
+            })
+            ->with('replies')
+            ->get();
+
 
         if ($discipline) {
             return view('card-learnmore', compact('discipline', 'faqs', 'comments'));
@@ -753,16 +759,18 @@ class PagesController extends Controller
         return view('faq', compact('faqs'));
     }
 
-    public function comment(Request $request) {
+    public function comment(Request $request)
+    {
         $request->validate([
             'comment' => 'required',
             'discipline_id' => 'required',
+            'applicant_id' => 'required',
         ]);
 
         $comment = Comment::create([
             'comment' => $request->comment,
             'discipline_id' => $request->discipline_id,
-            'applicant_id' => auth('client')->user()->id,
+            'applicant_id' => $request->applicant_id,
         ]);
 
         return back();
