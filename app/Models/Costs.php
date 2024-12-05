@@ -6,15 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Department extends Model
+class Costs extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'uuid',
-        'name',
-        'description',
-        'status',
+        'service',
+        'cost',
     ];
 
     protected static function boot()
@@ -27,9 +26,4 @@ class Department extends Model
             }
         });
     }
-
-    public function users() {
-        return $this->belongsToMany(Staff::class);
-    }
-
 }

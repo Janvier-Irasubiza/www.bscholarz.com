@@ -2810,6 +2810,18 @@ input:focus, select:focus, textarea:focus {
     border: 1px solid red;
 }
 
+.mp {
+    padding: 2em;
+}   
+
+.mpx {
+    padding: 0px 3em;
+}
+
+.space-x-8 {
+    margin-right: 0.5rem;
+}
+
 @media (max-width: 600px) {
 
   .freq-asked-questions-cstm {
@@ -2817,6 +2829,10 @@ input:focus, select:focus, textarea:focus {
     padding: 10px 20px;
 
   }
+
+  .mpx {
+        padding: 0px 0em;
+    }
 
     .client-body-csmt-1 {
         display: block;

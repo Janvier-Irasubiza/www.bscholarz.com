@@ -4,24 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Department;
 use App\Models\Discipline;
-use Illuminate\Auth\Events\Registered;
+use App\Models\Request as Applications;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\RhythmBox;
 use App\Models\Staff;
-use App\Models\User;
-use App\Models\Comment;
-use App\Models\Message;
-use App\Models\MessageReply;
 use Carbon\Carbon;
 use DB;
-use File;
 use Mail;
 use App\Mail\DisbursedSalary;
+use App\Mail\AssistantAppt;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Advert;
 use Illuminate\Support\Str;
 
@@ -94,6 +88,12 @@ class AdminController extends Controller
                 ->count();
         });
 
+        $appointments = Cache::remember('appointments', now()->addMinutes(10), function () {
+            return Applications::where('is_appointment', true)
+                ->where('status', 'Pending')
+                ->count();
+        });
+
         return view('admin.dashboard', compact(
             'applicationCount',
             'userRequestCount',
@@ -102,7 +102,8 @@ class AdminController extends Controller
             'activeEmployeeCount',
             'assistanceRequestCount',
             'requestedDeleteCount',
-            'deadlinedAppsCount'
+            'deadlinedAppsCount',
+            'appointments'
         ));
     }
 
@@ -289,7 +290,7 @@ class AdminController extends Controller
         Carbon::setWeekEndsAt(Carbon::FRIDAY);
 
         $member = DB::table('staff')->where('id', $request->assistant)->first();
-        
+
         $balance = DB::table('served_requests')->where('assistant', $request->assistant)->where('application_status', 'Complete')->get();
         $history = DB::table('disbursement_history')->where('assistant', $request->assistant)->limit(2)->orderBy('date_time', 'DESC')->get();
 
@@ -305,10 +306,10 @@ class AdminController extends Controller
             $member = Staff::find($request->assistant);
 
             $completedAppQuery = DB::table('served_requests')
-            ->where('assistant', $request->assistant)
-            ->where('application_status', 'Complete')
-            ->whereBetween('served_on', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
-            ->orderBy('served_on', 'desc');
+                ->where('assistant', $request->assistant)
+                ->where('application_status', 'Complete')
+                ->whereBetween('served_on', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+                ->orderBy('served_on', 'desc');
 
 
             // dd($request->all());
@@ -879,5 +880,74 @@ class AdminController extends Controller
         return response()->json($results);
     }
 
+    public function appointments()
+    {
+        $appointments = Applications::where('is_appointment', 1)->paginate(10);
+        return view('admin.appointments', compact('appointments'));
+    }
 
+    public function appointmentInfo(Request $request)
+    {
+        $app = Applications::findOrFail($request->appt);
+        $assistants = Staff::where('type', '<>', 'admin')->get();
+        return view('admin.appointment-info', compact('app', 'assistants'));
+    }
+
+    public function updateApptInfo(Request $request)
+    {
+        // Validate incoming request
+        $validatedData = $request->validate([
+            'assistant' => 'required|exists:staff,id', // Ensure the assistant exists
+            'app_id' => 'required|exists:applications,app_id', // Ensure the application exists
+            'time' => 'nullable|date', // Validate time as a date
+        ]);
+
+        // Find the application
+        $app = Applications::findOrFail($validatedData['app_id']);
+        $app->assistant = $validatedData['assistant']; // Assuming 'assistant_id' is the foreign key
+        $app->time = $validatedData['time'];
+        $app->save();
+
+        // Ensure the assistant relationship is loaded
+
+        // Prepare notification data
+        $data = [
+            'service' => $app->discipline->discipline_name,
+            'client_names' => $app->user->names,
+            'client_email' => $app->user->email,
+            'client_phone' => $app->user->phone_number,
+            'client_address' => $app->address,
+            'appt_time' => $app->time,
+            'assistant' => $app->appAssistant->names,
+        ];
+
+        // Send notification email
+        Mail::to($app->appAssistant->email)->send(new AssistantAppt($data));
+
+        return back()->with('success', 'Appointment updated successfully.');
+    }
+
+
+    public function appointmentComplete(Request $request)
+    {
+        $app = Applications::findOrFail($request->appt);
+        $app->status = 'Complete';
+        $app->save();
+        return back()->with('success', 'Appointment marked as complete successfully.');
+    }
+
+    public function undoComplete(Request $request)
+    {
+        $app = Applications::findOrFail($request->appt);
+        $app->status = 'Pending';
+        $app->save();
+        return back()->with('success', 'Appointment marked as pending successfully.');
+    }
+
+    public function appointmentDelete(Request $request)
+    {
+        $app = Applications::findOrFail($request->appt);
+        $app->delete();
+        return redirect()->route('admin.appointments')->with('success', 'Appointment deleted successfully.');
+    }
 }

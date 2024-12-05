@@ -15,7 +15,7 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
   <?php /* action="{{ route('error') }} */ ?>
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('staff-login') }}">
         @csrf
 
         <!-- Email Address -->

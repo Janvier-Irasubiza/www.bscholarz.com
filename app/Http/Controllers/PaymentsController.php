@@ -13,6 +13,7 @@ use DB;
 use App\Models\Discipline;
 use App\Models\SubscriberSubscription;
 use App\Models\Applicant_info;
+use App\Models\Costs;
 use App\Models\Request as Applications;
 
 class PaymentsController extends Controller
@@ -51,20 +52,20 @@ class PaymentsController extends Controller
 
     $application_id = Crypt::decryptString($request->application_id);
 
-    $service = Discipline::where('id', $request->discipline)
-      ->select('id', 'identifier', 'discipline_name', 'organization', 'country', 'category')
+    $service = Discipline::findOrFail($request->discipline);
+
+    $request_info = Applications::where('app_id', $application_id)
+      ->select('applicant', 'is_appointment', 'time', 'address')
       ->first();
 
-    $client_id = Applications::where('app_id', $application_id)
-      ->select('applicant')
-      ->first();
+    $text = $request->r_type == 'book_appointment' ? 'appointment' : '';
 
-    $amount = 15000;
+    $amount = Costs::where('service', $request->r_type)->value('cost');
     $client = $request->client;
     $client_phone = $request->client_phone;
     $application = $request->application_id;
 
-    return view('payment', compact('service', 'amount', 'client', 'client_id', 'client_phone', 'application'));
+    return view('payment', compact('service', 'amount', 'client', 'request_info', 'client_phone', 'application', 'text'));
   }
 
   public function service_payment_view(Request $request)
@@ -74,8 +75,8 @@ class PaymentsController extends Controller
       ->select('id', 'identifier', 'discipline_name', 'organization', 'country', 'category')
       ->first();
 
-    $amount = 15000;
-    return view('service-payment', compact('service', 'amount', ));
+      $amount = Costs::where('service', $request->r_type)->value('cost');
+      return view('service-payment', compact('service', 'amount', ));
   }
 
   private function formatPhoneNumber($phoneNumber)
@@ -164,7 +165,7 @@ class PaymentsController extends Controller
 
     // Prepare api data
     $data = [
-      'amount' => 10,
+      'amount' => $validatedData['amount'],
       'phone' => $phoneNumber,
       'key' => $apiKey
     ];
@@ -187,14 +188,14 @@ class PaymentsController extends Controller
 
       $client = Applicant_info::where('id', $validatedData['applicant'])->select('uuid', 'names')->first();
       Session::put('client', $client);
-      
+
       $smsNotification = new Notifications();
       $utils = new Utils();
 
       // Send SMS notification
       $smsData = [
         'key' => $smsNotification->getSmsApiKey(),
-        'message' => 'Dear ' .$client->names.', Your request has been successfully received by BScholarz, You\'ll be contacted for further application processes via this phone number and email you provided.',
+        'message' => 'Dear ' . $client->names . ', Your request has been successfully received by BScholarz, You\'ll be contacted for further application processes via this phone number and email you provided.',
         'recipients' => [
           $phoneNumber
         ]
@@ -259,7 +260,7 @@ class PaymentsController extends Controller
 
     // Prepare api data
     $data = array(
-      'amount' => 10,
+      'amount' => $validatedData['amount'],
       'phone' => $phoneNumber,
       'key' => $apiKey
     );
@@ -343,7 +344,7 @@ class PaymentsController extends Controller
       : $this->getApiKey();
 
     $data = [
-      'amount' => 12,
+      'amount' => $validatedData['amount'],
       'phone' => $phoneNumber,
       'key' => $apiKey
     ];
@@ -372,7 +373,7 @@ class PaymentsController extends Controller
         $subscription->is_active = 1;
         $subscription->transaction_id = $response['data']['transID'];
         $subscription->save();
-        
+
         return response()->json([
           'status' => 200,
           'message' => $response['data']['message'] ?? 'Payment successful.',

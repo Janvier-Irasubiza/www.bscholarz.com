@@ -132,7 +132,7 @@ class ApplicationsController extends Controller
             'user_id' => auth()->guard('staff')->user()->id,
         ]);
 
-        return response()->json(['success'=> true,'message'=> 'Reply added successfully']);
+        return response()->json(['success' => true, 'message' => 'Reply added successfully']);
     }
 
     public function updateStatus(Request $request, $id)
@@ -369,9 +369,14 @@ class ApplicationsController extends Controller
         }
     }
 
-    public function AppRequests()
+    public function AppRequests(Request $request)
     {
-        $requests = DB::table('user_requests')->get();
+        $query = DB::table('user_requests');
+        if ($request->type == 'appointments') {
+            $query->where('is_appointment', 1);
+        }
+
+        $requests = $query->paginate(10);
         return view('admin.user-requests', compact('requests'));
     }
 

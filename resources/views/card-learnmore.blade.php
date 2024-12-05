@@ -144,7 +144,7 @@
                     </div>
                     @if(!is_null($discipline->website_link))
                         <div class="mt-3 p-0 d-flex justify-content-center ">
-                            <a href="{{ route('link.payment', ['app' => $discipline->identifier]) }}">Request
+                            <a href="{{ route('link.payment', ['app' => $discipline->identifier, 'r_type' => 'link']) }}">Request
                                 Application Link</a>
                         </div>
                     @endif
@@ -210,8 +210,8 @@
                                         @csrf
                                         <input type="hidden" name="discipline_id" value="{{ $discipline->id }}"
                                             class="w-full">
-                                        <input type="hidden" name="applicant_id" value="{{ Auth::guard('client')->user()->id }}"
-                                            class="w-full">
+                                        <input type="hidden" name="applicant_id"
+                                            value="{{ Auth::guard('client')->user()->id }}" class="w-full">
                                         <div class="d-flex gap-3 mt-3 ">
                                             <textarea name="comment" rows="1" placeholder="Type your comment here..."
                                                 class="chat-input w-full p-2" required></textarea>

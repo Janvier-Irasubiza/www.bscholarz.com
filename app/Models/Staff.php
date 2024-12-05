@@ -66,4 +66,10 @@ class Staff extends Authenticatable
     public function message() {
         return $this -> hasMany(Message::class);
     }
+
+    public function department() {
+        return $this -> belongsTo(Department::class, 'department');
+    }
 }
+
+

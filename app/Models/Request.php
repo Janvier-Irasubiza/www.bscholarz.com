@@ -46,7 +46,9 @@ class Request extends Model
         'assistant_paid_commission',
         'remittance_status',
         'poked',
-        '',
+        'is_appointment',
+        'address',
+        'time',
     ];
 
     protected static function boot()
@@ -58,5 +60,17 @@ class Request extends Model
                 $model->uuid = Str::uuid();
             }
         });
+    }
+
+    public function user() {
+        return $this->belongsTo(Applicant_info::class, 'applicant');
+    }
+
+    public function discipline () {
+        return $this->belongsTo(Discipline::class);
+    }
+
+    public function appAssistant() {
+        return $this->belongsTo(Staff::class, 'assistant');
     }
 }

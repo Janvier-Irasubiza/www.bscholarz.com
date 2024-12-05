@@ -26,51 +26,55 @@ class StaffAuthController extends Controller
 
     public function authenticate_staff(Request $request): RedirectResponse
     {
+        // Validate credentials
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        $staffInfo = $request->all();
+        if (Auth::guard('staff')->attempt($credentials)) {
+            $request->session()->regenerate(); // Regenerate session for security
 
-        if (Auth::guard('staff')->attempt(['email' => $staffInfo['email'], 'password' => $staffInfo['password']])) {
-            $request->session()->regenerate();
+            $user = Auth::guard('staff')->user(); // Get authenticated staff user
+            $department = strtolower($user->department); // Normalize department names
+            $workingStatus = strtolower($user->working_status); // Normalize working status
 
-            if (Auth::guard('staff')->user()->working_status == 'Fired' || Auth::guard('staff')->user()->working_status == 'fired') {
+            if ($user->type == 'admin') {
+                return redirect()->route('admin.dashboard'); // Admin dashboard
+            }
 
+            if ($workingStatus === 'fired') {
                 Auth::guard('staff')->logout();
-
                 $request->session()->invalidate();
-
                 $request->session()->regenerateToken();
-
-                return redirect()->route('fired-staff-notify');
+                return redirect()->route('fired-staff-notify'); // Notify fired staff
             }
 
-            // elseif (Auth::guard('staff')->user()->type == "admin") {
-            //     return redirect() -> route('admin.dashboard');
-            // }
-            elseif (Auth::guard('staff')->user()->department == "Marketing" || Auth::guard('staff')->user()->department == "marketing") {
-                DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
+            // Update staff status to 'Online'
+            DB::table('staff')->where('id', $user->id)->update(['status' => 'Online']);
 
-                return redirect()->route('md.dashboard');
-            } elseif (Auth::guard('staff')->user()->department == "Accountability" || Auth::guard('staff')->user()->department == "accountability" || Auth::guard('staff')->user()->department == "Accounting" || Auth::guard('staff')->user()->department == "accounting") {
-                DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
+            // Redirect based on department
+            switch ($department) {
+                case 'marketing':
+                    return redirect()->route('md.dashboard'); // Marketing dashboard
 
-                return redirect()->route('accountant-dashboard');
-            } elseif (auth('staff')->user()->department == 'Development' || auth('staff')->user()->department == 'development') {
-                return redirect()->route('dev.index');
-            } else {
+                case 'accountability':
+                case 'accounting':
+                    return redirect()->route('accountant-dashboard'); // Accountant dashboard
 
-                DB::table('staff')->limit(1)->where('id', Auth::guard('staff')->user()->id)->update(['status' => 'Online']);
-                return redirect()->route('staff-dashboard');
+                case 'development':
+                    return redirect()->route('dev.index'); // Development dashboard
+
+                default:
+                    return redirect()->route('staff-dashboard'); // Default staff dashboard
             }
-
         }
 
+        // Return error if authentication fails
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
+
 
 }

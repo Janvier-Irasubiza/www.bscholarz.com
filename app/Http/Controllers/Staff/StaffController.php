@@ -16,6 +16,7 @@ use DB;
 use Mail;
 use App\Mail\Unreachable;
 use App\Mail\RequestToPay;   
+use App\Models\Request as Applications;
 
 class StaffController extends Controller {
 
@@ -1032,6 +1033,14 @@ public function add_client_app (Request $request) {
 
         return redirect()->back();
 
+    }
+
+    public function appointments()
+    {
+        $appointments = Applications::
+                        where('is_appointment', 1)->where('assistant', auth('staff')->user()->id)
+                        ->paginate(10);
+        return view('admin.appointments', compact('appointments'));
     }
 
 }

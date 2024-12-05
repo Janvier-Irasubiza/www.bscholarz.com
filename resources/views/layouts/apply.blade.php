@@ -578,6 +578,9 @@
 
     <script>
 
+        $('#toast').toast({ delay: 30000 });
+        $('#toast').toast('show');
+
 
         $(document).ready(function () {
             $('#submitPayment').on('click', function (e) {

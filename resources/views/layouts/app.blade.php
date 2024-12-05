@@ -100,6 +100,21 @@
             margin-left: auto;
         }
 
+        .continue-btn {
+            background: #5d3fd3;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .continue-btn:hover {
+            background: #4528b3;
+        }
+
         @media (max-width: 600px) {
 
             body,
@@ -162,17 +177,21 @@
 
 <body class="font-sans antialiased">
     <!-- Sidebar -->
-    @if(Auth::user())
-        @include('layouts.sidebar')
-    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Marketing')
-        @include('layouts.partials.md-sidebar')
+    @if(Auth::guard('staff')->check())
+        @php
+            $user = Auth::guard('staff')->user();
+            $department = strtolower($user->department); // Normalize department names
+        @endphp
 
-        <!-- Marketing department -->
-    @elseif(Auth::guard('staff')->check() && Auth::guard('staff')->user()->department == 'Accountability' || Auth::guard('staff')->user()->department == 'accountability' || Auth::guard('staff')->user()->department == 'Accounting' || Auth::guard('staff')->user()->department == 'accounting')
-        @include('layouts.acc-sidebar')
-
-    @else
-        @include('layouts.sidebar')
+        @if($user->type == 'admin')
+            @include('layouts.sidebar')
+        @elseif($department == 'marketing')
+            @include('layouts.partials.md-sidebar') <!-- Marketing department -->
+        @elseif(in_array($department, ['accountability', 'accounting']))
+            @include('layouts.acc-sidebar') <!-- Accounting or Accountability -->
+        @else
+            @include('layouts.staff-sidebar')
+        @endif
     @endif
 
     <div class="min-h-screen">
@@ -210,7 +229,7 @@
                     </div>
                 </div>
             </div>
-        </main>
+            /main>
     </div>
 
     <!-- <users> -->

@@ -8,7 +8,7 @@
                 <div class="d-flex align-items-center">
 
                     <!-- Adimin -->
-                    @if(Auth::user())
+                    @if(Auth::guard('staff')->user()->type == 'admin')
                         <h6 style="font-weight: 600">Administration</h6>
                     <!-- this is for the accounting department -->
                     @else
@@ -83,7 +83,7 @@
                         @elseif(Auth::guard('staff'))
 
                         <x-dropdown-link style="color: #1b1b1b;" class="drop-btn" :href="route('staff.profile.edit')">
-                            {{ __('Account history') }}
+                            {{ __('Profile') }}
                         </x-dropdown-link>
 
                         <a style="color: #1b1b1b;" class="drop-btn block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out" href="{{ route('staff.logout') }}">

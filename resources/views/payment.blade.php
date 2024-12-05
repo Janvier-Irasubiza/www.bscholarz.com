@@ -16,20 +16,34 @@
           <div style="font-size: 24px" class="widget-subheading">{{ $service->discipline_name }} </div>
           <small class="mb-0" style="font-size: 15px">{{ $service->organization }} - {{ $service->country }}</small>
         </div>
-
       </div>
 
       <div class="mt-3">
+        <span style="font-size: 15px">
+          Dear <span style="font-weight: 600">{{ $client }},
+          </span> you're requesting @if ($text) <strong>{{ $text }}</strong>@endif for
+          <span style="font-weight: 600">{{ $service->discipline_name }}</span> application
+        </span>
 
-        <div class="mb-3">
+        @if ($request_info->is_appointment === 1)
+          <div class="mt-3 mb-3 border p-3 rounded alert alert-success ">
+            <h1 style="font-size: 1.2em">Appointment Info</h1>
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <div>
+                <p class="text-muted">Time</p>
+                <p class="muted-text">{{ $request_info->time }}</p>
+              </div>
+              <div>
+                <p class="text-muted">Address</p>
+                <p class="muted-text">{{ $request_info->address }}</p>
+              </div>
+            </div>
+          </div>
+        @endif
+
+        <div class="mb-3 mt-3">
           <h1 style="" class="f-20">Request fee: <strong>{{ number_format($amount) }} RWF</strong> </h1>
         </div>
-
-        <span style="font-size: 15px">
-          Dear <span style="font-weight: 600">{{ $client }},</span> you're requesting for <span
-            style="font-weight: 600">{{ $service->discipline_name }} in
-            {{ $service->discipline_organization }}</span> application
-        </span>
 
         <div class="mt-4 px-3">
           <div style="border-bottom: 1px solid #f2f2f24b">
@@ -79,8 +93,8 @@
               autocomplete="app_id" />
             <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier"
               value="{{ $service->identifier }}" autocomplete="identifier" />
-            <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant"
-              value="{{ $client_id->applicant }}" autocomplete="applicant" />
+            <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant" value="{{ $request_info->applicant }}"
+              autocomplete="applicant" />
             <input id="amount" class="block mt-1 w-full" type="hidden" name="amount" value="{{ $amount }}"
               autocomplete="amount" />
             <input id="momochk" type="radio" name="payment_method" value="momo" checked hidden>
@@ -105,7 +119,8 @@
           </div>
 
           <div class="button-section mt-4 mb-4">
-          <button type="submit" id="submitPayment" class="apply-btn w-full text-center py-2 uppercase" style="border: none; font-weight: 600">
+            <button type="submit" id="submitPayment" class="apply-btn w-full text-center py-2 uppercase"
+              style="border: none; font-weight: 600">
               {{ __('Proceed With MoMo') }}
             </button>
           </div>
@@ -116,12 +131,12 @@
           @csrf
 
           <div class="mt-3">
-          <input id="app_id" class="block mt-1 w-full" type="hidden" name="app_id" value="{{ $application }}"
+            <input id="app_id" class="block mt-1 w-full" type="hidden" name="app_id" value="{{ $application }}"
               autocomplete="app_id" />
             <input id="identifier" class="block mt-1 w-full" type="hidden" name="identifier"
               value="{{ $service->identifier }}" autocomplete="identifier" />
-            <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant"
-              value="{{ $client_id->applicant }}" autocomplete="applicant" />
+            <input id="applicant" class="block mt-1 w-full" type="hidden" name="applicant" value="{{ $request_info->applicant }}"
+              autocomplete="applicant" />
             <input id="amount" class="block mt-1 w-full" type="hidden" name="amount" value="{{ $amount }}"
               autocomplete="amount" />
             <input id="momochk" type="radio" name="payment_method" value="cc" checked hidden>
@@ -170,7 +185,8 @@
           </div>
 
           <div class="button-section mt-4 mb-4">
-            <button type="submit" id="cardPayment" class="apply-btn w-full text-center py-2 uppercase" style="border: none; font-weight: 600">
+            <button type="submit" id="cardPayment" class="apply-btn w-full text-center py-2 uppercase"
+              style="border: none; font-weight: 600">
               {{ __('Proceed With Card') }}
             </button>
           </div>
