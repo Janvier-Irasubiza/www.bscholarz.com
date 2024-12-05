@@ -27,7 +27,7 @@
           <span class="mr-1">Departments</span>
           </a>
         @endif
-
+            @if (Auth::user())
               <a href="{{ route('admin.hire') }}" style="color: ghostwhite"
                 class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn apply-btn">
                 <span class="mr-2 opacity-7">
@@ -35,7 +35,7 @@
                 </span>
                 <span class="mr-1">add employee</span>
               </a>
-
+              @endif
             </div>
           </div>
 

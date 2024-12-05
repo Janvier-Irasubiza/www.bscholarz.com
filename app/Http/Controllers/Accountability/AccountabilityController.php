@@ -27,6 +27,18 @@ class AccountabilityController extends Controller {
     public function accountant_dashboard(Request $request) {
         $clarifications = DB::table('served_requests') -> where('payment_status', 'Agent Needs To Clarify') -> get();
 
+        $week_start = Carbon::now()->startOfWeek();
+        $week_end = Carbon::now()->endOfWeek();
+        $total_revenues = DB::table('applications') -> where('payment_status', 'Paid') -> sum('amount_paid');
+        $today_revenues = DB::table('applications') -> where('payment_status', 'Paid') -> whereDate('payment_date', Carbon::today()) -> sum('amount_paid');
+        $this_week_revenues = DB::table('applications') -> where('payment_status', 'Paid') -> whereBetween('payment_date', [$week_start, $week_end]) -> sum('amount_paid');
+        $total_requests = DB::table('user_requests') -> count();
+        $today_requests = DB::table('user_requests') -> whereDate('requested_on', Carbon::today()) -> count();
+        $this_week_requests = DB::table('user_requests') -> whereBetween('requested_on', [$week_start, $week_end]) -> count();
+        $total_services = DB::table('disciplines') -> count();
+        $ready_services = DB::table('disciplines') -> where('status', 'Available') -> count();
+        $upcoming_services = DB::table('disciplines') -> where('status', 'Upcoming') -> orWhere('status', 'Comming Soon') -> count();
+
         $clarifications_unique = DB::table('served_requests') -> where('payment_status', 'Agent Needs To Clarify') -> groupBy('discipline_identifier', 'discipline_name') -> get();
         $staff_ids = [];
         foreach($clarifications as $app){
@@ -41,7 +53,7 @@ class AccountabilityController extends Controller {
         $startDate = $request->input('start_date', '');
         $endDate = $request->input('end_date', '');
 
-        return view('accountant.dashboard', compact('clarifications', 'clarifications_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
+        return view('accountant.dashboard', compact('total_revenues', 'today_revenues', 'this_week_revenues', 'total_requests', 'today_requests', 'this_week_requests', 'total_services', 'ready_services', 'upcoming_services', 'clarifications', 'clarifications_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
     }
 
     public function pending_transactions(Request $request) {

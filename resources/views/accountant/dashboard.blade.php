@@ -16,39 +16,70 @@
                                     Overview
                                 </div>
                             </div>
-                            <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3">
+                            <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3" style="padding-right: 32px !important">
                                 <div class="sum-card rounded p-2 col-lg-4 pb-3">
-                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
-                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            <div class="widget-numbers">22222</div>
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Revenues</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Total Income</h4>
+                                            <div class="widget-numbers">{{ number_format($total_revenues) }} K</div>
                                         </div>
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Today</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($today_revenues) }} &nbsp; RWF</strong></div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">This week</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($this_week_revenues) }} &nbsp; RWF</strong></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="sum-card rounded p-2 col-lg-3 pb-3">
-                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
-                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3" style="margin-right: 0px">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Productivity</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Service Requests</h4>
+                                            <div class="widget-numbers">{{ number_format($total_requests) }}</div>
                                         </div>
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Today</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($today_requests) }} &nbsp; Requests</strong></div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">This week</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($this_week_requests) }} &nbsp; Requests</strong></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="sum-card rounded p-2 col-lg-4 pb-3">
-                                    <h1 class="card-header-title fw-700 text-center f-20">Customers</h1>
-                                    <div class="d-flex justify-content-center px-3 gap-3 mt-2">
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Store</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Total Services</h4>
+                                            <div class="widget-numbers">{{ number_format($total_services) }}</div>
                                         </div>
-                                        <div class="justify-content-center" style="border: 1px solid">
-                                            This is me
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Ready</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($ready_services) }} &nbsp; Services</strong></div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">Upcoming</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($upcoming_services) }} &nbsp; Services</strong></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -73,66 +104,48 @@
                                     Sort Entries
                                 </div>
                                 <div class="col-lg-3" id="sortByContainer" style="display: none;">
-                                    <select id="sortBy" name="sortBy" class="w-full" required
-                                        style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px"
-                                        onchange="showRelevantInputs()">
+                                    <select id="sortBy" name="sortBy" class="w-full" required style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px" onchange="showRelevantInputs()">
                                         <option value="">Sort By</option>
                                         <option value="date" {{ $sortBy == 'date' ? 'selected' : '' }}>Date</option>
-                                        <option value="employee" {{ $sortBy == 'employee' ? 'selected' : '' }}>Employee
-                                        </option>
-                                        <option value="application" {{ $sortBy == 'application' ? 'selected' : '' }}>
-                                            Application</option>
+                                        <option value="employee" {{ $sortBy == 'employee' ? 'selected' : '' }}>Employee</option>
+                                        <option value="application" {{ $sortBy == 'application' ? 'selected' : '' }}>Application</option>
                                     </select>
                                 </div>
                                 <div id="employeeInput" class="col-lg-4" style="display: none;">
-                                    <select id="employee" name="employee" class="w-full"
-                                        style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
+                                    <select id="employee" name="employee" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
                                         <option value="">Select Employee</option>
                                         @foreach ($employees as $staff)
-                                            <option value="{{ $staff->id }}" {{ $employee == $staff->id ? 'selected' : '' }}>
-                                                {{ $staff->names }}
-                                            </option>
+                                        <option value="{{ $staff->id }}" {{ $employee == $staff->id ? 'selected' : '' }}>{{ $staff->names }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div id="applicationInput" class="col-lg-4" style="display: none;">
-                                    <select id="application" name="application" class="w-full"
-                                        style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
+                                    <select id="application" name="application" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
                                         <option value="">Select Application</option>
                                         @foreach ($clarifications_unique as $app)
-                                            <option value="{{ $app->discipline_identifier }}" {{ $application == $app->discipline_identifier ? 'selected' : '' }}>
-                                                {{ $app->discipline_name }}
-                                            </option>
+                                        <option value="{{ $app->discipline_identifier }}" {{ $application == $app->discipline_identifier ? 'selected' : '' }}>{{ $app->discipline_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
 
                                 <div id="dateInputs" class="col-lg-5 d-flex gap-2" style="display: none !important">
                                     <div>
-                                        <x-input-label for="start_date" :value="__('From')"
-                                            style="font-size: 10px; margin-top: -7px" />
-                                        <input class="block w-full px-1 p-0" type="date" name="start_date"
-                                            id="start_date" value="{{ $startDate }}"
-                                            style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;" />
+                                        <x-input-label for="start_date" :value="__('From')" style="font-size: 10px; margin-top: -7px"/>
+                                        <input class="block w-full px-1 p-0" type="date" name="start_date" id="start_date" value="{{ $startDate }}" style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;"/>
                                     </div>
                                     <div>
-                                        <x-input-label for="end_date" :value="__('To')"
-                                            style="font-size: 10px; margin-top: -7px" />
-                                        <input class="block w-full px-1 p-0" type="date" name="end_date" id="end_date"
-                                            value="{{ $endDate }}"
-                                            style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;" />
+                                        <x-input-label for="end_date" :value="__('To')" style="font-size: 10px; margin-top: -7px"/>
+                                        <input class="block w-full px-1 p-0" type="date" name="end_date" id="end_date" value="{{ $endDate }}" style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;"/>
                                     </div>
                                 </div>
                                 <div id="sortBtn" class="sort-btn" style="display: none">
-                                    <button class="border bg-success px-2 py-1 rounded text-white"
-                                        style="margin-top: 2px">Sort</button>
+                                    <button class="border bg-success px-2 py-1 rounded text-white" style="margin-top: 2px">Sort</button>
                                 </div>
                             </div>
                         </form>
 
                         <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
-                            <a href="{{ route('export.transactions', ['download' => 'excel', 'type' => 'pending', 'sortBy' => $sortBy, 'employee' => $employee, 'application' => $application, 'start_date' => $startDate, 'end_date' => $endDate]) }}"
-                                class="btn btn-primary" id="exportExcel">Export to Excel</a>
+                            <a href="{{ route('export.transactions', ['download' => 'excel', 'type' => 'pending', 'sortBy' => $sortBy, 'employee' => $employee, 'application' => $application, 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="btn btn-primary" id="exportExcel">Export to Excel</a>
                         </div>
                     </div>
                 </div>
@@ -149,31 +162,29 @@
                         </thead>
                         <tbody>
                             @foreach($clarifications ?? $clarifications as $transaction)
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="">
-                                                <p class="fw-normal mb-1">{{ $transaction->payment_id }}</p>
-                                            </div>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="">
+                                            <p class="fw-normal mb-1">{{ $transaction->payment_id }}</p>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <p class="fw-normal mb-1">{{ $transaction->amount_paid }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="fw-normal mb-1">{{ $transaction->served_on }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="fw-normal mb-1">{{ $transaction->assistant_names }}</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <a style="font-weight: 600; border: 1.3px solid;"
-                                            href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant]) }}"
-                                            class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                                            Review
-                                        </a>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="fw-normal mb-1">{{ $transaction->amount_paid }}</p>
+                                </td>
+                                <td>
+                                    <p class="fw-normal mb-1">{{ $transaction->served_on }}</p>
+                                </td>
+                                <td>
+                                    <p class="fw-normal mb-1">{{ $transaction->assistant_names }}</p>
+                                </td>
+                                <td class="text-center">
+                                    <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                                        Review
+                                    </a>
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -195,7 +206,7 @@
 
     <script>
         // Initialize DataTable with buttons
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             // Keep selected options visible
             const sortBy = '{{ $sortBy }}';
@@ -235,11 +246,11 @@
 
 
             // Add event listeners to show the sort button when inputs change
-            $('#sortBy, #employee, #application, #start_date, #end_date').on('change', function () {
+            $('#sortBy, #employee, #application, #start_date, #end_date').on('change', function() {
                 $('#sortBtn').show();
             });
 
-            $('#sortBy').on('change', function () {
+            $('#sortBy').on('change', function() {
                 $('#employee').val('');
                 $('#application').val('');
                 $('#start_date').val('');
@@ -272,10 +283,29 @@
 
         // Show success modal if there is a success message
         @if (session('success'))
-            $(document).ready(function () {
+            $(document).ready(function() {
                 $('#successModal').modal('show');
             });
         @endif
+
+        function formatNumber(value) {
+            if (value >= 1_000_000_000) {
+                return (value / 1_000_000_000).toFixed(1) + ' B'; // Billions
+            } else if (value >= 1_000_000) {
+                return (value / 1_000_000).toFixed(1) + ' M'; // Millions
+            } else if (value >= 1_000) {
+                return (value / 1_000).toFixed(1) + ' K'; // Thousands
+            } else {
+                return value.toString(); // Less than 1,000
+            }
+        }
+
+        // Apply formatting to all elements with the "widget-numbers" class
+        document.querySelectorAll('.widget-numbers').forEach(function (element) {
+            const value = parseInt(element.textContent.replace(/\D/g, '')); // Extract numeric value
+            element.textContent = formatNumber(value);
+        });
+
     </script>
 
 
