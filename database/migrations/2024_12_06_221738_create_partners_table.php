@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('poster');
             $table->text('description')->nullable();
             $table->text('website')->nullable();
-            $table->text('status')->default('inactive');
+            $table->string('status')->default('inactive');
             $table->timestamps();
         });
     }
