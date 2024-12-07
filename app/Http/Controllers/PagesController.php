@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Comment;
+use App\Models\Company;
 use App\Models\Subscriber;
 use App\Models\SubscriberSubscription;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,7 @@ use File;
 use App\Mail\RequestReply;
 use App\Models\Discipline;
 use App\Models\Advert;
+use App\Models\Partner;
 use Mail;
 
 
@@ -46,6 +48,8 @@ class PagesController extends Controller
 
         $ads = Advert::where('status', 'active')->get();
 
+        $partners = Partner::where('status','active')->get();
+
         return view(
             'index',
             compact(
@@ -54,7 +58,8 @@ class PagesController extends Controller
                 'trainings',
                 'sidebarData',
                 'carouselData',
-                'ads'
+                'ads',
+                'partners',
             )
         );
     }
@@ -162,7 +167,8 @@ class PagesController extends Controller
 
     public function about_us()
     {
-        return view('about-us');
+        $info = Company::first();
+        return view('about-us', compact('info'));
     }
 
     public function contact_us()

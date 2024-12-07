@@ -23,7 +23,7 @@ class Staff extends Authenticatable
         'names',
         'email',
         'phone_number',
-        'department',
+        'department_id',
         'role',
         'percentage',
         'work_phone',
@@ -68,7 +68,7 @@ class Staff extends Authenticatable
     }
 
     public function department() {
-        return $this -> belongsTo(Department::class, 'department');
+        return $this -> belongsTo(Department::class);
     }
 }
 

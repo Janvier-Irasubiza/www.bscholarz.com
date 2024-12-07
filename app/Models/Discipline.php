@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Discipline extends Model
 {
@@ -41,10 +42,25 @@ class Discipline extends Model
         'website_link',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = Str::uuid();
+            }
+        });
+    }
+
     // Define any relationships if needed
     // For example, if a Discipline has many Comments:
     public function comments()
     {
         return $this->hasMany(Comment::class); // Change Comment to your actual comment model name
+    }
+
+    public function requests() {
+        return $this->hasMany(Request::class, 'discipline_id');
     }
 }

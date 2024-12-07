@@ -4,6 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use App\Models\MessageReply;
 
 class AccountantLayout extends Component
 {
@@ -12,6 +13,11 @@ class AccountantLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.accountant');
+        $nots = MessageReply::whereHas('message', function ($query) {
+            $query->where('receiver', auth('staff')->user()->id)
+                ->orWhere('sender', auth('staff')->user()->id);
+        })->where('status', 'unread')
+            ->count();
+        return view('layouts.accountant', compact('nots'));
     }
 }

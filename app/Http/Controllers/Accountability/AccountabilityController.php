@@ -22,6 +22,8 @@ use App\Exports\RevenueExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Message;
+use App\Http\Controllers\Notifications;
+use App\Http\Controllers\Utils;
 
 class AccountabilityController extends Controller {
     public function accountant_dashboard(Request $request) {
@@ -255,6 +257,20 @@ class AccountabilityController extends Controller {
             $client = $unpaid_applications->names;
 
             Mail::to($unpaid_applications->email)->send(new Remind($url, $app, $client));
+
+            // $smsNotification = new Notifications();
+            // $utils = new Utils();
+
+            // // Send SMS notification
+            // $smsData = [
+            //     'key' => $smsNotification->getSmsApiKey(),
+            //     'message' => 'Dear ' . $client . ', You have not yet paid for ' . $unpaid_applications->discipline_name .' has been successfully received by BScholarz, Thank you for choosing BScholarz. We look forward to working with you again.',
+            //     'recipients' => [
+            //         $request_info->user->phone_number
+            //     ]
+            // ];
+
+            // $smsNotification->sendSms($smsData);
 
             // Flash success message
             session()->flash('success', 'A reminder email has been sent successfully!');

@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('company', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
-            $table->string('objectives');
-            $table->string('services');
-            $table->string('vision');
-            $table->string('mission');
-            $table->string('goals');
-            $table->string('values');
+            $table->text('description');
+            $table->text('objectives');
+            $table->text('services');
+            $table->text('vision');
+            $table->text('mission');
+            $table->text('goals');
+            $table->text('values');
             $table->timestamps();
         });
     }

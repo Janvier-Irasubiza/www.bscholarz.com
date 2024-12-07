@@ -36,7 +36,7 @@ class StaffAuthController extends Controller
             $request->session()->regenerate(); // Regenerate session for security
 
             $user = Auth::guard('staff')->user(); // Get authenticated staff user
-            $department = strtolower($user->department); // Normalize department names
+            $department = strtolower($user->department->name); // Normalize department names
             $workingStatus = strtolower($user->working_status); // Normalize working status
 
             if ($user->type == 'admin') {
@@ -75,6 +75,4 @@ class StaffAuthController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
-
-
 }

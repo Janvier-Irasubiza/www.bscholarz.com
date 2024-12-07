@@ -62,14 +62,14 @@
                                 <p class="text-muted mt-1" style="font-size: 1em">{{ $department->status }}</p>
                             </div>
                             <div class="d-flex gap-3 align-items-center">
-                                @if ($department->status != 'active')
-                                    <a href="{{ route('dpt.open', ['dpt' => $department->id]) }}"
-                                        class="text-success">Activate</a>
-                                @endif
                                 <a href="{{ route('dpt.edit', ['dpt' => $department->id]) }}">Edit</a>
                                 @if ($department->status == 'active')
                                     <a href="{{ route('dpt.close', ['dpt' => $department->id]) }}"
                                         class="text-danger">De-activate</a>
+                                @endif
+                                @if ($department->status != 'active')
+                                    <a href="{{ route('dpt.open', ['dpt' => $department->id]) }}"
+                                        class="text-success">Activate</a>
                                 @endif
 
                                 <a href="{{ route('dpt.delete', ['dpt' => $department->id]) }}"

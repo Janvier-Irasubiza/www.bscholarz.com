@@ -178,7 +178,14 @@ Route::prefix('admin')->group(function () {
     Route::post('/edit-faq', [PagesController::class, 'edit_faqs'])->middleware(['staff'])->name('edit-faq');
     Route::post('/post-faq', [PagesController::class, 'post_faqs'])->middleware(['staff'])->name('post-faq');
     Route::get('/delete-faq/{id}', [PagesController::class, 'delete_faq'])->middleware(['staff'])->name('delete-faq');
-    Route::get('/parteners', [AdminController::class, 'parteners'])->middleware(['staff'])->name('admin.parteners');
+    Route::get('/partners', [AdminController::class, 'parteners'])->middleware(['staff'])->name('admin.parteners');
+    Route::get('/partners/new', [AdminController::class,'newPartner'])->middleware('staff')->name('admin.partners.new');
+    Route::post('/add-partner', [AdminController::class,'addPartner'])->middleware('staff')->name('admin.partners.add');
+    Route::get('/partner/edit/{partner}', [AdminController::class,'editPartner'])->middleware('staff')->name('admin.partners.edit');
+    Route::post('/update-partner', [AdminController::class,'updatePartner'])->middleware('staff')->name('admin.partners.update');
+    Route::get('/partner/delete/{partner}', [AdminController::class,'deletePartner'])->middleware('staff')->name('admin.partners.delete');
+    Route::get('/partner/activate/{partner}', [AdminController::class,'activatePartner'])->middleware('staff')->name('admin.partners.activate');
+    Route::get('/partner/deactivate/{partner}', [AdminController::class,'deactivatePartner'])->middleware('staff')->name('admin.partners.deactivate');
     Route::post('/invalidate-partner', [AdminController::class, 'invalidate_partner'])->middleware(['staff'])->name('admin.invalidate-partner');
     Route::get('/validate-partner', [AdminController::class, 'validate_partner'])->middleware(['staff'])->name('admin.validate-partner');
     Route::post('/disburse-full-to-partner', [AdminController::class, 'disburse_full_to_partner'])->name('admin.disburse-full-to-partner');
@@ -202,6 +209,8 @@ Route::prefix('admin')->group(function () {
     Route::get('/appt/{appt}/served', [AdminController::class, 'appointmentComplete'])->middleware('staff')->name('appointment.served');
     Route::get('/appt/{appt}/pending', [AdminController::class, 'undoComplete'])->middleware('staff')->name('appointment.pending');
     Route::get('/appt/{appt}/delete', [AdminController::class, 'appointmentDelete'])->middleware('staff')->name('appointment.delete');
+    Route::get('/web/content', [AdminController::class, 'webContent'])->middleware('staff')->name('web.content');
+    Route::post('/web/content/update', [AdminController::class, 'updateWebContent'])->middleware('staff')->name('web.content.upadte');
 });
 
 
@@ -266,12 +275,12 @@ Route::put('/subs/services/update', [SubscriptionController::class, 'updateServi
 Route::delete('/subs/services/delete', [SubscriptionController::class, 'deleteService'])->name('subs-service.delete');
 Route::post('/subs/communicate', [SubscriptionController::class, 'sendMessage'])->name('subs.communicate');
 Route::post('/mails/new-app/send', [MailController::class, 'new_app_mail'])->name('mails.new-app.send');
-Route::get('/support', [ChatsController::class, 'index'])->middleware('staff')->name('chats.index');
+Route::get('/com', [ChatsController::class, 'index'])->middleware('staff')->name('chats.index');
 Route::get('/issue/{chat}', [ChatsController::class, 'chat'])->middleware('staff')->name('chats.conv');
 Route::post('/issue/reply', [ChatsController::class, 'reply'])->middleware('staff')->name('chat.reply');
 Route::post('/update', [AdminController::class, 'updateModels'])->name('models.update');
 
-Route::get('/support/request', [ChatsController::class, 'requestSupportForm'])->middleware('staff')->name('support.new');
+Route::get('/com/new', [ChatsController::class, 'requestSupportForm'])->middleware('staff')->name('support.new');
 Route::post('/request-support', [ChatsController::class, 'requestSupport'])->middleware('staff')->name('support.request');
 
 Route::get('/rhythmbox', function () {
@@ -315,6 +324,8 @@ Route::get('/staff-disbursements/{assistant}', [PagesController::class, 'staff_d
 Route::prefix('staff')->middleware('staff', 'strack')->group(function () {
     Route::get('/dashboard', [StaffController::class, 'staff_dashboard'])->name('staff-dashboard');
     Route::get('/customer-details/{customer_info}/{application_info}', [StaffController::class, 'customer_details'])->name('customer-details');
+    Route::get('/client/change-password/{customer_info}/{application_info}', [StaffController::class, 'changeClientPasswordForm'])->name('staff.client-password.change');
+    Route::post('/client/update-password', [StaffController::class, 'updateClientPassword'])->name('staff.update-client-password');
     Route::get('/record-activity', [StaffController::class, 'record_activity'])->name('record-activity');
     Route::get('/mark-application-complete/{application_id}', [StaffController::class, 'mark_application_as_complete'])->name('mark-application-complete');
     Route::get('/delete-request/{application_id}', [StaffController::class, 'delete_request'])->name('delete-request');

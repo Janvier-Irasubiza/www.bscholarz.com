@@ -225,7 +225,7 @@
 
                             <td class="text-left">
                             <p class="fw-normal mb-1">{{ number_format(intval($request -> amount_paid) + $sum) }} RWF</p>
-                                <p class="text-muted mb-0" style="font-size: 13px"> Outstanding amount: {{ number_format(floatval($request -> service_fee) - (intval($request -> amount_paid) + $sum)) }}</p>
+                                <p class="text-muted mb-0" style="font-size: 13px"> Outstanding amount: {{ number_format($request->outstanding_amount) }}</p>
                             </td>
 
 

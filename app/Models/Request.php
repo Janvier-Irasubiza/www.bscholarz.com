@@ -19,6 +19,7 @@ class Request extends Model
         'applicant',
         'discipline_id',
         'request_time',
+        'service_amount',
         'payment_status',
         'payment_id',
         'amount_paid',

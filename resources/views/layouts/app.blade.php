@@ -180,15 +180,17 @@
     @if(Auth::guard('staff')->check())
         @php
             $user = Auth::guard('staff')->user();
-            $department = strtolower($user->department); // Normalize department names
+            $department = strtolower($user->department->name); // Normalize department names
         @endphp
 
         @if($user->type == 'admin')
             @include('layouts.sidebar')
-        @elseif($department == 'marketing')
+        @elseif($department == 'Marketing' || $department == 'marketing')
             @include('layouts.partials.md-sidebar') <!-- Marketing department -->
-        @elseif(in_array($department, ['accountability', 'accounting']))
+        @elseif($department == 'Accounting' || $department == 'accounting')
             @include('layouts.acc-sidebar') <!-- Accounting or Accountability -->
+        @elseif($department == 'Applications' || $department == 'applications')
+            @include('layouts.staff-sidebar')
         @else
             @include('layouts.staff-sidebar')
         @endif
@@ -229,8 +231,10 @@
                     </div>
                 </div>
             </div>
-            /main>
+            @include('layouts.full-footer')
+        </main>
     </div>
+
 
     <!-- <users> -->
     <div class="modal fade" id="users" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

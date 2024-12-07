@@ -70,9 +70,10 @@
                                 <select name="department" id="department" class="mt-1 block w-full"
                                     onchange="togglePercentageField()">
                                     <option value="">-------------</option>
-
                                     @foreach ($dpts as $dpt)
-                                        <option value="{{ $dpt->name }}" {{ old('accountability') == $dpt->name ? 'selected' : '' }}>{{ $dpt->name }}</option>
+                                        <option value="{{ $dpt->id }}" {{ old('department') == $dpt->id ? 'selected' : '' }}>
+                                            {{ $dpt->name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 <x-input-error class="mt-2" :messages="$errors->get('department')" />
@@ -98,26 +99,25 @@
 
                             <script>
                                 function togglePercentageField() {
-                                    const department = document.getElementById('department').value;
+                                    const departmentDropdown = document.getElementById('department');
+                                    const selectedDepartment = departmentDropdown.options[departmentDropdown.selectedIndex].text;
                                     const percentageField = document.getElementById('percentageField');
                                     const percentageInput = document.getElementById('percentage');
 
-                                    if (department === 'Applications') {
+                                    // Show the percentage field if the selected department is "Applications"
+                                    if (selectedDepartment === 'Applications') {
                                         percentageField.style.display = 'block';
-                                        percentageInput.setAttribute('required', 'required'); // Add required attribute
+                                        percentageInput.setAttribute('required', 'required');
                                     } else {
                                         percentageField.style.display = 'none';
-                                        percentageInput.removeAttribute('required'); // Remove required attribute
+                                        percentageInput.removeAttribute('required');
+                                        percentageInput.value = ''; // Clear the field value when hidden
                                     }
                                 }
 
-                                // Run this function on page load to check if the department is already set
-                                window.onload = function () {
-                                    togglePercentageField();
-                                };
+                                // Check and set the percentage field visibility on page load
+                                window.addEventListener('load', togglePercentageField);
                             </script>
-
-
 
                             <div>
                                 <x-input-label for="role" :value="__('Password')" />

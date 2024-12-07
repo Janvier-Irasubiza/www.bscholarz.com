@@ -11,7 +11,7 @@
                         <a href="{{ route('chats.index') }}">
                             <i class="fa-solid fa-arrow-left"></i> Back
                         </a>
-                        <h2 class="muted-text" style="font-size: 1.4em">Request Support</h2>
+                        <h2 class="muted-text" style="font-size: 1.4em">Start New Chat</h2>
                     </div>
                     <p class="text-muted" id="time-">Now</p>
                 </div>
@@ -79,7 +79,7 @@
                                     }
                                 </script>
                             </div>
-                            <button type="submit" class="cst-primary-btn px-5 py-2 w-full mt-4">Send Request</button>
+                            <button type="submit" class="cst-primary-btn px-5 py-2 w-full mt-4">Start New Chat</button>
                         </div>
                     </form>
                 </div>

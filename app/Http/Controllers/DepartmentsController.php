@@ -53,4 +53,19 @@ class DepartmentsController extends Controller
 
         return redirect()->route("admin.departments")->with("success", "Departments update successfully");
     }
+
+    public function openDpt(Request $request) {
+        $dpt = Department::find($request->dpt);
+        $dpt->status = 'active';
+        $dpt->save();
+
+        return back()->with('success','Department activated successfully');
+    }
+
+    public function closeDpt(Request $request) {
+        $dpt = Department::find($request->dpt);
+        $dpt->status = 'inactive';
+        $dpt->save();
+        return back()->with('success','Department deactivated successfully');
+    }
 }

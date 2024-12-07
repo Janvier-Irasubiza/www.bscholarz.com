@@ -99,46 +99,9 @@ class ProfileController extends Controller {
 
     public function update_staff_profile(StaffProfileUpdateRequest $request) {
         $user = Staff::findOrFail($request->staff_id);
-    
-        $changes = [];
-        
-        if ($request->filled('names') && $user->names !== $request->names) {
-            $changes[] = "Names changed";
-        }
-        if ($request->filled('percentage') && $user->percentage != $request->percentage) {
-            $changes[] = "Working percentage changed from ".$user->percentage."% to ".$request->percentage."%";
-        }
-        if ($request->filled('email') && $user->email !== $request->email) {
-            $changes[] = "Email changed";
-        }
-        if ($request->filled('phone_number') && $user->phone_number !== $request->phone_number) {
-            $changes[] = "Phone number changed";
-        }
-        if ($request->filled('work_phone') && $user->work_phone !== $request->work_phone) {
-            $changes[] = "Work phone changed";
-        }
-        if ($request->filled('role') && $user->role !== $request->role) {
-            $changes[] = "Role changed";
-        }
-    
-        $user->update($request->validated());
-    
-        if (!empty($changes)) {
-            $activity = "Profile Info changed";
-            $details = implode(", ", $changes);
-            
-            DB::table('staff_activities')->insert([
-                'staff' => $request->input('staff_id'),
-                'activity' => $activity,
-                'details' => $details,
-                'done_at' => now(),  
-            ]);
-        }
-    
-        return back();
+        $user -> update($request->validated());
+        return back()->with('updated', 'Profile updated successfully');
     }
-    
-
 
     /**
      * Delete the user's account.

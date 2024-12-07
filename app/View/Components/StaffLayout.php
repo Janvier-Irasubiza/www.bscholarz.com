@@ -4,6 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use App\Models\MessageReply;
 
 class StaffLayout extends Component
 {
@@ -12,6 +13,11 @@ class StaffLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.staff');
+        $nots = MessageReply::whereHas('message', function ($query) {
+            $query->where('receiver', auth('staff')->user()->id)
+                ->orWhere('sender', auth('staff')->user()->id);
+        })->where('status', 'unread')
+            ->count();
+        return view('layouts.staff', compact('nots'));
     }
 }

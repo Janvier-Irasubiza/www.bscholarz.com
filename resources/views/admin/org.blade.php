@@ -18,7 +18,7 @@
             <div
               class="btn-actions-pane-right text-capitalize text-right d-flex justify-content-end gap-3 align-items-center  col-lg-4">
 
-              @if (Auth::user())
+              @if (auth('staff')->user()->type == 'admin')
           <a href="{{ route('admin.departments') }}" style="color: ghostwhite"
           class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-secondary">
           <span class="mr-2 opacity-7">
@@ -26,16 +26,14 @@
           </span>
           <span class="mr-1">Departments</span>
           </a>
+          <a href="{{ route('admin.hire') }}" style="color: ghostwhite"
+          class="utn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn apply-btn">
+          <span class="mr-2 opacity-7">
+            <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+          </span>
+          <span class="mr-1">add employee</span>
+          </a>
         @endif
-            @if (Auth::user())
-              <a href="{{ route('admin.hire') }}" style="color: ghostwhite"
-                class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn apply-btn">
-                <span class="mr-2 opacity-7">
-                  <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
-                </span>
-                <span class="mr-1">add employee</span>
-              </a>
-              @endif
             </div>
           </div>
 
@@ -87,7 +85,7 @@
             </div>
             </td>
             <td>
-            <p class="fw-normal mb-1">{{ $member->department }}</p>
+            <p class="fw-normal mb-1">{{ $member->department?->name ?? 'No Department' }}</p>
             <p class="text-muted mb-0" style="font-size: 13px">{{ $member->role }}</p>
             </td>
 
@@ -99,7 +97,7 @@
   @endif
             </td>
 
-            @if(Auth::user())
+            @if(auth('staff')->user()->type == 'admin')
         <td class="text-center">
         @if($member->working_status == 'Working')
       <span class="badge bg-success rounded-pill px-3">{{ $member->working_status }}</span>
@@ -189,14 +187,14 @@
       @endif
 
             <td class="text-center">
-            <a href="{{ Auth::user() ? route('admin.sheet', ['assistant' => $member->id]) : route('employer-sheet', ['assistant' => $member->id]) }}"
+            <a href="{{ auth('staff')->user()->type == 'admin' ? route('admin.sheet', ['assistant' => $member->id]) : route('employer-sheet', ['assistant' => $member->id]) }}"
               style="border-radius: 6px; padding: 1px 10px; text-decoration: none; color: ghostwhite"
               class="btn btn-link btn-sm btn-rounded mr-1 apply-btn">
               Open sheet
             </a>
             </td>
 
-            @if(Auth::user())
+            @if(auth('staff')->user()->type == 'admin')
         <td class="text-center">
         <a href="{{ route('admin.member', ['member' => $member->id]) }}"
           style="border: 2px solid; border-radius: 100px; padding: 2px 10px"

@@ -8,16 +8,16 @@
 
     <div class="sidebar">
         <div class="d-flex align-items-center mb-4">
-            <h5 style="margin: 0px">BScholarz Trends</h5>
+            <h1 style="margin: 0px; font-size: 1.3em;">BScholarz Trends</h1>
 
             <select class="selectpicker" id="filterKeyword">
-                <option class="sel-option" title="#" selected>Filter by</option>
-                <option class="sel-option" title="#" value="All">All</option>
-                <option class="sel-option" title="#" value="Job">Job</option>
-                <option class="sel-option" title="#" value="Scholarship">Scholarship</option>
-                <option class="sel-option" title="#" value="Study Loan">Study Loan</option>
-                <option class="sel-option" title="#" value="Fellowship">Fellowship</option>
-                <option class="sel-option" title="#" value="Opportunity">Other Opportunities</option>
+                <option class="sel-option muted-text" title="#" selected>Filter by</option>
+                <option class="sel-option muted-text" title="#" value="All">All</option>
+                <option class="sel-option muted-text" title="#" value="Job">Job</option>
+                <option class="sel-option muted-text" title="#" value="Scholarship">Scholarship</option>
+                <option class="sel-option muted-text" title="#" value="Study Loan">Study Loan</option>
+                <option class="sel-option muted-text" title="#" value="Fellowship">Fellowship</option>
+                <option class="sel-option muted-text" title="#" value="Opportunity">Other Opportunities</option>
             </select>
 
         </div>
@@ -27,10 +27,11 @@
                 href="{{ route('learnMore', ['discipline_id' => $side_data->identifier]) }}"
                 style="text-decoration: none; color: black; display: flex" class="trend mt-3">
                 <!-- <img class="trend-poster" src="{{ asset('images') }}/{{ $side_data -> poster }}" alt="Poster" > -->
-                <div class="trend-content" style="text-align: left">
-                    <h5 style="font-size: 18px">@php echo substr($side_data -> discipline_name, 0, 25); @endphp...</h5>
-                    <small style="margin-top: -5px">@php echo substr($side_data -> discipline_desc, 0, 35);
-                        @endphp...</small>
+                <div class="trend-content  muted-text" style="text-align: left">
+                    <h5 style="font-size: 18px">{{ \Illuminate\Support\Str::limit($side_data->discipline_name, 30) }}</h5>
+                    <small style="margin-top: -5px">
+                        {{ \Illuminate\Support\Str::limit($side_data->discipline_desc) }}
+                    </small>
                 </div>
             </a>
         @endforeach
@@ -94,7 +95,7 @@
 
             @if(!$scholarships->isEmpty())
                     <div class="sch-trends">
-                        <h4 class="mb-4">Trending Scholarships</h4>
+                        <h1 class="mb-4" style="font-size: 2em">Trending Scholarships</h1>
 
                         <div class="container overflow-hidden p-0">
                             <div class="row gy-5">
@@ -132,12 +133,12 @@
 
                                                                 <!-- Title -->
 
-
-                                                                <p class="card-text" style="text-align: left">{{ $scholarship->discipline_desc }}
+                                                                <p class="card-text muted-text" style="text-align: left">
+                                                                    {{ $scholarship->discipline_desc }}
                                                                 </p>
 
                                                                 <div class="d-flex" style="justify-content: center">
-                                                                    <a class="scholarship-learn-more"
+                                                                    <a class="scholarship-learn-more  muted-text"
                                                                         href="{{ route('learnMore', ['discipline_id' => $scholarship->identifier]) }}"
                                                                         style="">Learn More <i class="fa fa-arrow-right"></i></a>
                                                                     <div class="">
@@ -174,7 +175,7 @@
 
                                     <div class="other-section mt-3" style="">
 
-                                        <h4 class="mb-4">Trending Job Opportunities</h4>
+                                        <h1 class="mb-4" style="font-size: 2em">Trending Job Opportunities</h1>
 
                                         <div class="container overflow-hidden p-0" style="">
                                             <div class="row gy-5">
@@ -215,12 +216,12 @@
                                                                                     <!-- Card content -->
                                                                                     <div class="card-body card-body-cascade text-center pb-0">
 
-                                                                                        <p class="card-text" style="text-align: left">
+                                                                                        <p class="card-text muted-text" style="text-align: left">
                                                                                             {{ $opportunity->discipline_desc}}
                                                                                         </p>
 
                                                                                         <div class="d-flex" style="justify-content: center">
-                                                                                            <a class="scholarship-learn-more"
+                                                                                            <a class="scholarship-learn-more  muted-text"
                                                                                                 href="{{ route('learnMore', ['discipline_id' => $opportunity->identifier]) }}"
                                                                                                 style="">Learn more <i class="fa fa-arrow-right"></i></a>
                                                                                             <div class="">
@@ -260,7 +261,7 @@
 
                     @if(!$trainings->isEmpty())
                                     <div class="sch-trends-other mt-3 mb-0" style="">
-                                        <h4 class="mb-4">Trending Fellowships & Trainings</h4>
+                                        <h1 class="mb-4" style="font-size: 2em">Trending Fellowships & Trainings</h1>
 
                                         <div class="container overflow-hidden p-0">
                                             <div class="row gy-5">
@@ -300,12 +301,12 @@
                                                                                     <div class="card-body card-body-cascade text-center pb-0">
 
 
-                                                                                        <p class="card-text" style="text-align: left">
+                                                                                        <p class="card-text muted-text" style="text-align: left">
                                                                                             {{ $training->discipline_desc }}
                                                                                         </p>
 
                                                                                         <div class="d-flex" style="justify-content: center">
-                                                                                            <a class="scholarship-learn-more"
+                                                                                            <a class="scholarship-learn-more muted-text"
                                                                                                 href="{{ route('learnMore', ['discipline_id' => $training->identifier]) }}"
                                                                                                 style="">Learn More <i class="fa fa-arrow-right"></i></a>
                                                                                             <div class="">
@@ -342,9 +343,24 @@
 
                 </div>
 
-
+                @if ($partners->count() > 0)
+                    <div class="mt-5">
+                        <h1 style="font-size: 2em">Our Partners</h1>
+                        <div class="mt-3 d-flex flex-wrap gap-3">
+                            @foreach ($partners as $partner)
+                                <a href="">
+                                    <div style="width: 100px; height: 100px;" class="overflow-hidden">
+                                        <img src="{{ asset('profile_pictures/' . $partner->poster) }}" alt=""
+                                            style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
+
 
     </div>
 

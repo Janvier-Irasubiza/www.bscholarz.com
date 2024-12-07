@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Mail\Hired;
+use App\Models\Company;
 use App\Models\Department;
 use App\Models\Discipline;
 use App\Models\Request as Applications;
@@ -18,6 +20,7 @@ use App\Mail\AssistantAppt;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Advert;
 use Illuminate\Support\Str;
+use App\Models\Partner;
 
 class AdminController extends Controller
 {
@@ -35,6 +38,18 @@ class AdminController extends Controller
 
     public function dashboard()
     {
+
+        $week_start = Carbon::now()->startOfWeek();
+        $week_end = Carbon::now()->endOfWeek();
+        $total_revenues = DB::table('applications')->where('payment_status', 'Paid')->sum('amount_paid');
+        $today_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereDate('payment_date', Carbon::today())->sum('amount_paid');
+        $this_week_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereBetween('payment_date', [$week_start, $week_end])->sum('amount_paid');
+        $total_requests = DB::table('user_requests')->count();
+        $today_requests = DB::table('user_requests')->whereDate('requested_on', Carbon::today())->count();
+        $this_week_requests = DB::table('user_requests')->whereBetween('requested_on', [$week_start, $week_end])->count();
+        $total_services = DB::table('disciplines')->count();
+        $ready_services = DB::table('disciplines')->where('status', 'Available')->count();
+        $upcoming_services = DB::table('disciplines')->where('status', 'Upcoming')->orWhere('status', 'Comming Soon')->count();
 
         $userRequestCount = Cache::remember('user_request_count', now()->addMinutes(10), function () {
             return DB::table('user_requests')
@@ -103,7 +118,16 @@ class AdminController extends Controller
             'assistanceRequestCount',
             'requestedDeleteCount',
             'deadlinedAppsCount',
-            'appointments'
+            'appointments',
+            'total_revenues',
+            'today_revenues',
+            'this_week_revenues',
+            'total_requests',
+            'today_requests',
+            'this_week_requests',
+            'total_services',
+            'ready_services',
+            'upcoming_services',
         ));
     }
 
@@ -192,22 +216,122 @@ class AdminController extends Controller
 
     public function organization()
     {
-        $staff = DB::table('staff')->where('department', '<>', 'Development')->get();
+        $staff = Staff::with('department')
+            ->whereHas('department', function ($query) {
+                $query->where('name', '<>', 'Administration');
+            })
+            ->where('type', '<>', 'admin')->get();
         return view('admin.org', compact('staff'));
     }
 
     public function parteners()
     {
+        $partners = Partner::paginate(10);
+        return view('admin.partners', compact('partners'));
+    }
 
-        $parteners = DB::table('rhythmbox')->get();
+    public function newPartner()
+    {
+        return view('admin.new-partner');
+    }
 
-        foreach ($parteners as $partner) {
+    public function addPartner(Request $request)
+    {
+        $this->validate($request, [
+            'name' => ['required'],
+            'email' => ['required'],
+            'phone' => ['required'],
+            'description' => ['required'],
+            'poster' => ['required', 'mimetypes:image/jpeg,image/png,image/gif,image/svg+xml', 'max:2048'],
+            'website' => ['nullable'],
+        ]);
 
-            $history = DB::table('partners_payment_history')->where('paid_to', $partner->id)->orderBy('paid_at', 'DESC')->get();
+        $poster = time() . '-' . $request->file('poster')->getClientOriginalName();
+        $request->file('poster')->move(public_path('profile_pictures/'), $poster);
 
+        $partner = new Partner();
+        $partner->name = $request->name;
+        $partner->email = $request->email;
+        $partner->phone = $request->phone;
+        $partner->description = $request->description;
+        $partner->website = $request->website;
+        $partner->poster = $poster;
+        $partner->save();
+
+        return back()->with('success', 'New partner added successfully');
+    }
+
+    public function editPartner(Request $request)
+    {
+        $partner = Partner::where('uuid', $request->partner)->first();
+        return view('admin.partner-info', compact('partner'));
+    }
+
+    public function updatePartner(Request $request)
+    {
+        $this->validate($request, [
+            'partner_id' => ['required'],
+            'name' => ['required'],
+            'email' => ['required'],
+            'phone' => ['required'],
+            'description' => ['required'],
+            'poster' => ['nullable', 'mimetypes:image/jpeg,image/png,image/gif,image/svg+xml', 'max:2048'],
+            'old_poster' => ['required'],
+            'website' => ['nullable'],
+        ]);
+
+        $partner = Partner::find($request->partner_id);
+
+        if ($request->hasFile('poster')) {
+
+            // Remove the old poster
+            $oldPosterPath = public_path('profile_pictures/' . $request->old_poster);
+            if (file_exists($oldPosterPath)) {
+                unlink($oldPosterPath); // Delete the old file
+            }
+
+            // Save the new poster
+            $newPosterName = time() . '-' . $request->file('poster')->getClientOriginalName();
+            $request->file('poster')->move(public_path('profile_pictures/'), $newPosterName);
+
+            // Update the poster name in the database (example code)
+            // Assuming you have a Partner model and updating the poster for a specific partner
+            $partner->poster = $newPosterName;
+            $partner->save();
         }
 
-        return view('admin.parteners', compact('parteners', 'history'));
+        $partner->name = $request->name;
+        $partner->email = $request->email;
+        $partner->phone = $request->phone;
+        $partner->description = $request->description;
+        $partner->website = $request->website;
+        $partner->save();
+
+        return back()->with('success', 'Partner updated successfully');
+
+    }
+
+    public function deletePartner(Request $request)
+    {
+        $partner = Partner::find($request->partner);
+        $partner->delete();
+        return back()->with('success', 'Partner deleted successfully');
+    }
+
+    public function activatePartner(Request $request)
+    {
+        $partner = Partner::find($request->partner);
+        $partner->status = 'active';
+        $partner->save();
+        return back()->with('success', 'Partner activated successfully');
+    }
+
+    public function deactivatePartner(Request $request)
+    {
+        $partner = Partner::find($request->partner);
+        $partner->status = 'inactive';
+        $partner->save();
+        return back()->with('success', 'Partner deactivated successfully');
     }
 
     public function hire()
@@ -236,7 +360,7 @@ class AdminController extends Controller
                 'names' => $request->names,
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
-                'department' => 'Development',
+                'department_id' => 'Development',
                 'role' => $request->role,
                 'percentage' => $request->percentage,
                 'work_phone' => $request->work_phone,
@@ -254,7 +378,7 @@ class AdminController extends Controller
                 'names' => $request->names,
                 'email' => $request->email,
                 'phone_number' => $request->phone_number,
-                'department' => $request->department,
+                'department_id' => $request->department,
                 'role' => $request->role,
                 'percentage' => $request->percentage,
                 'work_phone' => $request->work_phone,
@@ -264,6 +388,15 @@ class AdminController extends Controller
 
             DB::table('staff')->insert($data);
 
+            // Notify Employee
+
+            $data = [
+                'emp_names' => $request->names,
+                'url' => url(route('staff-dashboard')),
+            ];
+
+            Mail::to($request->email)->send(new Hired($data));
+
             return redirect()->route('admin.org');
 
         }
@@ -272,8 +405,9 @@ class AdminController extends Controller
 
     public function org_member(Request $request)
     {
-        $member = DB::table('staff')->where('id', $request->member)->first();
-        return view('admin.org-member', compact('member'));
+        $member = Staff::with('department')->find($request->member);
+        $departments = Department::all();
+        return view('admin.org-member', compact('member', 'departments'));
     }
 
     public function org_it_member(Request $request)
@@ -950,4 +1084,38 @@ class AdminController extends Controller
         $app->delete();
         return redirect()->route('admin.appointments')->with('success', 'Appointment deleted successfully.');
     }
+
+    public function webContent()
+    {
+        $content = Company::first();
+        return view('admin.web-content', compact('content'));
+    }
+
+    public function updateWebContent(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required|integer',
+            'description' => 'required|string',
+            'objectives' => 'required|string',
+            'services' => 'required|string',
+            'vision' => 'required|string',
+            'mission' => 'required|string',
+            'goals' => 'required|string',
+            'values' => 'required|string',
+        ]);
+
+        $webContent = Company::findOrFail($request->id);
+        $webContent->description = $request->description;
+        $webContent->objectives = $request->objectives;
+        $webContent->services = $request->services;
+        $webContent->vision = $request->vision;
+        $webContent->mission = $request->mission;
+        $webContent->goals = $request->goals;
+        $webContent->values = $request->values;
+        $webContent->save();
+
+        return back()->with('success', 'Web content updated successfully');
+
+    }
+
 }

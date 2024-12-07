@@ -12,19 +12,26 @@
                         <h6 style="font-weight: 600">Administration</h6>
                     <!-- this is for the accounting department -->
                     @else
-                        <h6 style="font-weight: 600">{{ Auth::guard('staff')->user()->department }}</h6>
+                        <h6 style="font-weight: 600">{{ Auth::guard('staff')->user()->department->name }}</h6>
                     @endif
 
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ml-6 gap-4 align-items-center">
+            <div class="hidden sm:flex sm:items-center sm:ml-6 gap-5 align-items-center">
+
+                @if(auth('staff')->user()->type == 'admin')
+                    <a href="{{ route('web.content') }}" class="underline" style="font-size: 1.1em">Website Content</a>
+                @endif
 
                 <a href="{{ route('chats.index') }}" class="">
                     <i class="fa-brands fa-rocketchat" style="font-size: 25px;"></i>
-                    <span class="badge badge-light nots">3</span>
+                    @if ($nots > 0)
+                        <span class="badge badge-light nots">{{ $nots }}</span>
+                    @endif
                 </a>
+
             
                 <x-dropdown align="right" width="48">
 

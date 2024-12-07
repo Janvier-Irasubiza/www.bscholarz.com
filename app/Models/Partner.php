@@ -6,14 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Department extends Model
+class Partner extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'uuid',
         'name',
+        'email',
+        'phone',
+        'poster',
         'description',
+        'website',
         'status',
     ];
 
@@ -27,9 +31,4 @@ class Department extends Model
             }
         });
     }
-
-    public function users() {
-        return $this->hasMany(Staff::class, 'department_id');
-    }
-
 }

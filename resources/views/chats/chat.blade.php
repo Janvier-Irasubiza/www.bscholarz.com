@@ -7,10 +7,10 @@
         <div class="dashboard-container col-lg-10 px-5">
             <div class="d-flex justify-content-between align-items-center">
                 <header class="dashboard-header text-left">
-                    <h1>Welcome to the Support Page</h1>
+                    <h1>Bscholarz Communication Platform</h1>
                     <p>Here is a quick summary of your application features.</p>
                 </header>
-                <a href="{{ route('support.new') }}" class="continue-btn px-4 py-2 text-white">Request Support</a>
+                <a href="{{ route('support.new') }}" class="continue-btn px-4 py-2 text-white">New Chat</a>
             </div>
 
             @if(Session::has('success'))

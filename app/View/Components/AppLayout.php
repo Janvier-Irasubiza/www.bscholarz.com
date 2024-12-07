@@ -4,6 +4,8 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 use Illuminate\View\View;
+use App\Models\Message;
+use App\Models\MessageReply;
 
 class AppLayout extends Component
 {
@@ -12,6 +14,12 @@ class AppLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.app');
+        $nots = MessageReply::whereHas('message', function ($query) {
+            $query->where('receiver', auth('staff')->user()->id)
+                ->orWhere('sender', auth('staff')->user()->id);
+        })->where('status', 'unread')
+            ->count();
+
+        return view('layouts.app', compact('nots'));
     }
 }
