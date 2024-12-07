@@ -441,7 +441,7 @@
 
                                 </div>
 
-                                <a href="{{ route('login') }}">
+                                <a href="{{ Auth::guard('client')->user() ? route('client.client-dashboard') : route('login') }}">
 
 
                                     @if(Auth::guard('client')->user() && Auth::guard('client')->user()->profile_picture)
@@ -700,8 +700,8 @@
 
                                             <div class="mt-4 text-right d-flex justify-content-end">
                                                 <!-- <a class="underline text-sm hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="">
-                                                                    {{ __('Or see tips & tricks') }}
-                                                                </a> -->
+                                                                            {{ __('Or see tips & tricks') }}
+                                                                        </a> -->
                                                 <button type="submit"
                                                     style="padding: 5px 30px; font-size: 13px; font-weight: 600; color: ghostwhite; text-transform: uppercase"
                                                     class="btn apply-btn">Submit</button>
@@ -929,6 +929,9 @@
         <!-- </> modal -->
 
     @endif
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 

@@ -114,32 +114,13 @@
 
                     <div class="col-lg d-flex justify-content-center gap-3 mt-3" style="">
 
-                        @if(Auth::guard('client')->user())
-
-                            <form method="POST" action="{{ route('client-appication') }}" enctype="multipart/form-data"
-                                class="w-full">
-                                @csrf
-
-                                <input id="application_info" class="block mt-1 w-full" type="text" name="application_info"
-                                    value="{{ $discipline->id }}"
-                                    style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required
-                                    autocomplete="application_info" hidden />
-
-                                <button type="submit" class="continue-btn w-full text-center py-2 f-17" style=""> &nbsp;
-                                    Request Service <i class="fa-solid fa-arrow-right arrows"></i>
-                                </button>
 
 
-                            </form>
-
-                        @else
-
-                            <a href="{{ route('apply', ['discipline_id' => $discipline->identifier]) }}"
-                                class="apply-btn w-full text-center py-2 f-17"
-                                style="text-decoration: none; color: whitesmoke"> &nbsp;
-                                Request Service <i class="fa-solid fa-arrow-right arrows"></i>
-                            </a>
-                        @endif
+                        <a href="{{ route('apply', ['discipline_id' => $discipline->identifier]) }}"
+                            class="apply-btn w-full text-center py-2 f-17"
+                            style="text-decoration: none; color: whitesmoke"> &nbsp;
+                            Request Service <i class="fa-solid fa-arrow-right arrows"></i>
+                        </a>
 
                     </div>
                     @if(!is_null($discipline->website_link))

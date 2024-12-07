@@ -95,7 +95,8 @@
                 @if ($subscription)
           <div class="deal-banner rounded-lg" style="background: none; border: 2px solid #5d3fd3; padding: 20px">
             <div class="w-full">
-            <h2 style="color: #3c3c3c; font-size: 1.5em; font-weight: 600">{{ $subscription->plan->name }} Plan</h2>
+            <h2 style="color: #3c3c3c; font-size: 1.5em; font-weight: 600">{{ $subscription->plan->name }} Plan
+            </h2>
             <p style="color: #5b5b5b"> Epires on {{ $subscription->end_date }} </p>
             </div>
             <a href="{{ route('membership') }}" class="primary-link w-full text-white">Upgrade</a>
@@ -206,17 +207,13 @@
                   Details<i class="fa fa-arrow-right"></i></a>
                 <div class="">
 
-                  <form method="POST" action="{{ route('client-appication') }}" enctype="multipart/form-data">
-                  @csrf
+                  <a href="{{ route('apply', ['discipline_id' => $scholarship->identifier]) }}"
+                  class="apply-btn w-full text-center py-2 f-17"
+                  style="text-decoration: none; color: whitesmoke"> &nbsp;
+                  Request Service <i class="fa-solid fa-arrow-right arrows"></i>
+                  </a>
 
-                  <input id="application_info" class="block mt-1 w-full" type="text" name="application_info"
-                  value="{{ $scholarship->id }}"
-                  style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required
-                  autocomplete="application_info" hidden />
 
-                  <button class="apply-btn">Request Service</button>
-
-                  </form>
                 </div>
                 </div>
 
@@ -254,17 +251,11 @@
           Details<i class="fa fa-arrow-right"></i></a>
           <div class="">
 
-          <form method="POST" action="{{ route('client-appication') }}" enctype="multipart/form-data">
-          @csrf
-
-          <input id="application_info" class="block mt-1 w-full" type="text" name="application_info"
-            value="{{ $training->id }}"
-            style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required
-            autocomplete="application_info" hidden />
-
-          <button class="apply-btn">Request Service</button>
-
-          </form>
+          <a href="{{ route('apply', ['discipline_id' => $training->identifier]) }}"
+          class="apply-btn w-full text-center py-2 f-17"
+          style="text-decoration: none; color: whitesmoke"> &nbsp;
+          Request Service <i class="fa-solid fa-arrow-right arrows"></i>
+          </a>
           </div>
           </div>
 
@@ -302,17 +293,12 @@
           Details<i class="fa fa-arrow-right"></i></a>
           <div class="">
 
-          <form method="POST" action="{{ route('client-appication') }}" enctype="multipart/form-data">
-          @csrf
+          <a href="{{ route('apply', ['discipline_id' => $job->identifier]) }}"
+          class="apply-btn w-full text-center py-2 f-17"
+          style="text-decoration: none; color: whitesmoke"> &nbsp;
+          Request Service <i class="fa-solid fa-arrow-right arrows"></i>
+          </a>
 
-          <input id="application_info" class="block mt-1 w-full" type="text" name="application_info"
-            value="{{ $job->id }}"
-            style="padding: 6px 10px; color: #808080; border: 2px solid #4d4d4d" required
-            autocomplete="application_info" hidden />
-
-          <button class="apply-btn">Request Service</button>
-
-          </form>
           </div>
           </div>
 

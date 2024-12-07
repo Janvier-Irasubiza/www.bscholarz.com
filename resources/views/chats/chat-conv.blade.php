@@ -40,6 +40,20 @@
                                             </script>
                                         </p>
                                     </div>
+
+                                    @if (!is_null($reply->attachement))
+                                        <a href="{{ asset('reports/' . $reply->attachement) }}"
+                                            download="{{ $reply->attachement }}">
+                                            <div class="d-flex gap-2 align-items-center mt-2 mb-2 border rounded-lg p-2">
+                                                <i class="fa-solid fa-file f-20 muted-text"></i>
+                                                <div>
+                                                    <p class="font-bold muted-text f-17" id="fileName">
+                                                        {{ \Illuminate\Support\Str::limit($reply->attachement, 55) }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    @endif
                                     <p class="muted-text f-15">{{ $reply->reply }}</p>
                                 </div>
                             </div>

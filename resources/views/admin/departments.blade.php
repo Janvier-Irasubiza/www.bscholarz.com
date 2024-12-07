@@ -79,10 +79,6 @@
                     </div>
                 @endforeach
 
-                <div class="mt-3 custom-pagination">
-                    {{ $departments->links() }}
-                </div>
-
             </div>
         </div>
     </div>

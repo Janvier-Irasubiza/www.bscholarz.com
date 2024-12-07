@@ -164,8 +164,8 @@ class ChatsController extends Controller
     {
         $validatedData = $request->validate([
             'chat' => 'integer|required|exists:messages,id', // Ensure 'chat' exists in the messages table
-            'message' => 'required_without:attachement|string|min:1', // Prevent empty messages
-            'attachement' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png,gif|max:2048', // Adjust the validation rules as needed
+            'message' => 'required_without:attachement', // Prevent empty messages
+            'attachement' => 'nullable|file|mimetypes:application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif|max:5120',
         ]);
 
         // Fetch the authenticated user
@@ -184,6 +184,7 @@ class ChatsController extends Controller
             $fileName = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('reports'), $fileName);
             $reply->attachement = $fileName;
+            $reply->status = 'unread';
         }
 
         $reply->user_id = $user->id; // Assign the user ID

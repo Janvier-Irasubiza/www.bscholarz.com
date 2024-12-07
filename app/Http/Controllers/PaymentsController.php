@@ -13,6 +13,7 @@ use DB;
 use App\Models\Discipline;
 use App\Models\SubscriberSubscription;
 use App\Models\Applicant_info;
+use App\Models\Subscriber;
 use App\Models\Costs;
 use App\Models\Request as Applications;
 
@@ -137,7 +138,7 @@ class PaymentsController extends Controller
       'app_id' => 'required|string|min:0',
       'identifier' => 'required|string|min:0',
       'applicant' => 'required|integer|min:0',
-      'amount' => 'required|integer|min:0',
+      'amount' => 'required|numeric|min:0',
       'phone' => 'required_if:payment_method,momo|string|max:30',
       'payment_method' => 'required|string|max:255',
     ]);
@@ -165,7 +166,7 @@ class PaymentsController extends Controller
 
     // Prepare api data
     $data = [
-      'amount' => $validatedData['amount'],
+      'amount' => 10,
       'phone' => $phoneNumber,
       'key' => $apiKey
     ];
@@ -186,8 +187,10 @@ class PaymentsController extends Controller
 
     if ($response['status'] === 200) {
 
-      $client = Applicant_info::where('id', $validatedData['applicant'])->select('uuid', 'names')->first();
+      $client = Applicant_info::where('id', $validatedData['applicant'])->select('uuid', 'names', 'email')->first();
       Session::put('client', $client);
+
+      $subscriber = Subscriber::where('email', $client->email)->select('id')->first();
 
       $smsNotification = new Notifications();
       $utils = new Utils();
@@ -219,7 +222,7 @@ class PaymentsController extends Controller
         return response()->json([
           'status' => 200,
           'message' => $response['data']['message'] ?? 'Payment successful.',
-          'redirect_uri' => url(route('payment.confirmation')),
+          'redirect_uri' => url(route('payment.confirmation', ['plb' => $subscriber->id])),
         ]);
       }
     } else {
@@ -235,7 +238,7 @@ class PaymentsController extends Controller
     // Validate inputs
     $validatedData = $request->validate([
       'identifier' => 'required|string|min:0',
-      'amount' => 'required|integer|min:0',
+      'amount' => 'required|numeric|min:0',
       'phone' => 'required|string|max:30',
       'payment_method' => 'required|string|max:255',
     ]);
@@ -344,7 +347,7 @@ class PaymentsController extends Controller
       : $this->getApiKey();
 
     $data = [
-      'amount' => $validatedData['amount'],
+      'amount' => 10,
       'phone' => $phoneNumber,
       'key' => $apiKey
     ];

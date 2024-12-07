@@ -444,21 +444,18 @@
 
                                 </div>
 
-                                <a href="{{ route('login') }}">
-                                    <div class="user-profile">
+                                <a href="{{ Auth::guard('client')->user() ? route('client.client-dashboard') : route('login') }}">
 
-                                        @if(Auth::guard('client')->user())
+
+                                    @if(Auth::guard('client')->user() && Auth::guard('client')->user()->profile_picture)
+                                        <div class="user-profile">
 
                                             <img src="{{ asset('profile_pictures') }}/{{ Auth::guard('client')->user()->profile_picture }}"
                                                 alt="">
-
-                                        @else
-
-                                            <img src="{{ asset('images/profile.png') }}" alt="User-Account">
-
-                                        @endif
-
-                                    </div>
+                                        </div>
+                                    @else
+                                        <i class="fa-regular fa-user" style="font-size: 1.7em"></i>
+                                    @endif
                                 </a>
                             </div>
 

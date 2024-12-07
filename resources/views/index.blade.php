@@ -38,58 +38,81 @@
     </div>
 
     <div class="section-right">
+        @if ($ads && count($ads) > 0)
+            <div id="carouselExampleIndicators" class="carousel slide mt-3" data-bs-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    @foreach ($ads as $index => $ad)
+                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}"
+                            class="{{ $index === 0 ? 'active' : '' }}">
+                        </li>
+                    @endforeach
+                </ol>
 
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner d-flex border" data-bs-ride="carousel">
-                @foreach ($ads as $ad)
-                    <a href="{{ route('open-advert', ['advert' => $ad->id]) }}" target="_blank">
-                        <div class="p-3">
-                            <div class="m-0 add-item rounded" style="max-width: 100%; overflow: hidden;">
-                                <img src="{{ asset('images/ads/') }}/{{$ad->media}}" alt=""
-                                    style="width: 100%; height: auto; display: block;" class="rounded">
-                            </div>
+                <!-- Carousel Items -->
+                <div class="carousel-inner">
+
+                    @foreach ($ads as $index => $ad)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            <a href="{{ route('open-advert', ['advert' => $ad->id]) }}" target="_blank">
+                                <img src="{{ asset('images/ads/' . $ad->poster) }}"
+                                    alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
+                                    style="height: 300px; object-fit: cover;">
+                            </a>
                         </div>
-                    </a>
-                @endforeach
-            </div>
-        </div>
+                    @endforeach
+                </div>
 
-        <div id="carouselExampleIndicators" class="carousel slide mt-3" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner d-flex" data-bs-ride="carousel">
-
-                @if($carouselData)
-
-                    @foreach($carouselData as $c_data)
-                        <a href="{{ route('learnMore', ['discipline_id' => $c_data->identifier]) }}">
-                            <div class="carousel-item active" style="width: 100%; height: 300px; overflow: hidden;">
-                                <img class="d-block w-100 h-100" src="{{ asset('images') }}/{{ $c_data->poster }}"
-                                    alt="First slide" style="object-fit: cover;">
-                            </div>
+                <!-- Controls -->
+                <!-- <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
                         </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </a> -->
+            </div>
+        @endif
+
+        @if ($carouselData && count($carouselData) > 0)
+            <div id="carouselExampleIndicators" class="carousel slide mt-3" data-bs-ride="carousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+
+                    @foreach ($carouselData as $index => $c_data)
+                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}"
+                            class="{{ $index === 0 ? 'active' : '' }}">
+                        </li>
                     @endforeach
 
-                @endif
+                </ol>
 
+                <!-- Carousel Items -->
+                <div class="carousel-inner">
+                    @foreach ($carouselData as $index => $c_data)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            <a href="{{ route('learnMore', ['discipline_id' => $c_data->identifier]) }}">
+                                <img src="{{ asset('images/' . $c_data->poster) }}"
+                                    alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
+                                    style="height: 300px; object-fit: cover;">
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Controls -->
+                <!-- <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </a> -->
             </div>
-            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
-        </div>
+        @endif
+
 
         <div class="section-right-body">
 

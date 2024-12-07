@@ -9,7 +9,7 @@ class DepartmentsController extends Controller
 {
     public function index()
     {
-        $departments = Department::paginate(10);
+        $departments = Department::where('name', '<>', 'Administration')->get();
         return view("admin.departments", compact("departments"));
     }
 
