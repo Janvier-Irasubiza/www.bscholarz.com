@@ -10,11 +10,12 @@ class MessageReply extends Model
 {
     use HasFactory;
 
-    protected $fillabel = [
+    protected $fillable = [
         'uuid',
         'message_id',
         'user_id',
         'reply',
+        'attachement',
         'status',
     ];
 

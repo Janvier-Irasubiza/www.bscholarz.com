@@ -11,7 +11,7 @@
                         <a href="{{ route('chats.index') }}">
                             <i class="fa-solid fa-arrow-left"></i> Back
                         </a>
-                        <h2 class="muted-text" style="font-size: 1.4em">Start New Chat</h2>
+                        <h1 class="muted-text" style="font-size: 1.4em">Start New Chat</h1>
                     </div>
                     <p class="text-muted" id="time-">Now</p>
                 </div>
@@ -22,13 +22,13 @@
                 <div class="">
                     <form action="{{ route('support.request') }}" method="post">
                         @csrf
-                        <label for="issue">What is the issue</label>
-                        <input type="text" name="issue" class="w-full" placeholder="Briely, Enter the issue" required
-                            autocorrect autofocus autocomplete="issue" value="{{ old('issue') }}" />
+                        <label for="issue">Title</label>
+                        <input type="text" name="issue" class="w-full" placeholder="Type here..." required autocorrect
+                            autofocus autocomplete="issue" value="{{ old('issue') }}" />
                         <x-input-error :messages="$errors->get('issue')" class="mb-3 text-left text-danger" />
                         <div class="gap-3 mt-3 ">
-                            <label for="issue_desc">Describe the issue</label>
-                            <textarea name="issue_desc" rows="4" placeholder="Describe the issue in details"
+                            <label for="issue_desc">Description </label>
+                            <textarea name="issue_desc" rows="4" placeholder="Type here..."
                                 class="chat-input w-full p-2" required autocorrect
                                 autocomplete="issue_desc">{{ old('issue_desc') }}</textarea>
                             <x-input-error :messages="$errors->get('issue_desc')" class="mb-3 text-left text-danger" />

@@ -164,7 +164,8 @@ class ChatsController extends Controller
     {
         $validatedData = $request->validate([
             'chat' => 'integer|required|exists:messages,id', // Ensure 'chat' exists in the messages table
-            'message' => 'string|required|min:1', // Prevent empty messages
+            'message' => 'required_without:attachement|string|min:1', // Prevent empty messages
+            'attachement' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png,gif|max:2048', // Adjust the validation rules as needed
         ]);
 
         // Fetch the authenticated user
@@ -177,6 +178,13 @@ class ChatsController extends Controller
         // Find the message and create the reply
         $message = Message::findOrFail($validatedData['chat']);
         $reply = new MessageReply();
+
+        if ($request->hasFile('attachement')) {
+            $file = $request->file('attachement');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('reports'), $fileName);
+            $reply->attachement = $fileName;
+        }
 
         $reply->user_id = $user->id; // Assign the user ID
         $reply->message_id = $message->id; // Assign the message ID

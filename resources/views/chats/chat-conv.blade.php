@@ -49,10 +49,35 @@
 
 
                 <div class="chat-input-container">
-                    <form action="{{ route('chat.reply') }}" method="post">
+                    <form action="{{ route('chat.reply') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="chat" value="{{ $message->id }}" class="w-full">
+                        <x-input-error :messages="$errors->get('chat')" class="mb-3 text-left text-danger" />
+                        <x-input-error :messages="$errors->get('message')" class="mb-3 text-left text-danger" />
+                        <x-input-error :messages="$errors->get('attachement')" class="mb-3 text-left text-danger" />
+                        <div id="file-input-container" class="d-none">
+                            <div
+                                class="d-flex justify-content-between align-items-center p-2 cursor-pointer border rounded-lg hover:bg-gray-100">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <i class="fa-solid fa-file f-20 muted-text"></i>
+                                    <div>
+                                        <p class="font-bold muted-text f-17" id="fileName">File Name</p>
+                                        <p class="text-muted f-13" id="fileSize">File Size</p>
+                                    </div>
+                                </div>
+                                <button class="text-danger" type="button" onclick="removeFile()">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
                         <div class="flex gap-3 mt-3 ">
+                            <div class="" style="position: relative;">
+                                <button type="button" class="f-25">
+                                    <i class="fa-solid fa-paperclip"></i>
+                                </button>
+                                <input type="file" name="attachement" id="attachement" onchange="showFile()"
+                                    class="hidden-f-input">
+                            </div>
                             <textarea name="message" rows="1" placeholder="Type here..." class="chat-input w-full p-2"
                                 autofocus></textarea>
                             <button type="submit" class="cst-primary-btn px-4 py-1">Send</button>
@@ -72,6 +97,30 @@
         // Optionally, call this after appending new replies dynamically
         function scrollToBottom() {
             repliesContainer.scrollTop = repliesContainer.scrollHeight;
+        }
+
+        function showFile() {
+            const fileNameElement = document.getElementById('fileName');
+            const fileInput = document.getElementById('attachement');
+            const fileInputContainer = document.getElementById('file-input-container');
+            const fileSizeElement = document.getElementById('fileSize');
+            const file = fileInput.files[0];
+            if (file) {
+                fileInputContainer.classList.remove('d-none');
+                fileNameElement.textContent = file.name;
+                fileSizeElement.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+            } else {
+                fileNameElement.textContent = 'File Name';
+            }
+        }
+
+        function removeFile() {
+            const fileNameElement = document.getElementById('fileName');
+            const fileInput = document.getElementById('attachement');
+            const fileInputContainer = document.getElementById('file-input-container');
+            fileInput.value = '';
+            fileNameElement.textContent = 'File Name';
+            fileInputContainer.classList.add('d-none');
         }
     </script>
 </x-app-layout>
