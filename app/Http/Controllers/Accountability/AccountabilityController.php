@@ -191,14 +191,15 @@ class AccountabilityController extends Controller {
     }
 
     public function accountant_deptors(Request $request) {
-        $unpaid_applications = DB::table('served_requests') -> where('payment_status', 'Not yet paid') -> orWhere('payment_status', 'Not paid') -> get();
+        $unpaid_applications = DB::table('served_requests')-> whereNull('deliberation') -> orWhere('deliberation', 'Refused to pay') -> orderBy('served_on', 'desc') -> get();
+        $reminded_debtors = DB::table('served_requests') -> where('deliberation', 'Reminded') -> get();
 
         // Check if the request is for downloading the Excel file
         if ($request->query('download') === 'excel') {
             return Excel::download(new UnpaidApplicationsExport($unpaid_applications), 'unpaid_applications.xlsx');
         }
 
-        return view('accountant.debtors', compact('unpaid_applications'));
+        return view('accountant.debtors', compact('unpaid_applications', 'reminded_debtors'));
     }
 
     public function getCompleteTransactions()
@@ -244,6 +245,12 @@ class AccountabilityController extends Controller {
     {
         try {
             $unpaid_applications = DB::table('served_requests')->where('application_id', $request->transaction)->first();
+
+            if (!$unpaid_applications) {
+                session()->flash('error', 'The application could not be found.');
+                return redirect()->route('accountant-deptors');
+            }
+
             $encryptedApplicationId = Crypt::encryptString($unpaid_applications->application_id);
 
             $url = route('app-payment', [
@@ -258,33 +265,20 @@ class AccountabilityController extends Controller {
 
             Mail::to($unpaid_applications->email)->send(new Remind($url, $app, $client));
 
-            // $smsNotification = new Notifications();
-            // $utils = new Utils();
+            DB::table('served_requests')
+                ->where('application_id', $request->transaction)
+                ->update(['deliberation' => 'Reminded']);
 
-            // // Send SMS notification
-            // $smsData = [
-            //     'key' => $smsNotification->getSmsApiKey(),
-            //     'message' => 'Dear ' . $client . ', You have not yet paid for ' . $unpaid_applications->discipline_name .' has been successfully received by BScholarz, Thank you for choosing BScholarz. We look forward to working with you again.',
-            //     'recipients' => [
-            //         $request_info->user->phone_number
-            //     ]
-            // ];
-
-            // $smsNotification->sendSms($smsData);
-
-            // Flash success message
             session()->flash('success', 'A reminder email has been sent successfully!');
-
-            return redirect()->route('accountant-deptors');
         } catch (\Exception $e) {
-            \Log::error('Email send error: ' . $e->getMessage());
+            \Log::error('Failed to send reminder email or update database: ' . $e->getMessage());
 
-            // Flash error message
-            session()->flash('error', 'Failed to send reminder email.');
-
-            return redirect()->route('accountant-deptors');
+            session()->flash('error', 'Failed to send reminder email. Please try again later.');
         }
+
+        return redirect()->route('accountant-deptors');
     }
+
 
     public function sendClarificationMessage(Request $request)
     {

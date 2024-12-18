@@ -824,9 +824,10 @@ class AdminController extends Controller
     public function debtors(Request $request)
     {
 
-        $debtors = DB::table('served_requests')->where('application_status', 'Complete')->where('amount_not_paid', '<>', 0)->where('deliberation', 'Refused to pay')->orderBy('served_on', 'desc')->get();
+        $debtors = DB::table('served_requests')->where('application_status', 'Complete')->where('amount_not_paid', '<>', 0)->whereNull('deliberation')->orWhere('deliberation', 'Refused to pay')->orderBy('served_on', 'desc')->get();
+        $reminded_debtors = DB::table('served_requests')->where('application_status', 'Complete')->where('amount_not_paid', '<>', 0)->where('deliberation', 'Reminded')->orderBy('served_on', 'desc')->get();
 
-        return view('admin.debtors', compact('debtors'));
+        return view('admin.debtors', compact('debtors', 'reminded_debtors'));
 
     }
 

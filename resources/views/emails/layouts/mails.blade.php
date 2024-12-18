@@ -21,19 +21,19 @@
 
         body{
             margin: 0px;
-            background: 
+            background:
                 url("data:image/svg+xml,%3Csvg viewBox='0 0 250 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='15.64' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             background-color: #ccf2ff;
             }
-      
+
       .content{
             margin: 0px;
           	padding: 30px 20px;
           	text-align: center
             }
-      
 
-      
+
+
       .apply-btn {
         padding: 5px 20px;
         background-color: #5AB8A4 !important;
@@ -44,7 +44,7 @@
         color: ghostwhite;
         padding: 10px 30px;
       }
-      
+
       .apply-btn:hover {
           background-color: #479c8a !important;
           font-weight: bold;
@@ -57,13 +57,13 @@
             left: auto;
             right: 0px
 
-        } 
+        }
 
         ul {
             list-style: none;
             text-align: left;
         }
-      
+
       	.body-content {
       		display: flex;
           	justify-content: center
@@ -76,9 +76,9 @@
             text-align: left;
             padding: 30px
         }
-      
+
       @media (max-width: 600px) {
-        
+
         .mail-body {
             background-color: #ccf2ff9d;
             width: 100%;
@@ -86,11 +86,11 @@
             text-align: left;
             padding: 30px
         }
-        
+
       }
 
         </style>
-        
+
         <!-- Scripts -->
     </head>
     <body class="font-sans antialiased">
@@ -104,15 +104,12 @@
                 <div class="mb-4" style="">
                     <h4 style="font-size: 23px"><strong>{{ config('app.name') }}</strong></h4>
                 </div>
-              
+
               <table width="100%" border="0" cellspacing="0" cellpadding="0">
                   <tr>
                       <td align="center">
                             <div class="mail-body">
-
-                                <strong style="font-size: 18px">Hello!</strong>
-
-                                <div class="mt-3">
+                                <div class="">
                                     {{ $slot }}
                                 </div>
 
@@ -120,11 +117,11 @@
                       </td>
                   </tr>
               </table>
-              
+
                 <br>
 
                 <div class="mt-3">
-                    
+
                     © {{ date('Y') }} {{ config('app.name') }}. @lang('All rights reserved.')
 
                 </div>
