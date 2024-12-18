@@ -1016,7 +1016,7 @@ class AdminController extends Controller
 
     public function appointments()
     {
-        $appointments = Applications::where('is_appointment', 1)->paginate(10);
+        $appointments = Applications::where('is_appointment', 1)->get();
         return view('admin.appointments', compact('appointments'));
     }
 

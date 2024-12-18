@@ -45,7 +45,7 @@
                                 <input
                                     style="padding: 6px 10px; border: 2px solid #4d4d4d; color: #000; border-radius: 6px"
                                     id="names" class="block mt-1 w-full input-holder" type="text" name="names"
-                                    value="{{ old('names', auth('client')->user()->names) }}" placeholder="Full name" required autofocus
+                                    value="{{ old('names', auth('client')->user() ? auth('client')->user()->names : '') }}" placeholder="Full name" required autofocus
                                     autocomplete="names" />
                                 <x-input-error :messages="$errors->get('names')" class="mt-2" />
                             </div>
@@ -57,7 +57,7 @@
                                     <input
                                         style="padding: 6px 10px; border: 2px solid #4d4d4d; color: #000; border-radius: 6px"
                                         id="email" class="block mt-1 w-full" type="email" name="email"
-                                        value="{{ old('email', auth('client')->user()->email) }}" placeholder="username@example.com"
+                                        value="{{ old('email', auth('client')->user() ? auth('client')->user()->email : '') }}" placeholder="username@example.com"
                                         autocomplete="email" />
 
                                     <!-- @if($errors->has('email'))
@@ -80,7 +80,7 @@
                                 <input
                                     style="padding: 6px 10px; border: 2px solid #4d4d4d; color: #000; border-radius: 6px"
                                     id="phone_number" class="block mt-1 w-full" type="text" name="phone_number"
-                                    value="{{ old('phone_number', auth('client')->user()->phone_number) }}" placeholder="Your phone number" required
+                                    value="{{ old('phone_number', auth('client')->user() ? auth('client')->user()->phone_number: '') }}" placeholder="Your phone number" required
                                     autocomplete="phone_number" />
                                 <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
                             </div>

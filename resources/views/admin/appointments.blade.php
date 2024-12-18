@@ -100,9 +100,6 @@
                     @endif
                 @endforeach
 
-                <div class="mt-3 custom-pagination">
-                    {{ $appointments->links() }}
-                </div>
             </div>
         </div>
     </div>
