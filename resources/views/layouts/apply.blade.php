@@ -717,7 +717,6 @@
         });
 
         $(document).ready(function () {
-            // Intercept form submission
             $('.phone-form').on('submit', function (e) {
                 e.preventDefault(); // Prevent default form submission
 
@@ -727,7 +726,8 @@
                     identifier: $('#service').val(),
                     amount: $('#amount').val(),
                     phone: $('#phone').val(),
-                    payment_method: $('input[name="payment_method"]:checked').val()
+                    payment_method: $('input[name="payment_method"]:checked').val(),
+                    email: $('#email').val(),
                 };
 
                 const responseDiv = document.querySelector('.response');
@@ -743,8 +743,59 @@
                 })
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data);
                         if (data.status === 200) {
                             window.location.replace("{{ route('link-pay.success') }}");
+                        } else {
+                            responseDiv.innerHTML = `
+                            <div class="alert alert-danger mt-3" role="alert">
+                                <p>${data.message}</p>
+                            </div>`;
+                        }
+
+                        $('#submitLinkPayment').text('Pay service').prop('disabled', false);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        responseDiv.innerHTML = `
+                        <div class="alert alert-danger mt-3" role="alert">
+                            <p>An error occurred. Please try again.</p>
+                        </div>`;
+                        $('#submitLinkPayment').text('Pay service').prop('disabled', false);
+                    });
+            });
+        });
+
+        $(document).ready(function () {
+            $('.card-form').on('submit', function (e) {
+                e.preventDefault(); // Prevent default form submission
+
+                $('#submitLinkPayment').text('Processing...').prop('disabled', true);
+
+                const formData = {
+                    identifier: $('#service').val(),
+                    amount: $('#amount').val(),
+                    phone: $('#phone').val(),
+                    payment_method: $('input[name="payment_method"]:checked').val(),
+                    email: $('#email').val(),
+                };
+
+                const responseDiv = document.querySelector('.cc-response');
+
+                fetch('{{ route('link.pay') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(formData),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        if (data.status === 200) {
+                            window.location.replace(data.link);
                         } else {
                             responseDiv.innerHTML = `
                             <div class="alert alert-danger mt-3" role="alert">

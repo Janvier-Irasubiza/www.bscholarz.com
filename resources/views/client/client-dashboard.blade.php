@@ -30,7 +30,7 @@
     @endif
 
           <div class="flex-section gap-2 mt-4">
-            <div class="acc-details col-lg-8" style="box-shadow: none;">
+            <div class="acc-details w-full" style="box-shadow: none;">
               <div class="mb-2 flex-section justify-content-between align-items-center" style="font-size: 20px">
                 <h1 style="font-size: 1.2em">
                   <strong>My Applications</strong>
@@ -59,21 +59,20 @@
 
                 <div class="d-flex mt-2">
                   @if($pending_applications->isNotEmpty())
-            <div class="container-fluid testimonial-group">
-            <div class="row text-center gap-3" style="padding: 0px; margin: 0px">
-              @foreach($pending_applications as $application)
-          <div class="col-xs-4 application-hold mb-1 px-2" style="background: #EBF0FF">
+                  <div class="container-fluid testimonial-group">
+                  <div class="row text-center gap-3" style="padding: 0px; margin: 0px">
+                    @foreach($pending_applications as $application)
+                <div class="col-xs-4 application-hold mb-1 px-2" style="background: #EBF0FF">
 
-          <div class="mb-3" style="font-size: 16px"><strong>@php echo substr($application ->
-          discipline_name,
-          0, 30); @endphp...</strong></div>
-          <small class="px-2 pb-2"
-          style="border: 1px solid #ddd; padding: 5px; border-radius: 10px; font-size: 14px">{{ $application->application_status }}</small>
+                <div class="mb-3" style="font-size: 16px"><strong>{{ Illuminate\Support\Str::limit($application->
+            discipline_name, 30) }}</strong></div>
+                <small class="px-2 pb-2"
+                  style="border: 1px solid #ddd; padding: 5px; border-radius: 10px; font-size: 14px">{{ $application->application_status }}</small>
 
-          </div>
-        @endforeach
-            </div>
-            </div>
+                </div>
+          @endforeach
+                  </div>
+                  </div>
 
           @else
 
@@ -88,6 +87,11 @@
               </div>
             </div>
 
+
+
+          </div>
+
+          <div class="flex-section gap-2 mt-4">
             <div class="acc-details w-full mb-4" style="box-shadow: none;">
               <h1 style="font-size: 1.4em"><strong>My Membership Plan</strong></h1>
               <div class="mt-3 testimonial-group rounded-lg">
@@ -120,6 +124,39 @@
                   <p>Huge discounts + 12 months subscription &nbsp; <a class="underline"
                       href="{{ route('contact-us') }}">Contact Sales</a></p>
                 </div>
+              </div>
+            </div>
+
+            <div class="acc-details w-full mb-4" style="box-shadow: none;">
+              <h1 style="font-size: 1.4em"><strong>My Appointments</strong></h1>
+              <div class="mt-3 testimonial-group rounded-lg">
+
+
+                @if($appointments->isNotEmpty())
+          @foreach($appointments as $appointment)
+        <div class="deal-banner mb-3" style="background: none; border: 2px solid #5d3fd3; padding: 20px">
+        <div class="deal-text">
+        <h2 class="text-black muted-text">{{ $appointment->discipline->discipline_name }}</h2>
+        <div class="mt-3 mb-3 border p-3 rounded alert alert-success ">
+          <h1 style="font-size: 1.2em">Appointment Info</h1>
+          <div class="d-flex justify-content-between align-items-center mt-2">
+          <div>
+          <p class="text-muted">Assistant In Charge</p>
+          <p class="text-black muted-text">
+          {{ $appointment->assistant ? $appointment->appAssistant->names + ' | ' + $appointment->appAssistant->phone_number + ' | ' + $appointment->appAssistant->email : "Not Yet Assigned" }}
+          </p>
+          </div>
+          <div>
+          <p class="text-muted">Time</p>
+          <p class="text-black muted-text">{{ $appointment->time }}</p>
+          </div>
+          </div>
+        </div>
+        </div>
+        </div>
+      @endforeach
+        @endif
+
               </div>
             </div>
 

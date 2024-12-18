@@ -16,6 +16,8 @@ use App\Models\Applicant_info;
 use App\Models\Subscriber;
 use App\Models\Costs;
 use App\Models\Request as Applications;
+use Mail;
+use App\Mail\AppLinkMail;
 
 class PaymentsController extends Controller
 {
@@ -76,8 +78,8 @@ class PaymentsController extends Controller
       ->select('id', 'identifier', 'discipline_name', 'organization', 'country', 'category')
       ->first();
 
-      $amount = Costs::where('service', $request->r_type)->value('cost');
-      return view('service-payment', compact('service', 'amount', ));
+    $amount = Costs::where('service', $request->r_type)->value('cost');
+    return view('service-payment', compact('service', 'amount', ));
   }
 
   private function formatPhoneNumber($phoneNumber)
@@ -140,7 +142,7 @@ class PaymentsController extends Controller
       'applicant' => 'required|integer|min:0',
       'amount' => 'required|numeric|min:0',
       'phone' => 'required_if:payment_method,momo|string|max:30',
-      'payment_method' => 'required|string|max:255',
+      'payment_method' => 'required|string|max:10',
     ]);
 
     // Decrypt app_id
@@ -239,8 +241,9 @@ class PaymentsController extends Controller
     $validatedData = $request->validate([
       'identifier' => 'required|string|min:0',
       'amount' => 'required|numeric|min:0',
-      'phone' => 'required|string|max:30',
-      'payment_method' => 'required|string|max:255',
+      'phone' => 'nullable|required_if:payment_method,momo|string|max:30',
+      'payment_method' => 'required|string|max:10',
+      'email' => 'nullable|email',
     ]);
 
     $phoneNumber = null;
@@ -262,59 +265,55 @@ class PaymentsController extends Controller
       : $this->getApiKey();
 
     // Prepare api data
-    $data = array(
-      'amount' => $validatedData['amount'],
+    $data = [
+      // 'amount' => intval($validatedData['amount']),
+      'amount' => 10,
       'phone' => $phoneNumber,
       'key' => $apiKey
-    );
-    $encData = json_encode($data);
+    ];
 
-    // Initialize curl
-    $curl = curl_init();
-
-    // Set curl options
-    curl_setopt($curl, CURLOPT_URL, 'https://pay.itecpay.rw/api/pay');
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $encData);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-
-    // Execute the request
-    $response = curl_exec($curl);
-    if (curl_errno($curl)) {
-      $error = curl_error($curl);
-      return response()->json(['message' => 'Something went wrong'], 500);
-    }
-
-    // Close the curl session 
-    curl_close($curl);
+    $response = $this->sendPaymentRequest($data);
 
     // Output the response
-    $responseData = json_decode($response, true);
+    // $responseData = json_decode($response, true);
 
-    if (is_null($responseData)) {
+    if (is_null($response)) {
       return response()->json([
         'message' => 'Operation Failed, Try again!'
       ], 500);
     }
 
-    $status = $responseData['status'];
+    $status = $response['status'];
 
     if ($status === 200) {
-      $amount = $responseData['data']['amount'];
-      $uniqueId = $responseData['data']['transID'];
+
       $service = Discipline::where('identifier', $validatedData['identifier'])->first();
 
       Session::put('service_link', $service->link);
 
-      return response()->json([
-        'status' => $status,
-        'message' => 'Payment successful',
-      ]);
+      if (!empty($response['link'])) {
+
+        return response()->json([
+          'status' => 200,
+          'message' => $response['data']['message'] ?? 'Payment successful.',
+          'link' => $response['link']
+        ]);
+      } else {
+
+        $amount = $response['data']['amount'];
+        $uniqueId = $response['data']['transID'];
+        
+        Mail::to($validatedData['email'])->send(new AppLinkMail($service->link, $service->discipline_name));
+
+        return response()->json([
+          'status' => $status,
+          'message' => 'Payment successful',
+        ]);
+      }
     } else {
       return response()->json([
         'status' => $status,
-        'message' => $responseData['data']['message']
+        'message' => $response['data']['message']
       ]);
     }
   }

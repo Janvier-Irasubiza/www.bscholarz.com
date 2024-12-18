@@ -268,19 +268,23 @@ class ApplicationsController extends Controller
                 //   : redirect() -> route('md.apps');
 
             } catch (\Exception $e) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Application created successfully',
-                    'error' => $e->getMessage()
-                ], 500);
+                // return response()->json([
+                //     'status' => 'error',
+                //     'message' => 'Application created successfully',
+                //     'error' => $e->getMessage()
+                // ], 500);
+
+                return back()->with('success', 'Application created successfully');
             }
         } else {
             Session::put('failed', 'Application exists');
             // return back() -> withInput($inputs);
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Application exists',
-            ], 400);
+            // return response()->json([
+            //     'status' => 'error',
+            //     'message' => 'Application exists',
+            // ], 400);
+
+            return back()->with('error','Something went wrong');
         }
     }
 

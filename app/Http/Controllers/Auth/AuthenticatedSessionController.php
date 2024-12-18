@@ -99,7 +99,7 @@ class AuthenticatedSessionController extends Controller
     public function staff_destroy(Request $request): RedirectResponse
     {
 
-        DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Offline']);
+        // DB::table('staff') -> limit(1) -> where('id', Auth::guard('staff') -> user() -> id) -> update(['status' => 'Offline']);
 
         Auth::guard('staff')->logout();
 

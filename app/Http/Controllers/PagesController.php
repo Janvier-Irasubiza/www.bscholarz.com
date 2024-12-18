@@ -5,6 +5,7 @@ use App\Models\Comment;
 use App\Models\Company;
 use App\Models\Subscriber;
 use App\Models\SubscriberSubscription;
+use Illuminate\Console\Application;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -14,6 +15,7 @@ use App\Mail\RequestReply;
 use App\Models\Discipline;
 use App\Models\Advert;
 use App\Models\Partner;
+use App\Models\Request as Applications;
 use Mail;
 
 
@@ -48,7 +50,7 @@ class PagesController extends Controller
 
         $ads = Advert::where('status', 'active')->get();
 
-        $partners = Partner::where('status','active')->get();
+        $partners = Partner::where('status', 'active')->get();
 
         return view(
             'index',
@@ -243,7 +245,11 @@ class PagesController extends Controller
             $subscription = SubscriberSubscription::where('subscriber_id', $subRecord->id)->first();
         }
 
-        return view('client.client-dashboard', compact('scholarships', 'jobs', 'trainings', 'pending_applications', 'subscription'));
+        $appointments = Applications::where('is_appointment', 1)
+            ->where('applicant', Auth::guard('client')->user()->id)
+            ->get();
+
+        return view('client.client-dashboard', compact('scholarships', 'jobs', 'trainings', 'pending_applications', 'subscription', 'appointments'));
     }
 
     public function discipline_learn_more(Request $request)

@@ -51,7 +51,7 @@
         </div>
         <div class="social-links mt-4">
           <p>Follow us on:</p>
-          @include('components.social-media');
+          @include('components.social-media')
         </div>
       </div>
 

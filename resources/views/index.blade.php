@@ -38,81 +38,75 @@
     </div>
 
     <div class="section-right">
-        @if ($ads && count($ads) > 0)
-            <div id="carouselExampleIndicators" class="carousel slide mt-3" data-bs-ride="carousel">
-                <!-- Indicators -->
-                <ol class="carousel-indicators">
-                    @foreach ($ads as $index => $ad)
-                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}"
-                            class="{{ $index === 0 ? 'active' : '' }}">
-                        </li>
-                    @endforeach
-                </ol>
 
-                <!-- Carousel Items -->
-                <div class="carousel-inner">
+        <div class="p-3">
 
-                    @foreach ($ads as $index => $ad)
-                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                            <a href="{{ route('open-advert', ['advert' => $ad->id]) }}" target="_blank">
-                                <img src="{{ asset('images/ads/' . $ad->poster) }}"
-                                    alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
-                                    style="height: 300px; object-fit: cover;">
-                            </a>
+            @if ($ads && count($ads) > 0)
+                <div id="carouselExampleIndicators" class="carousel slide mt-3" data-bs-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+                        @foreach ($ads as $index => $ad)
+                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}"
+                                class="{{ $index === 0 ? 'active' : '' }}">
+                            </li>
+                        @endforeach
+                    </ol>
+
+                    <!-- Carousel Items -->
+                    <div class="carousel-inner">
+
+                        @foreach ($ads as $index => $ad)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                <a href="{{ route('open-advert', ['advert' => $ad->id]) }}" target="_blank">
+                                    <img src="{{ asset('images/ads/' . $ad->poster) }}"
+                                        alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
+                                        style="height: 300px; object-fit: cover;">
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Controls -->
+                    <!-- <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
+                                                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                                    <span class="visually-hidden">Previous</span>
+                                                                                </a>
+                                                                                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                                                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                                    <span class="visually-hidden">Next</span>
+                                                                                </a> -->
+                </div>
+            @endif
+
+            <div class="slider border">
+                <!-- Carousel items -->
+                <div class="list">
+                    @foreach ($carouselData as $index => $c_data)
+                        <div class="item">
+                            <img src="{{ asset('images/' . $c_data->poster) }}" alt="">
                         </div>
                     @endforeach
                 </div>
-
-                <!-- Controls -->
-                <!-- <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </a> -->
-            </div>
-        @endif
-
-        @if ($carouselData && count($carouselData) > 0)
-            <div id="carouselExampleIndicators" class="carousel slide mt-3" data-bs-ride="carousel">
-                <!-- Indicators -->
-                <ol class="carousel-indicators">
-
+                <!-- Thumbnails -->
+                <div class="thumbnail">
                     @foreach ($carouselData as $index => $c_data)
-                        <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}"
-                            class="{{ $index === 0 ? 'active' : '' }}">
-                        </li>
-                    @endforeach
-
-                </ol>
-
-                <!-- Carousel Items -->
-                <div class="carousel-inner">
-                    @foreach ($carouselData as $index => $c_data)
-                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                            <a href="{{ route('learnMore', ['discipline_id' => $c_data->identifier]) }}">
-                                <img src="{{ asset('images/' . $c_data->poster) }}"
-                                    alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
-                                    style="height: 300px; object-fit: cover;">
-                            </a>
+                        <div class="item {{ $index === 0 ? 'active' : '' }}">
+                            <img src="{{ asset('images/' . $c_data->poster) }}" alt="">
                         </div>
                     @endforeach
                 </div>
-
-                <!-- Controls -->
-                <!-- <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </a> -->
+                <div class="arrows align-items-center">
+                    <button type="button" id="prev"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div class="buttons align-items-center">
+                        <a href="{{ route('apply', ['discipline_id' => $c_data->identifier]) }}"
+                            class="apply-btn">REQUEST SERVICE</a>
+                        <a href="{{ route('learnMore', ['discipline_id' => $c_data->identifier]) }}"
+                            class="snd-apply-btn">LEARN MORE</a>
+                    </div>
+                    <button type="button" id="next"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
             </div>
-        @endif
-
+        </div>
 
         <div class="section-right-body">
 
@@ -166,19 +160,10 @@
                                                                         style="">Learn More <i class="fa fa-arrow-right"></i></a>
                                                                     <div class="">
 
-                                                                        @if(Auth::guard('client')->user())
+                                                                        <a class="apply-btn"
+                                                                            href="{{ route('apply', ['discipline_id' => $scholarship->identifier]) }}">Request
+                                                                            Service</a>
 
-                                                                            <a class="apply-btn"
-                                                                                href="{{ route('client-apply', ['discipline_id' => $scholarship->identifier]) }}">Request
-                                                                                Service</a>
-
-                                                                        @else
-
-                                                                            <a class="apply-btn"
-                                                                                href="{{ route('apply', ['discipline_id' => $scholarship->identifier]) }}">Request
-                                                                                Service</a>
-
-                                                                        @endif
 
                                                                     </div>
                                                                 </div>
@@ -249,19 +234,12 @@
                                                                                                 style="">Learn more <i class="fa fa-arrow-right"></i></a>
                                                                                             <div class="">
 
-                                                                                                @if(Auth::guard('client')->user())
 
-                                                                                                    <a class="apply-btn"
-                                                                                                        href="{{ route('client-apply', ['discipline_id' => $opportunity->identifier]) }}">Request
-                                                                                                        Service</a>
 
-                                                                                                @else
+                                                                                                <a class="apply-btn"
+                                                                                                    href="{{ route('apply', ['discipline_id' => $opportunity->identifier]) }}">Request
+                                                                                                    Service</a>
 
-                                                                                                    <a class="apply-btn"
-                                                                                                        href="{{ route('apply', ['discipline_id' => $opportunity->identifier]) }}">Request
-                                                                                                        Service</a>
-
-                                                                                                @endif
 
                                                                                             </div>
                                                                                         </div>
@@ -334,20 +312,12 @@
                                                                                                 style="">Learn More <i class="fa fa-arrow-right"></i></a>
                                                                                             <div class="">
 
-                                                                                                @if(Auth::guard('client')->user())
-
-                                                                                                    <a class="apply-btn"
-                                                                                                        href="{{ route('client-apply', ['discipline_id' => $training->identifier]) }}">Request
-                                                                                                        Service</a>
-
-                                                                                                @else
 
 
-                                                                                                    <a class="apply-btn"
-                                                                                                        href="{{ route('apply', ['discipline_id' => $training->identifier]) }}">Request
-                                                                                                        Service</a>
+                                                                                                <a class="apply-btn"
+                                                                                                    href="{{ route('apply', ['discipline_id' => $training->identifier]) }}">Request
+                                                                                                    Service</a>
 
-                                                                                                @endif
 
                                                                                             </div>
                                                                                         </div>
@@ -406,6 +376,28 @@
 
             });
 
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            let slider = document.querySelector('.slider');
+            let nextBtn = document.querySelector('.arrows #next');
+            let prevBtn = document.querySelector('.arrows #prev');
+            let sliderList = document.querySelector('.list');
+            let sliderItems = document.querySelectorAll('.list .item');
+
+            nextBtn.addEventListener('click', function () {
+                let firstItem = sliderList.children[0]; // Get the first child
+                sliderList.appendChild(firstItem); // Move it to the end
+                slider.classList.remove('prev');
+                slider.classList.add('next');
+            });
+
+            prevBtn.addEventListener('click', function () {
+                let lastItem = sliderList.children[sliderList.children.length - 1]; // Get the last child
+                sliderList.insertBefore(lastItem, sliderList.children[0]); // Move it to the beginning
+                slider.classList.remove('next');
+                slider.classList.add('prev');
+            });
         });
 
     </script>
