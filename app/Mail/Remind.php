@@ -3,10 +3,7 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 class Remind extends Mailable
@@ -14,46 +11,36 @@ class Remind extends Mailable
     use Queueable, SerializesModels;
 
     public $url;
-  	public $app;
-  	public $client;
+    public $app;
+    public $client;
 
     /**
      * Create a new message instance.
+     *
+     * @param string $url
+     * @param string $app
+     * @param string $client
      */
     public function __construct($url, $app, $client)
     {
         $this->url = $url;
-        $this->client = $client;
         $this->app = $app;
+        $this->client = $client;
     }
 
     /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: $url . ' - Payment Reminder',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'emails.remind',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
+     * Build the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return $this
      */
-    public function attachments(): array
+    public function build()
     {
-        return [];
+        return $this->subject("{$this -> app} - Payment Reminder")
+                    ->markdown('emails.remind') // Using a Markdown template
+                    ->with([
+                        'url' => $this->url,
+                        'app' => $this->app,
+                        'client' => $this->client,
+                    ]);
     }
 }
