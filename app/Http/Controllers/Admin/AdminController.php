@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Staff;
+use App\Models\Costs;
 use Carbon\Carbon;
 use DB;
 use Mail;
@@ -1117,6 +1118,55 @@ class AdminController extends Controller
 
         return back()->with('success', 'Web content updated successfully');
 
+    }
+
+    public function set_services_costs(Request $request) {
+        $costs = Costs::all();
+
+        return view('admin.services-costs', compact('costs'));
+    }
+
+    public function add_new_service_cost(Request $request) {
+        return view('admin.add-service-cost');
+    }
+
+    public function new_service_cost(Request $request) {
+        $this->validate($request, [
+            'name' => 'required|string',
+            'cost' => 'required|numeric',
+        ]);
+
+        Costs::create([
+            'service' => $request->name,
+            'cost' => $request->cost,
+        ]);
+
+        return back()->with('success', 'Service cost added successfully');
+    }
+
+    public function delete_service_cost(Request $request) {
+        Costs::findOrFail($request->cost)->delete();
+        return back()->with('success', 'Service cost deleted successfully');
+    }
+
+    public function edit_service_cost(Request $request) {
+        $service_cost = Costs::where('id', $request->cost)->first();
+        return view('admin.edit-service-cost', compact('service_cost'));
+    }
+
+    public function update_service_cost(Request $request) {
+        $this->validate($request, [
+            'cost_id' => 'required|integer',
+            'name' => 'required|string',
+            'cost' => 'required|numeric',
+        ]);
+
+        Costs::where('id', $request->cost_id)->update([
+            'service' => $request->name,
+            'cost' => $request->cost,
+        ]);
+
+        return back()->with('success', 'Service cost updated successfully');
     }
 
 }

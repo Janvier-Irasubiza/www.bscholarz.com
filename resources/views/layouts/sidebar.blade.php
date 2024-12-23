@@ -58,6 +58,21 @@
                 </a>
             </li>
 
+            <li class="sb-li" style=" margin: 0px">
+                <a href="{{ route('admin.services-costs') }}" class="sd-bar-link">
+                    <div class="flex" style="">
+                        <div class="d-flex align-items-center mr-1">
+                            <i class="fa-solid fa-layer-group"
+                                style="font-size: 15px; margin-top: 2px; color: #000000a8"></i>
+                        </div>
+
+                        <div class="trend-content" style="text-align: left">
+                            <h5>Services Costs</h5>
+                        </div>
+                    </div>
+                </a>
+            </li>
+
             <li class="sb-li" style="margin: 0px">
                 <a href="{{ route('admin.ads') }}" class="sd-bar-link">
                     <div class="flex" style="">
@@ -161,7 +176,7 @@
                     </div>
                 </a>
             </li>
-            
+
 
         </ul>
 
