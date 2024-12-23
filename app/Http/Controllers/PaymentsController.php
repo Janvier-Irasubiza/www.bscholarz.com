@@ -219,6 +219,7 @@ class PaymentsController extends Controller
         ]);
       } else {
         $app->transaction_id = $response['data']['transID'] ?? null;
+        $app->request_service_paid = true;
         $app->save();
 
         return response()->json([
@@ -302,7 +303,7 @@ class PaymentsController extends Controller
 
         $amount = $response['data']['amount'];
         $uniqueId = $response['data']['transID'];
-        
+
         Mail::to($validatedData['email'])->send(new AppLinkMail($service->link, $service->discipline_name));
 
         return response()->json([

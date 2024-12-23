@@ -32,7 +32,15 @@ class StaffController extends Controller
         $my_applications = DB::table('served_requests')->where('assistant', Auth::guard('staff')->user()->id)->count();
         $my_funds = DB::table('applications')->select(DB::raw('sum(assistant_pending_commission) as commission'))->where('assistant', Auth::guard('staff')->user()->id)->where('remittance_status', 'on hold')->first();
         $postponed_applications = DB::table('applications')->where('assistant', Auth::guard('staff')->user()->id)->where('status', 'Postponed')->WhereNull('deletion_status')->get();
-        $ready_clients = DB::table('user_requests')->where('status', 'Pending')->whereNull('deletion_status')->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))->get();
+        // $ready_clients = DB::table('user_requests')->where('status', 'Pending')->whereNull('deletion_status')->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))->get();
+        $ready_clients = Applications::with('discipline')
+            ->where('status', 'Pending')
+            ->where('request_service_paid')
+            ->whereNull('deletion_status')
+            ->whereHas('discipline', function ($query) {
+                $query->where('due_date', '>=', now()->format('Y-m-d H:i:s.u'));
+            })
+            ->get();
 
         $outstanding_clients = DB::table('served_requests')
             ->join('applications', 'served_requests.application_id', '=', 'applications.app_id')
@@ -888,18 +896,18 @@ class StaffController extends Controller
         Mail::to($request_info->user->email)->send(new PaymentReceived($data));
 
         $smsNotification = new Notifications();
-      $utils = new Utils();
+        $utils = new Utils();
 
-      // Send SMS notification
-      $smsData = [
-        'key' => $smsNotification->getSmsApiKey(),
-        'message' => 'Dear ' . $request_info->user->names . ', Your payment for ' . $request_info->discipline->discipline_name .' has been successfully received by BScholarz, Thank you for choosing BScholarz. We look forward to working with you again.',
-        'recipients' => [
-            $request_info->user->phone_number
-        ]
-      ];
+        // Send SMS notification
+        $smsData = [
+            'key' => $smsNotification->getSmsApiKey(),
+            'message' => 'Dear ' . $request_info->user->names . ', Your payment for ' . $request_info->discipline->discipline_name . ' has been successfully received by BScholarz, Thank you for choosing BScholarz. We look forward to working with you again.',
+            'recipients' => [
+                $request_info->user->phone_number
+            ]
+        ];
 
-      $smsNotification->sendSms($smsData);
+        $smsNotification->sendSms($smsData);
 
         return redirect()->route('staff-dashboard');
     }

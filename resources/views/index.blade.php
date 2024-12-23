@@ -9,7 +9,6 @@
     <div class="sidebar">
         <div class="d-flex align-items-center mb-4">
             <h1 style="margin: 0px; font-size: 1.3em;">BScholarz Trends</h1>
-
             <select class="selectpicker" id="filterKeyword">
                 <option class="sel-option muted-text" title="#" selected>Filter by</option>
                 <option class="sel-option muted-text" title="#" value="All">All</option>
@@ -19,7 +18,6 @@
                 <option class="sel-option muted-text" title="#" value="Fellowship">Fellowship</option>
                 <option class="sel-option muted-text" title="#" value="Opportunity">Other Opportunities</option>
             </select>
-
         </div>
 
         @foreach($sidebarData as $side_data)
@@ -68,13 +66,13 @@
 
                     <!-- Controls -->
                     <!-- <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-bs-slide="prev">
-                                                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                                                    <span class="visually-hidden">Previous</span>
-                                                                                </a>
-                                                                                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
-                                                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                                                                    <span class="visually-hidden">Next</span>
-                                                                                </a> -->
+                                                                                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                                                        <span class="visually-hidden">Previous</span>
+                                                                                                    </a>
+                                                                                                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-bs-slide="next">
+                                                                                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                                                        <span class="visually-hidden">Next</span>
+                                                                                                    </a> -->
                 </div>
             @endif
 
@@ -342,7 +340,7 @@
                         <div class="mt-3 d-flex flex-wrap gap-3">
                             @foreach ($partners as $partner)
                                 <a href="">
-                                    <div style="width: 100px; height: 100px;" class="overflow-hidden">
+                                    <div style="width: 100px; height: 100px;" class="overflow-hidden rounded">
                                         <img src="{{ asset('profile_pictures/' . $partner->poster) }}" alt=""
                                             style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
