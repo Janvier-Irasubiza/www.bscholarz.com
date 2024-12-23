@@ -49,14 +49,16 @@
                                 </div>
                                 <p class="text-muted mt-1" style="font-size: 1em">{{ $message->latestReply->reply }}</p>
 
-                                <div class="d-flex gap-2 align-items-center mt-2">
-                                    <i class="fa-solid fa-file f-20 muted-text"></i>
-                                    <div>
-                                        <p class="font-bold muted-text f-17" id="fileName">
-                                            {{ \Illuminate\Support\Str::limit($message->latestReply->attachement, 55) }}
-                                        </p>
+                                @if ($message->latestReply->attachement)
+                                    <div class="d-flex gap-2 align-items-center mt-2">
+                                        <i class="fa-solid fa-file f-20 muted-text"></i>
+                                        <div>
+                                            <p class="font-bold muted-text f-17" id="fileName">
+                                                {{ \Illuminate\Support\Str::limit($message->latestReply->attachement, 55) }}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </a>
                     @endif

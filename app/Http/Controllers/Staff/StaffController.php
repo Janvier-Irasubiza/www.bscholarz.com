@@ -34,8 +34,9 @@ class StaffController extends Controller
         $postponed_applications = DB::table('applications')->where('assistant', Auth::guard('staff')->user()->id)->where('status', 'Postponed')->WhereNull('deletion_status')->get();
         // $ready_clients = DB::table('user_requests')->where('status', 'Pending')->whereNull('deletion_status')->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))->get();
         $ready_clients = Applications::with('discipline')
+            ->with('user')
             ->where('status', 'Pending')
-            ->where('request_service_paid')
+            ->where('request_service_paid', true)
             ->whereNull('deletion_status')
             ->whereHas('discipline', function ($query) {
                 $query->where('due_date', '>=', now()->format('Y-m-d H:i:s.u'));
