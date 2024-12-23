@@ -25,8 +25,9 @@
 
                     <div class="widget-numbers text-success"><span style="font-weight: 600">{{ number_format($completedApp -> sum('assistant_pending_commission')) }}</span></div>
 
+                    @if (Auth::user())
                     <button data-toggle="modal" data-target="#history">View History</button>
-
+                    @endif
 
                     </div>
 

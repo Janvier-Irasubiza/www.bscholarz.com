@@ -211,6 +211,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/appt/{appt}/delete', [AdminController::class, 'appointmentDelete'])->middleware('staff')->name('appointment.delete');
     Route::get('/web/content', [AdminController::class, 'webContent'])->middleware('staff')->name('web.content');
     Route::post('/web/content/update', [AdminController::class, 'updateWebContent'])->middleware('staff')->name('web.content.upadte');
+    Route::get('/services-costs', [AdminController::class,'set_services_costs'])->middleware('staff')->name('admin.services-costs');
+    Route::get('/new-service-costs', [AdminController::class,'add_new_service_cost'])->middleware('staff')->name('admin.service-costs.new');
+    Route::post('/add-new-service-cost', [AdminController::class,'new_service_cost'])->middleware('staff')->name('admin.add-new-service-cost');
+    Route::get('/delete-service-cost/{cost}', [AdminController::class,'delete_service_cost'])->middleware('staff')->name('admin.delete-service-cost');
+    Route::get('/edit-service-cost/{cost}', [AdminController::class,'edit_service_cost'])->middleware('staff')->name('admin.edit-service-cost');
+    Route::post('/update-service-cost', [AdminController::class,'update_service_cost'])->middleware('staff')->name('admin.update-service-cost');
 });
 
 

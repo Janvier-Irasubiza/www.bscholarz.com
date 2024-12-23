@@ -556,7 +556,7 @@ class StaffController extends Controller
 
             /*
              $phone = $outstanding_amount -> phone_number;
-           
+
                if (substr(preg_replace('/[^0-9]/', '', $phone),0,4)=='2507' && strlen($phone)==12) {
                $phone = $phone;
                $rightphone = true;
@@ -570,10 +570,10 @@ class StaffController extends Controller
                      $rightphone = false;
                  }
              }
-           
+
                $uid = time().''.rand(100,999).''.rand(1000,9999);
                $returl = url(route('sms-callback'));
-           
+
                //SMS
                $params = [
                'ohereza' => 'BSholarz',
@@ -586,9 +586,9 @@ class StaffController extends Controller
                'callurl' => $returl,
                'retype' => 'PLAIN',
              ];
-           
+
                $apiUrl = 'https://api.sms.rw/';
-           
+
                // Initialize cURL session
              $ch = curl_init();
 
@@ -616,12 +616,12 @@ class StaffController extends Controller
 
         /* $percentage = DB::table('staff') -> where('id', Auth::guard('staff') -> user() -> id) -> select('percentage') -> first();
         $my_percentage = ((intval($amount -> amount_paid) * $percentage -> percentage)/100);
-      
-        $partners = DB::table('rhythmbox') -> get();  
+
+        $partners = DB::table('rhythmbox') -> get();
 
 
         foreach ($partners as $partner) {
-                        
+
             $percentage = $partner -> pending_amount + (($amount -> amount_paid * $partner -> percentage) / 100);
 
             DB::table('rhythmbox') -> limit(1) -> where('id', $partner -> id) -> update(['pending_amount' => $percentage]);
@@ -779,7 +779,7 @@ class StaffController extends Controller
 
             /*
              $phone = $request_info -> phone_number;
-           
+
                if (substr(preg_replace('/[^0-9]/', '', $phone),0,4)=='2507' && strlen($phone)==12) {
                $phone = $phone;
                $rightphone = true;
@@ -793,10 +793,10 @@ class StaffController extends Controller
                      $rightphone = false;
                  }
              }
-           
+
                $uid = time().''.rand(100,999).''.rand(1000,9999);
                $returl = url(route('sms-callback'));
-           
+
                //SMS
                $params = [
                'ohereza' => 'BSholarz',
@@ -809,9 +809,9 @@ class StaffController extends Controller
                'callurl' => $returl,
                'retype' => 'PLAIN',
              ];
-           
+
                $apiUrl = 'https://api.sms.rw/';
-           
+
                // Initialize cURL session
              $ch = curl_init();
 
