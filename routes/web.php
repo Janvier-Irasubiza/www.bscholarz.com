@@ -333,7 +333,7 @@ Route::prefix('staff')->middleware('staff', 'strack')->group(function () {
     Route::get('/client/change-password/{customer_info}/{application_info}', [StaffController::class, 'changeClientPasswordForm'])->name('staff.client-password.change');
     Route::post('/client/update-password', [StaffController::class, 'updateClientPassword'])->name('staff.update-client-password');
     Route::get('/record-activity', [StaffController::class, 'record_activity'])->name('record-activity');
-    Route::get('/mark-application-complete/{application_id}', [StaffController::class, 'mark_application_as_complete'])->name('mark-application-complete');
+    Route::post('/mark-application-complete/{application_id}', [StaffController::class, 'mark_application_as_complete'])->name('mark-application-complete');
     Route::get('/delete-request/{application_id}', [StaffController::class, 'delete_request'])->name('delete-request');
     Route::get('/begin-application', [StaffController::class, 'begin_application'])->name('begin-application');
     Route::post('/postponed-data/{application_id}', [StaffController::class, 'postponed_data'])->name('postponed-data');

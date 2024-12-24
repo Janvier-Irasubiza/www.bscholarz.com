@@ -232,43 +232,77 @@
 
                     @if($postponed_applications->isNotEmpty())
 
-                  @foreach($postponed_applications as $postponed)
-              @php
-        $applicant = DB::table('applicant_info')->where('id', $postponed->applicant)->first();
-        $discipline = DB::table('disciplines')->where('id', $postponed->discipline_id)->first()
-      @endphp
-              <div class="mb-4 client-info search-item" style="">
-              <div class="container staff-client" style="">
-              <div class="row">
-              <div class="col-lg-6" style="padding: 5px 10px">
-              <strong>
-              <h1 class="client-name" style="font-size: 20px">{{ $applicant->names }}</h1>
-              </strong>
-              <p class="client-email">{{ $applicant->email }}</p>
-              <p class="client-phone-number">{{ $applicant->phone_number }}</p>
-              </div>
+                    @foreach($postponed_applications as $postponed)
+                    @php
+                      $applicant = DB::table('applicant_info')->where('id', $postponed->applicant)->first();
+                      $discipline = DB::table('disciplines')->where('id', $postponed->discipline_id)->first();
+                    @endphp
+                    <div class="mb-4 client-info search-item">
+                      <div class="container staff-client">
+                        <div class="row">
+                          <div class="col-lg-6" style="padding: 5px 10px">
+                            <strong>
+                              <h1 class="client-name" style="font-size: 20px">{{ $applicant->names }}</h1>
+                            </strong>
+                            <p class="client-email">{{ $applicant->email }}</p>
+                            <p class="client-phone-number">{{ $applicant->phone_number }}</p>
+                          </div>
+                          <div class="col-lg-6 client-pp d-flex align-items-center justify-content-center">
+                            <strong>
+                              <h1 style="font-size: 16px">{{ $discipline->discipline_name }}</h1>
+                            </strong>
+                          </div>
+                        </div>
+                      </div>
 
-              <div class="col-lg-6 client-pp d-flex align-items-center justify-content-center"
-              style="">
-              <strong>
-              <h1 style="font-size: 16px">{{ $discipline->discipline_name }}</h1>
-              </strong>
-              </div>
-              </div>
-              </div>
+                      <div class="container d-flex align-items-center justify-content-center py-2 px-4" style="padding: 5px; border-radius: 5px">
+                        <div class="continue-app d-flex align-items-center justify-content-center">
+                          <!-- Change the link to a button -->
+                          <button data-bs-toggle="modal" data-bs-target="#paymentModal{{ $postponed->app_id }}"
+                                  style="color: black; padding: 5px 10px; border: none; background-color: #5AB8A4"
+                                  class="staff-resume-btn text-white">
+                            Mark as Complete
+                          </button>
+                          <a href="{{ route('reconsider-application', ['customer_info' => $postponed->applicant, 'application_info' => $postponed->app_id]) }}"
+                             style="color: black; padding: 5px 10px" class="staff-markas-btn text-white">Resume Application</a>
+                        </div>
+                      </div>
+                    </div>
 
-              <div class="container d-flex align-items-center justify-content-center"
-              style="padding: 5px; border-radius: 5px">
-              <div class="continue-app d-flex align-items-center justify-content-center" style="">
-              <a href="{{ route('mark-application-complete', ['application_id' => $postponed->app_id]) }}"
-              style="color: black" class="staff-resume-btn">Mark as Complete</a>
-              <a href="{{ route('reconsider-application', ['customer_info' => $postponed->applicant, 'application_info' => $postponed->app_id]) }}"
-              style="color: black" class="staff-markas-btn">Resume Application</a>
-              </div>
-              </div>
+                    <!-- Modal for payment amount -->
+                    <div class="modal fade" id="paymentModal{{ $postponed->app_id }}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <strong>
+                              <h1 class="modal-title fs-5" id="paymentModalLabel">Enter Payment Amount</h1>
+                            </strong>
+                            <button type="button" class="bg-danger px-2 rounded text-white" data-bs-dismiss="modal" aria-label="Close">
+                              <i class="fa-solid fa-xmark"></i>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <form method="POST" action="{{ route('mark-application-complete', ['application_id' => $postponed->app_id]) }}">
+                              @csrf
+                              <!-- Amount input field -->
+                              <div class="mb-3">
+                                <label for="amount" class="form-label">Amount to be paid</label>
+                                <input type="number" class="form-control" id="amount" name="amount_to_be_paid" required placeholder="Enter amount to be paid">
+                              </div>
 
-              </div>
-          @endforeach
+                              <!-- Hidden input for application ID (this is now dynamically set) -->
+                              <input type="number" name="application_id" value="{{ $postponed->app_id }}" hidden>
+
+                              <div class="d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn bg-success text-white">Submit</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  @endforeach
 
           @else
 
@@ -339,11 +373,11 @@
 
           <a style="color: black"
           href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
-          class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
+          class="staff-resume-btn-1 text-white" style="padding: 5px; border-radius: 5px">
           Review request
           </a>
 
-          <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal"
+          <a href="#" class="ml-4 postpone-btn text-white" style="color: black" data-bs-toggle="modal"
           data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}"
           data-service="{{ $discipline->discipline_name }}"
           data-client="{{ $client_info->names }}">
@@ -385,11 +419,11 @@
 
           <a style="color: black"
           href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
-          class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
+          class="staff-resume-btn-1 text-white" style="padding: 5px; border-radius: 5px">
           Review request
           </a>
 
-          <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal"
+          <a href="#" class="ml-4 postpone-btn text-white" style="color: black" data-bs-toggle="modal"
           data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}"
           data-service="{{ $discipline->discipline_name }}"
           data-client="{{ $client_info->names }}">

@@ -71,6 +71,7 @@ class StaffController extends Controller
         $under_review = DB::table('user_requests')->where('status', 'Under Review')->where('revied_by', Auth::guard('staff')->user()->id)->get();
 
         $outs = DB::table('served_requests')->where('id', $request->customer_info)->where('outstanding_amount', '<>', 0)->get();
+        dd($outs);
 
         return view('staff.customer-details', compact(
             'client_info',
@@ -528,11 +529,14 @@ class StaffController extends Controller
 
     public function mark_application_as_complete(Request $request)
     {
+        $this->validate($request, [
+            'amount_to_be_paid' => 'required|numeric',
+        ]);
 
         $outstanding_amount = DB::table('user_requests')->where('application_id', $request->application_id)->first();
 
 
-        if (DB::table('applications')->limit(1)->where('app_id', $request->application_id)->update(['status' => 'Complete', 'outstanding_amount' => $outstanding_amount->service_fee, 'served_on' => date('Y-m-d H:i:s')])) {
+        if (DB::table('applications')->limit(1)->where('app_id', $request->application_id)->update(['status' => 'Complete', 'outstanding_amount' => $request -> amount_to_be_paid, 'served_on' => date('Y-m-d H:i:s')])) {
 
             // Mail
             $url = url(route('app-payment', [
@@ -724,8 +728,9 @@ class StaffController extends Controller
         $application_requested = DB::table('user_requests')->where('application_id', $request->application_info)->where('id', $request->customer_info)->first();
         $applications_items = DB::table('applications')->where('app_id', $request->application_info)->where('applicant', $request->customer_info)->first();
         $all_details = DB::table('served_requests')->where('id', $request->customer_info)->where('amount_not_paid', '<>', 0)->where('deliberation', 'Refused to pay')->get();
+        $outs = DB::table('served_requests')->where('id', $request->customer_info)->where('outstanding_amount', '<>', 0)->get();
 
-        return view('staff.customer-details', compact('client_info', 'client_background', 'client_docs', 'application_requested', 'applications_items', 'all_details'));
+        return view('staff.customer-details', compact('client_info', 'client_background', 'client_docs', 'application_requested', 'applications_items', 'all_details', 'outs'));
     }
 
     public function resume_postponed_application(Request $request)
