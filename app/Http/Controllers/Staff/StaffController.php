@@ -18,6 +18,8 @@ use App\Mail\Unreachable;
 use App\Mail\RequestToPay;
 use App\Models\Request as Applications;
 use App\Models\Applicant_info;
+use App\Models\Comment;
+use App\Models\Payment;
 use App\Mail\PaymentReceived;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
@@ -126,217 +128,119 @@ class StaffController extends Controller
 
     public function record_new_activity(Request $request)
     {
-
         $record = DB::table('applicant_info')->where('email', $request->consumerEmail)->first();
         $partners = DB::table('rhythmbox')->get();
 
         if ($record) {
-
             Session::put('email_error', $record->names);
             Session::put('applicant', $record->id);
-
             return Redirect::back()->withInput($request->all());
-        } else {
-
-            $validateData = $request->validate([
-                'activityName' => ['required'],
-                'consumerNames' => ['required'],
-                'consumerEmail' => ['required'],
-                'consumerPhoneNumber' => ['required'],
-                'serviceCost' => ['required'],
-                'paymentStatus' => ['required'],
-            ]);
-
-            $activity_applicant_info = [
-                'names' => $request->consumerNames,
-                'email' => $request->consumerEmail,
-                'phone_number' => $request->consumerPhoneNumber,
-            ];
-
-            DB::table('applicant_info')->insert($activity_applicant_info);
-            $userId = DB::table('applicant_info')->where('email', $request->consumerEmail)->first();
-
-            $activity_application_info = [];
-
-            if (!empty($request->customActivityName)) {
-
-                function identifierGen()
-                {
-                    return substr(str_shuffle('qazxswedcvfrtgbnhyujmkiolp0123456789'), 0, 8);
-                }
-
-                getId:
-                $identifier = identifierGen();
-
-                if (DB::table('disciplines')->where('identifier', $identifier)->first()) {
-                    goto getId;
-                }
-
-                $new_discipline = [
-                    'identifier' => $identifier,
-                    'discipline_name' => $request->customActivityName,
-                    'service_fee' => $request->serviceCost,
-                    'status' => 'N/A',
-                ];
-
-                DB::table('disciplines')->insert($new_discipline);
-                $new_id = DB::table('disciplines')->where('identifier', $identifier)->first();
-
-                if ($request->paymentStatus == 'Paid') {
-
-                    foreach ($partners as $partner) {
-
-                        $percentage = $partner->pending_amount + (($new_id->service_fee * $partner->percentage) / 100);
-
-                        DB::table('rhythmbox')->limit(1)->where('id', $partner->id)->update(['pending_amount' => $percentage]);
-
-                    }
-
-                    $commision = ($new_id->service_fee * Auth::guard('staff')->user()->percentage) / 100;
-
-                    array_push($activity_application_info, [
-                        'applicant' => $userId->id,
-                        'discipline_id' => $new_id->id,
-                        'payment_status' => $request->paymentStatus,
-                        'amount_paid' => $new_id->service_fee,
-                        'payment_date' => date('Y-m-d H:i:s'),
-                        'status' => 'Complete',
-                        'assistant' => Auth::guard('staff')->user()->id,
-                        'application_type' => 'Custom',
-                        'served_on' => date('Y-m-d H:i:s'),
-                        'observation' => $request->desc,
-                        'assistant_pending_commission' => $commision
-                    ]);
-                } elseif ($request->paymentStatus == 'Partial-payment') {
-
-                    foreach ($partners as $partner) {
-
-                        $percentage = $partner->pending_amount + (($request->receivedAmount * $partner->percentage) / 100);
-
-                        DB::table('rhythmbox')->limit(1)->where('id', $partner->id)->update(['pending_amount' => $percentage]);
-
-                    }
-
-                    $commision = ($request->receivedAmount * Auth::guard('staff')->user()->percentage) / 100;
-
-                    array_push($activity_application_info, [
-                        'applicant' => $userId->id,
-                        'discipline_id' => $new_id->id,
-                        'payment_status' => 'Paid',
-                        'amount_paid' => $request->receivedAmount,
-                        'outstanding_amount' => $new_id->service_fee - $request->receivedAmount,
-                        'payment_date' => date('Y-m-d H:i:s'),
-                        'status' => 'Complete',
-                        'assistant' => Auth::guard('staff')->user()->id,
-                        'application_type' => 'Custom',
-                        'served_on' => date('Y-m-d H:i:s'),
-                        'observation' => $request->desc,
-                        'assistant_pending_commission' => $commision
-                    ]);
-
-                } else {
-                    array_push($activity_application_info, [
-                        'applicant' => $userId->id,
-                        'discipline_id' => $new_id->id,
-                        'payment_status' => $request->paymentStatus,
-                        'outstanding_amount' => $new_id->service_fee,
-                        'payment_date' => date('Y-m-d H:i:s'),
-                        'status' => 'Complete',
-                        'assistant' => Auth::guard('staff')->user()->id,
-                        'application_type' => 'Custom',
-                        'served_on' => date('Y-m-d H:i:s'),
-                        'observation' => $request->desc,
-                    ]);
-                }
-
-                DB::table('applications')->insert($activity_application_info);
-
-            }
-
-            if (empty($request->customActivityName)) {
-
-                if ($request->paymentStatus == 'Paid') {
-
-                    $fee = DB::table('disciplines')->where('id', $request->activityName)->select('service_fee')->first();
-
-                    foreach ($partners as $partner) {
-
-                        $percentage = $partner->pending_amount + (($request->serviceCost * $partner->percentage) / 100);
-
-                        DB::table('rhythmbox')->limit(1)->where('id', $partner->id)->update(['pending_amount' => $percentage]);
-
-                    }
-
-
-
-                    $commision = ($request->serviceCost * Auth::guard('staff')->user()->percentage) / 100;
-
-                    array_push($activity_application_info, [
-                        'applicant' => $userId->id,
-                        'discipline_id' => $request->activityName,
-                        'payment_status' => $request->paymentStatus,
-                        'amount_paid' => $request->serviceCost,
-                        'payment_date' => date('Y-m-d H:i:s'),
-                        'status' => 'Complete',
-                        'assistant' => Auth::guard('staff')->user()->id,
-                        'application_type' => 'Custom',
-                        'served_on' => date('Y-m-d H:i:s'),
-                        'observation' => $request->desc,
-                        'assistant_pending_commission' => $commision
-                    ]);
-                } elseif ($request->paymentStatus == 'Partial-payment') {
-
-                    foreach ($partners as $partner) {
-
-                        $percentage = $partner->pending_amount + (($request->receivedAmount * $partner->percentage) / 100);
-
-                        DB::table('rhythmbox')->limit(1)->where('id', $partner->id)->update(['pending_amount' => $percentage]);
-
-                    }
-
-                    $app_req = DB::table('disciplines')->where('id', $request->activityName)->first();
-
-                    $commision = ($request->receivedAmount * Auth::guard('staff')->user()->percentage) / 100;
-
-                    array_push($activity_application_info, [
-                        'applicant' => $userId->id,
-                        'discipline_id' => $app_req->id,
-                        'payment_status' => 'Paid',
-                        'amount_paid' => $request->receivedAmount,
-                        'outstanding_amount' => $request->serviceCost - $request->receivedAmount,
-                        'payment_date' => date('Y-m-d H:i:s'),
-                        'status' => 'Complete',
-                        'assistant' => Auth::guard('staff')->user()->id,
-                        'application_type' => 'Custom',
-                        'served_on' => date('Y-m-d H:i:s'),
-                        'observation' => $request->desc,
-                        'assistant_pending_commission' => $commision,
-                    ]);
-
-                } else {
-
-                    $app_req = DB::table('disciplines')->where('id', $request->activityName)->first();
-
-                    array_push($activity_application_info, [
-                        'applicant' => $userId->id,
-                        'discipline_id' => $request->activityName,
-                        'payment_status' => $request->paymentStatus,
-                        'outstanding_amount' => $request->serviceCost,
-                        'payment_date' => date('Y-m-d H:i:s'),
-                        'status' => 'Complete',
-                        'assistant' => Auth::guard('staff')->user()->id,
-                        'application_type' => 'Custom',
-                        'served_on' => date('Y-m-d H:i:s'),
-                        'observation' => $request->desc,
-                    ]);
-                }
-
-                DB::table('applications')->insert($activity_application_info);
-            }
-
-            return redirect()->route('staff-dashboard');
         }
 
+        $request->validate([
+            'activityName' => 'required|integer|exists:disciplines,id',
+            'consumerNames' => 'required',
+            'consumerEmail' => 'required',
+            'consumerPhoneNumber' => 'required',
+            'serviceCost' => 'required',
+            'paymentStatus' => 'required',
+        ]);
+
+        $userId = Applicant_info::create([
+            'names' => $request->consumerNames,
+            'email' => $request->consumerEmail,
+            'phone_number' => $request->consumerPhoneNumber,
+        ]);
+
+        $activityApplicationInfo = [];
+        $paidAmount = 0;
+
+        if (!empty($request->customActivityName)) {
+            $newDiscipline = $this->createNewDiscipline($request);
+            $paidAmount = $this->processPayment($request, $newDiscipline->service_fee, $partners, $activityApplicationInfo, $userId);
+        } else {
+            $existingDiscipline = DB::table('disciplines')->where('id', $request->activityName)->first();
+            $paidAmount = $this->processPayment($request, $existingDiscipline->service_fee, $partners, $activityApplicationInfo, $userId);
+        }
+
+        dd($activityApplicationInfo);
+        $newApplicationId = DB::table('applications')->insertGetId($activityApplicationInfo);
+
+        if ($paidAmount > 0) {
+            Payment::create([
+                'applicant_id' => $userId->id,
+                'application_id' => $newApplicationId,
+                'amount' => $paidAmount,
+                'status' => 'Waiting For Review',
+            ]);
+        }
+
+        return redirect()->route('staff-dashboard');
+    }
+
+    private function createNewDiscipline($request)
+    {
+        do {
+            $identifier = substr(str_shuffle('qazxswedcvfrtgbnhyujmkiolp0123456789'), 0, 8);
+        } while (DB::table('disciplines')->where('identifier', $identifier)->exists());
+
+        DB::table('disciplines')->insert([
+            'identifier' => $identifier,
+            'discipline_name' => $request->customActivityName,
+            'service_fee' => $request->serviceCost,
+            'status' => 'N/A',
+        ]);
+
+        return DB::table('disciplines')->where('identifier', $identifier)->first();
+    }
+
+    private function processPayment($request, $serviceFee, $partners, &$activityApplicationInfo, $userId)
+    {
+        $paidAmount = 0;
+        $commission = 0;
+
+        if ($request->paymentStatus === 'Paid') {
+            $paidAmount = $serviceFee;
+            $commission = $this->calculateCommission($paidAmount, $partners, $serviceFee);
+            $this->buildActivityInfo($activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission);
+        } elseif ($request->paymentStatus === 'Partial-payment') {
+            $paidAmount = $request->receivedAmount;
+            $outstandingAmount = $serviceFee - $paidAmount;
+            $commission = $this->calculateCommission($paidAmount, $partners, $serviceFee);
+            $this->buildActivityInfo($activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission, $outstandingAmount);
+        } else {
+            $this->buildActivityInfo($activityApplicationInfo, $userId, $request, $serviceFee, 0, 0);
+        }
+
+        return $paidAmount;
+    }
+
+    private function calculateCommission($paidAmount, $partners, $serviceFee)
+    {
+        foreach ($partners as $partner) {
+            $partnerShare = ($paidAmount * $partner->percentage) / 100;
+            DB::table('rhythmbox')->where('id', $partner->id)->increment('pending_amount', $partnerShare);
+        }
+
+        return ($paidAmount * Auth::guard('staff')->user()->percentage) / 100;
+    }
+
+    private function buildActivityInfo(&$activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission, $outstandingAmount = 0)
+    {
+        array_push($activityApplicationInfo, [
+            'applicant' => $userId->id,
+            'discipline_id' => $request->activityName,
+            'payment_status' => $request->paymentStatus,
+            'amount_paid' => $paidAmount,
+            'outstanding_amount' => $outstandingAmount,
+            'payment_date' => now(),
+            'status' => 'Complete',
+            'assistant' => Auth::guard('staff')->user()->id,
+            'application_type' => !empty($request->customActivityName) ? 'Custom' : 'Standard',
+            'served_on' => now(),
+            'observation' => $request->desc,
+            'assistant_pending_commission' => $commission,
+        ]);
     }
 
 
@@ -733,8 +637,9 @@ class StaffController extends Controller
         $application_requested = DB::table('user_requests')->where('application_id', $request->application_info)->where('id', $request->customer_info)->first();
         $applications_items = DB::table('applications')->where('app_id', $request->application_info)->where('applicant', $request->customer_info)->first();
         $all_details = DB::table('served_requests')->where('id', $request->customer_info)->where('amount_not_paid', '<>', 0)->where('deliberation', 'Refused to pay')->get();
+        $outs = DB::table('served_requests')->where('id', $request->customer_info)->where('outstanding_amount', '<>', 0)->get();
 
-        return view('staff.customer-details', compact('client_info', 'client_background', 'client_docs', 'application_requested', 'applications_items', 'all_details'));
+        return view('staff.customer-details', compact('client_info', 'client_background', 'client_docs', 'application_requested', 'applications_items', 'all_details', 'outs'));
     }
 
     public function resume_postponed_application(Request $request)
@@ -1100,6 +1005,11 @@ class StaffController extends Controller
             where('is_appointment', 1)->where('assistant', auth('staff')->user()->id)
             ->paginate(10);
         return view('admin.appointments', compact('appointments'));
+    }
+
+    public function comments()
+    {
+        return view('comments.comments', ['usr' => auth('staff')->user()]);
     }
 
 }

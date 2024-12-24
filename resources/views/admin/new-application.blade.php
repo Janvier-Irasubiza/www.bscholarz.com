@@ -242,7 +242,8 @@
 
                             <div>
                                 <x-input-label style="font-size: 15px" for="name" :value="__('Poster')" />
-                                <small class="text-semi-muted mb-0">Application Poster</small>
+                                <small class="text-semi-muted mb-0 block">1320x583 Image or SVG for sliders</small>
+                                <small class="text-semi-muted mb-0 block">1134x1134 Image or SVG for others posters</small>
                                 <div class="d-flex gap-1 mt-2">
                                     <div style="position: relative">
                                         <input class="text-left" type="button" id="uploadPreview"

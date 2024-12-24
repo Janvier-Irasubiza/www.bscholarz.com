@@ -88,6 +88,40 @@ class ApplicationsController extends Controller
 
     }
 
+    public function recommendedComments(Request $request)
+    {
+        $comments = Comment::with(['user', 'replies.user'])
+            ->where('recommended_to', auth('staff')->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'discipline_id' => $comment->discipline_id,
+                    'applicant_id' => $comment->applicant_id,
+                    'comment' => $comment->comment,
+                    'status' => $comment->status,
+                    'created_at' => $comment->created_at,
+                    'updated_at' => $comment->updated_at,
+                    'name' => $comment->user ? $comment->user->names : 'Unknown',
+                    'profile' => $comment->user->profile_picture,
+                    'replies' => $comment->replies->map(function ($reply) {
+                        return [
+                            'id' => $reply->id,
+                            'comment_id' => $reply->comment_id,
+                            'reply' => $reply->reply,
+                            'created_at' => $reply->created_at,
+                            'updated_at' => $reply->updated_at,
+                            'user_name' => $reply->user ? $reply->user->names : 'Unknown',
+                            'user_profile' => $reply->user ? $reply->user->profile_picture : null,
+                        ];
+                    })
+                ];
+            });
+
+        return response()->json($comments);
+    }
+
     public function recommendTo(Request $request, $commentId)
     {
         // Validate incoming request
@@ -284,7 +318,7 @@ class ApplicationsController extends Controller
             //     'message' => 'Application exists',
             // ], 400);
 
-            return back()->with('error','Something went wrong');
+            return back()->with('error', 'Something went wrong');
         }
     }
 
