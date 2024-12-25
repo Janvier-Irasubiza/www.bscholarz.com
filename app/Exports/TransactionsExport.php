@@ -70,7 +70,7 @@ class TransactionsExport implements FromCollection, WithHeadings, WithStyles
         // Map through transactions and add to data
         foreach ($this->transactions as $transaction) {
             $data[] = [
-                $transaction->payment_id,
+                $transaction->payment_id ?? 'N/A',
                 number_format($transaction->amount_paid, 2),
                 \Carbon\Carbon::parse($transaction->served_on)->format('d-m-Y'),
                 $transaction->assistant_names,

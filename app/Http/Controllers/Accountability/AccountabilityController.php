@@ -60,7 +60,12 @@ class AccountabilityController extends Controller
         $ready_services = DB::table('disciplines')->where('status', 'Available')->count();
         $upcoming_services = DB::table('disciplines')->where('status', 'Upcoming')->orWhere('status', 'Comming Soon')->count();
 
-        $clarifications_unique = DB::table('served_requests')->where('payment_status', 'Agent Needs To Clarify')->groupBy('discipline_identifier', 'discipline_name')->get();
+        $clarifications_unique = DB::table('served_requests')
+            ->select('discipline_identifier', 'discipline_name', DB::raw('MIN(id) as id')) // Aggregate non-grouped columns
+            ->where('payment_status', 'Agent Needs To Clarify')
+            ->groupBy('discipline_identifier', 'discipline_name')
+            ->get();
+
         $staff_ids = [];
         foreach ($payments as $payment) {
             if ($payment->application) { // Check if the relationship exists
@@ -127,7 +132,7 @@ class AccountabilityController extends Controller
         $query = Payment::whereHas('application', function ($query) {
             $query->where('payment_status', 'Waiting For Review');
         })->with(['customer', 'application'])
-        ->get();
+            ->get();
 
         // Initialize variables to hold sorting criteria
         $sortBy = $request->input('sortBy');
@@ -216,7 +221,11 @@ class AccountabilityController extends Controller
 
         $complete_transactions = $query->get();
 
-        $complete_transactions_unique = DB::table('served_requests')->where('payment_status', 'Confirmed')->groupBy('discipline_identifier', 'discipline_name')->get();
+        $complete_transactions_unique = DB::table('served_requests')
+        ->select('discipline_identifier', 'discipline_name', DB::raw('MIN(id) as id')) // Add an aggregated column
+        ->where('payment_status', 'Confirmed')
+        ->groupBy('discipline_identifier', 'discipline_name')
+        ->get();
 
         $staff_ids = [];
         foreach ($complete_transactions as $app) {
@@ -234,8 +243,8 @@ class AccountabilityController extends Controller
     public function transaction_review(Request $request)
     {
         $payments = Payment::with(['customer', 'application'])
-        ->where('id', $request->transaction)
-        ->first();
+            ->where('id', $request->transaction)
+            ->first();
 
         $transaction_info = DB::table('applications')->where('app_id', $request->transaction)->first();
         $applicant_info = DB::table('applicant_info')->where('id', $request->applicant)->first();
@@ -305,15 +314,53 @@ class AccountabilityController extends Controller
 
     public function revenue(Request $request)
     {
+        $week_start = Carbon::now()->startOfWeek();
+        $week_end = Carbon::now()->endOfWeek();
+
+        $revenues = DB::table('applications')->where('payment_status', 'Confirmed')->get();
+        $total_revenues = 0;
+        foreach ($revenues as $revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $revenue->assistant)->select('percentage')->first();
+            $total_revenue = ($revenue->amount_paid) - ($revenue->amount_paid * $assistant_commission->percentage / 100);
+            $total_revenues += $total_revenue;
+        }
+
+        $tdy_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereDate('payment_date', Carbon::today())->get();
+        $today_revenues = 0;
+        foreach ($tdy_revenues as $t_revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $t_revenue->assistant)->select('percentage')->first();
+            $today_revenue = ($t_revenue->amount_paid) - ($t_revenue->amount_paid * $assistant_commission->percentage / 100);
+            $today_revenues += $today_revenue;
+        }
+
+        $week_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereBetween('payment_date', [$week_start, $week_end])->get();
+        $this_week_revenues = 0;
+        foreach ($week_revenues as $week_revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $week_revenue->assistant)->select('percentage')->first();
+            $this_week_revenue = ($week_revenue->amount_paid) - ($week_revenue->amount_paid * $assistant_commission->percentage / 100);
+            $this_week_revenues += $this_week_revenue;
+        }
+
+        $total_requests = DB::table('user_requests')->count();
+        $today_requests = DB::table('user_requests')->whereDate('requested_on', Carbon::today())->count();
+        $this_week_requests = DB::table('user_requests')->whereBetween('requested_on', [$week_start, $week_end])->count();
+        $total_services = DB::table('disciplines')->count();
+        $ready_services = DB::table('disciplines')->where('status', 'Available')->count();
+        $upcoming_services = DB::table('disciplines')->where('status', 'Upcoming')->orWhere('status', 'Comming Soon')->count();
+
         // Fetch your revenue data
         $app_incomes = DB::table('served_requests')
             ->where('payment_status', 'Paid')
             ->where('application_status', 'Complete')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
             ->get();
 
         $todayApps = DB::table('served_requests')
             ->where('payment_status', 'Paid')
             ->where('application_status', 'Complete')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
             ->whereDate('served_on', Carbon::today())
             ->get();
 
@@ -331,7 +378,7 @@ class AccountabilityController extends Controller
         }
 
         // Return the view with the data
-        return view('admin.revenue', compact('app_incomes', 'ads', 'todayApps', 'todayAds'));
+        return view('admin.revenue', compact('today_revenues', 'this_week_revenues', 'total_requests', 'today_requests', 'this_week_requests', 'total_services', 'ready_services', 'upcoming_services', 'clarifications_unique', 'total_revenues', 'app_incomes', 'ads', 'todayApps', 'todayAds'));
     }
 
     public function remind_debtor(Request $request)

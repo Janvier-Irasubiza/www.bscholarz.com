@@ -12,95 +12,80 @@
                     <div>
                         <div class="card">
                             <div class="card-header-tab card-header py-3 d-flex">
-                                <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-9">
-                                    Business Revenue
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="d-flex justify-content-between btn-actions-pane-right text-capitalize text-right">
-                                        <a href="{{ route('export-revenues') }}?download=excel" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary" id="exportExcel">Export to Excel</a>
-
-                                        <a href="{{ route('debtors') }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary">
-                                            <span class="mr-2 opacity-7">
-                                                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
-                                            </span>
-                                            <span class="mr-1">Open Debtors sheet</span>
-                                        </a>
-                                    </div>
+                                <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-8">
+                                    Overview
                                 </div>
                             </div>
-
-                            <div class="no-gutters row px-2 py-3">
-                                <div class="col-sm-6 col-md-4 col-xl-4">
-                                    <div style="border: none" class="card no-shadow rm-border bg-transparent widget-chart text-left">
-                                        <div class="d-flex">
-                                            <div class="icon-wrapper col-lg-3 d-flex align-items-center justify-content-center mr-1">
-                                                <div class="icon-wrapper-bg opacity-9 rounded-circle p-3" style="background: #ec6c55bd;">
-                                                    <i class="fa-solid fa-person-booth" style="font-size: 25px"></i>
-                                                </div>
+                            <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3" style="padding-right: 32px !important">
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Revenues</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Total Income</h4>
+                                            <div class="widget-numbers">{{ number_format($total_revenues) }} <small style="font-size: 15px">RWF</small></div>
+                                        </div>
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Today</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($today_revenues) }} &nbsp; RWF</strong></div>
                                             </div>
-                                            <div class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Applications <small>(RWF)</small></div>
-                                                <div class="widget-numbers">{{ number_format($app_incomes->sum('amount_paid')) }}</div>
-                                                <div class="widget-description opacity-8 text-focus">
-                                                    <div class="d-inline text-danger pr-1"></div>
-                                                    @if(count($todayApps) > 0)
-                                                        {{ number_format(count($todayApps)) }}
-                                                    @else
-                                                        No
-                                                    @endif applications today <small>(</small>{{ number_format($todayApps->sum('amount_paid')) }} <small>)</small>
-                                                </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">This week</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($this_week_revenues) }} &nbsp; RWF</strong></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="divider m-0 d-md-none d-sm-block"></div>
 
-                                <div class="col-sm-6 col-md-4 col-xl-4">
-                                    <div style="border: none" class="card no-shadow rm-border bg-transparent widget-chart text-left">
-                                        <div class="d-flex">
-                                            <div class="icon-wrapper col-lg-3 d-flex align-items-center justify-content-center mr-1">
-                                                <div class="icon-wrapper-bg opacity-9 rounded-circle p-3" style="background: #5AB8A4;">
-                                                    <i class="fa-solid fa-rectangle-ad" style="font-size: 25px"></i>
-                                                </div>
-                                            </div>
-                                            <div class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Ads <small>(RWF)</small></div>
-                                                <div class="widget-numbers"><span>{{ number_format($ads->sum('amount_gen')) }}</span></div>
-                                                <div class="widget-description opacity-8 text-focus">
-                                                    @if(count($todayAds) > 0)
-                                                        {{ number_format(count($todayAds)) }}
-                                                    @else
-                                                        No
-                                                    @endif new clients today
-                                                    <span class="text-info pl-1"></span>
-                                                </div>
-                                            </div>
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3" style="margin-right: 0px">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Productivity</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Service Requests</h4>
+                                            <div class="widget-numbers">{{ number_format($total_requests) }}</div>
                                         </div>
-                                    </div>
-                                    <div class="divider m-0 d-md-none d-sm-block"></div>
-                                </div>
-
-                                <div class="col-sm-12 col-md-4 col-xl-4">
-                                    <div style="border: none" class="card no-shadow rm-border bg-transparent widget-chart text-left">
-                                        <div class="d-flex">
-                                            <div class="icon-wrapper col-lg-3 d-flex align-items-center justify-content-center mr-1">
-                                                <div class="icon-wrapper-bg opacity-9 rounded-circle" style="background: #80ffaa; padding: 15px 17px">
-                                                    <i class="fa-solid fa-sack-dollar" style="font-size: 25px"></i>
-                                                </div>
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Today</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($today_requests) }} &nbsp; Requests</strong></div>
                                             </div>
-                                            <div class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Balance <small>(RWF)</small></div>
-                                                <div class="widget-numbers text-success"><span>{{ number_format($app_incomes->sum('amount_paid') + $ads->sum('amount_gen')) }}</span></div>
-                                                <div class="widget-description text-focus">
-                                                    {{ number_format($todayAds->sum('amount_gen') + $todayApps->sum('amount_paid')) }} today
-                                                    <span class="text-warning pl-1"></span>
-                                                </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">This week</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($this_week_requests) }} &nbsp; Requests</strong></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="sum-card rounded p-2 col-lg-4 pb-3">
+                                    <h1 class="card-header-title fw-700 text-center f-20">Business Store</h1>
+                                    <div class="d-flex justify-content-start align-items-start px-2 gap-3 mt-1">
+                                        <!-- Left Column -->
+                                        <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
+                                            <h4>Total Services</h4>
+                                            <div class="widget-numbers">{{ number_format($total_services) }}</div>
+                                        </div>
+                                        <!-- Right Column -->
+                                        <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
+                                            <div>
+                                                <small style="font-size: 10px">Ready</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($ready_services) }} &nbsp; Services</strong></div>
+                                            </div>
+                                            <div class="mb-1">
+                                                <small style="font-size: 10px">Upcoming</small>
+                                                <div style="font-size: 13px"><strong>{{ number_format($upcoming_services) }} &nbsp; Services</strong></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
+
                         </div>
                     </div>
                 </div>

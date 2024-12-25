@@ -43,27 +43,27 @@ class AdminController extends Controller
         $week_start = Carbon::now()->startOfWeek();
         $week_end = Carbon::now()->endOfWeek();
 
-        $revenues = DB::table('applications') -> where('payment_status', 'Paid') -> get();
+        $revenues = DB::table('applications')->where('payment_status', 'Confirmed')->get();
         $total_revenues = 0;
         foreach ($revenues as $revenue) {
-            $assistant_commission = DB::table('staff') -> where('id', $revenue->assistant) -> select('percentage') -> first();
-            $total_revenue = ($revenue -> amount_paid) - ($revenue -> amount_paid * $assistant_commission -> percentage / 100);
+            $assistant_commission = DB::table('staff')->where('id', $revenue->assistant)->select('percentage')->first();
+            $total_revenue = ($revenue->amount_paid) - ($revenue->amount_paid * $assistant_commission->percentage / 100);
             $total_revenues += $total_revenue;
         }
 
-        $tdy_revenues = DB::table('applications') -> where('payment_status', 'Paid') -> whereDate('payment_date', Carbon::today()) -> get();
+        $tdy_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereDate('payment_date', Carbon::today())->get();
         $today_revenues = 0;
         foreach ($tdy_revenues as $t_revenue) {
-            $assistant_commission = DB::table('staff') -> where('id', $t_revenue->assistant) -> select('percentage') -> first();
-            $today_revenue = ($t_revenue -> amount_paid) - ($t_revenue -> amount_paid * $assistant_commission -> percentage / 100);
+            $assistant_commission = DB::table('staff')->where('id', $t_revenue->assistant)->select('percentage')->first();
+            $today_revenue = ($t_revenue->amount_paid) - ($t_revenue->amount_paid * $assistant_commission->percentage / 100);
             $today_revenues += $today_revenue;
         }
 
-        $week_revenues = DB::table('applications') -> where('payment_status', 'Paid') -> whereBetween('payment_date', [$week_start, $week_end]) -> get();
+        $week_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereBetween('payment_date', [$week_start, $week_end])->get();
         $this_week_revenues = 0;
         foreach ($week_revenues as $week_revenue) {
-            $assistant_commission = DB::table('staff') -> where('id', $week_revenue->assistant) -> select('percentage') -> first();
-            $this_week_revenue = ($week_revenue -> amount_paid) - ($week_revenue -> amount_paid * $assistant_commission -> percentage / 100);
+            $assistant_commission = DB::table('staff')->where('id', $week_revenue->assistant)->select('percentage')->first();
+            $this_week_revenue = ($week_revenue->amount_paid) - ($week_revenue->amount_paid * $assistant_commission->percentage / 100);
             $this_week_revenues += $this_week_revenue;
         }
 
@@ -73,7 +73,6 @@ class AdminController extends Controller
         $total_services = DB::table('disciplines')->count();
         $ready_services = DB::table('disciplines')->where('status', 'Available')->count();
         $upcoming_services = DB::table('disciplines')->where('status', 'Upcoming')->orWhere('status', 'Comming Soon')->count();
-
         $userRequestCount = Cache::remember('user_request_count', now()->addMinutes(10), function () {
             return DB::table('user_requests')
                 ->where('payment_status', 'Not yet paid')
@@ -229,12 +228,46 @@ class AdminController extends Controller
 
     public function revenue()
     {
+        $week_start = Carbon::now()->startOfWeek();
+        $week_end = Carbon::now()->endOfWeek();
+
+        $revenues = DB::table('applications')->where('payment_status', 'Confirmed')->get();
+        $total_revenues = 0;
+        foreach ($revenues as $revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $revenue->assistant)->select('percentage')->first();
+            $total_revenue = ($revenue->amount_paid) - ($revenue->amount_paid * $assistant_commission->percentage / 100);
+            $total_revenues += $total_revenue;
+        }
+
+        $tdy_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereDate('payment_date', Carbon::today())->get();
+        $today_revenues = 0;
+        foreach ($tdy_revenues as $t_revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $t_revenue->assistant)->select('percentage')->first();
+            $today_revenue = ($t_revenue->amount_paid) - ($t_revenue->amount_paid * $assistant_commission->percentage / 100);
+            $today_revenues += $today_revenue;
+        }
+
+        $week_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereBetween('payment_date', [$week_start, $week_end])->get();
+        $this_week_revenues = 0;
+        foreach ($week_revenues as $week_revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $week_revenue->assistant)->select('percentage')->first();
+            $this_week_revenue = ($week_revenue->amount_paid) - ($week_revenue->amount_paid * $assistant_commission->percentage / 100);
+            $this_week_revenues += $this_week_revenue;
+        }
+
+        $total_requests = DB::table('user_requests')->count();
+        $today_requests = DB::table('user_requests')->whereDate('requested_on', Carbon::today())->count();
+        $this_week_requests = DB::table('user_requests')->whereBetween('requested_on', [$week_start, $week_end])->count();
+        $total_services = DB::table('disciplines')->count();
+        $ready_services = DB::table('disciplines')->where('status', 'Available')->count();
+        $upcoming_services = DB::table('disciplines')->where('status', 'Upcoming')->orWhere('status', 'Comming Soon')->count();
+
         $app_incomes = DB::table('served_requests')->where('payment_status', 'Paid')->where('application_status', 'Complete')->get();
         $todayApps = DB::table('served_requests')->where('payment_status', 'Paid')->where('application_status', 'Complete')->whereDate('served_on', Carbon::today())->get();
         $todayAds = DB::table('adverts')->whereDate('posted_on', Carbon::today())->get();
 
         $ads = DB::table('adverts')->where('status', 'active')->get();
-        return view('admin.revenue', compact('app_incomes', 'ads', 'todayApps', 'todayAds'));
+        return view('admin.revenue', compact('total_revenues', 'today_revenues', 'this_week_revenues', 'total_requests', 'today_requests', 'this_week_requests', 'total_services', 'ready_services', 'upcoming_services', 'app_incomes', 'ads', 'todayApps', 'todayAds'));
     }
 
     public function organization()
