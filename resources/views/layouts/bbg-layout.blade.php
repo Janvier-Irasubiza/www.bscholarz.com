@@ -322,7 +322,7 @@
 
 <body>
 
-    <div class="sidebar-drawer" style="z-index: 10 !important">
+    <div class="sidebar-drawer" style="z-index: 10 !important; top: 45px !important">
         <i style="font-size: 30px" class="fa-solid fa-suitcase-rolling"></i>
     </div>
 
@@ -521,7 +521,7 @@
 
     </nav>
 
-    <div style="padding: 0px; z-index: 10" class="nav-links-drawer">
+    <div style="padding: 0px; z-index: 1000;" class="nav-links-drawer">
         <ul style="margin: 0px; padding: 3px 0px">
             <li class="small-navigator"><a href="{{ route('home') }}">Home</a></li>
             <li class="small-navigator"><a href="{{ route('BeScholar') }}">Be a Scholar</a></li>
@@ -701,8 +701,8 @@
 
                                             <div class="mt-4 text-right d-flex justify-content-end">
                                                 <!-- <a class="underline text-sm hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="">
-                                                                                    {{ __('Or see tips & tricks') }}
-                                                                                </a> -->
+                                                                                            {{ __('Or see tips & tricks') }}
+                                                                                        </a> -->
                                                 <button type="submit"
                                                     style="padding: 5px 30px; font-size: 13px; font-weight: 600; color: ghostwhite; text-transform: uppercase"
                                                     class="btn apply-btn">Submit</button>

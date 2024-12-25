@@ -6,7 +6,7 @@
 
 <div class="content-wrapper">
 
-    <div class="sidebar">
+    <div class="sidebar" style="top: 45px !important;">
         <div class="d-flex align-items-center mb-4">
             <h1 style="margin: 0px; font-size: 1.3em;">BScholarz Trends</h1>
 
