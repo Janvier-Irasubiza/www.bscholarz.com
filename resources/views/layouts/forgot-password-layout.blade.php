@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
         <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+        <link rel="icon" type="image/png" href="{{ asset('images/BScholarz_Logo_edit.png') }}">
 
         <style>
 
@@ -86,7 +87,7 @@
         <div style="background: none;" class="w-full sm:max-w-md mt-6 px-6 py-4 pt-2 overflow-hidden sm:rounded-lg">
 
         <div class="d-flex justify-content-center align-items-center py-3" style="border-bottom: 1px solid rgba(0, 0, 0, 0.151);">
-                
+
                 <h1 style="font-size: 30px" class="ml-3 mb-2">Reset password</h1>
             </div>
                 {{ $slot }}
@@ -95,12 +96,12 @@
             <div class="d-flex justify-content-center w-full sm:max-w-md mt-4">
         <div style="border-top: 1px solid #a8a3a3; padding: 20px 0px" class="mt-3 row container">
     <div class="col-lg-6" style="font-size: 13px">
-        &copy; 2023 <strong>BScholarz</strong> 
-    </div>  
+        &copy; 2023 <strong>BScholarz</strong>
+    </div>
 
     <div class="col-lg-6">
-        <p style="margin-bottom: 0px; text-align: right; font-size: 13px">Developed by <button id="contactButton"  class="text-center text-gray-600 shake b-none bg-none"> &nbsp; <strong>RB-A</strong></button>                    </div> </p> 
-    </div> 
+        <p style="margin-bottom: 0px; text-align: right; font-size: 13px">Developed by <button id="contactButton"  class="text-center text-gray-600 shake b-none bg-none"> &nbsp; <strong>RB-A</strong></button>                    </div> </p>
+    </div>
 
 
 <div id="popup" class="popup p-4 border col-md-6 bg-gray-200">
@@ -111,7 +112,7 @@
                 <div class="mt-4 flex-section gap-3">
                    <div class="col-md-4 border-r mb-8">
                    <h4 class="text-gray-600 text-center">Contact</h4>
-                   <div class="mt-6">        
+                   <div class="mt-6">
 
                         <p class="text-center">
                             <i class="fa-solid fa-phone f-25"></i>
@@ -172,13 +173,13 @@
                    </div>
                 </div>
             </div>
-            
+
 </div>
         </div>
-        
+
         </div>
 
-        
+
 
     </body>
 </html>

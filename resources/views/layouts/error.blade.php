@@ -11,16 +11,18 @@
 	<!-- Google font -->
 	<link href="https://fonts.googleapis.com/css?family=Nunito:400,700" rel="stylesheet">
 
+    <link rel="icon" type="image/png" href="{{ asset('images/BScholarz_Logo_edit.png') }}">
+
 	<!-- Custom stlylesheet -->
 	<link type="text/css" rel="stylesheet" href="css/style.css" />
 
   <style>
-    
+
 * {
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
-    
+
    body{
       margin: 0px;
       padding: 0px;
@@ -116,17 +118,17 @@
     padding-top: 110px;
   }
 }
-    
+
     </style>
-  
+
 
 </head>
 
 <body>
-  
+
   {{ $slot }}
-  
+
   </body>
-  
+
 </html>
 

@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
         <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+        <link rel="icon" type="image/png" href="{{ asset('images/BScholarz_Logo_edit.png') }}">
 
         <style>
 
@@ -31,7 +32,7 @@
             }
 
             @media (max-width: 600px) {
-                
+
                 .sm-section {
                     margin: auto;
                     width: 100%;
@@ -101,7 +102,7 @@
             });
         });
     });
-    
+
 </script>
 
     </head>

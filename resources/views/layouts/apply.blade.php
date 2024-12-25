@@ -14,6 +14,7 @@
     <link rel="stylesheet"
         href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+    <link rel="icon" type="image/png" href="{{ asset('images/BScholarz_Logo_edit.png') }}">
 
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
@@ -118,7 +119,7 @@
             text-align: left;
         }
 
-        /* 
+        /*
         ul li:before {
             content: '✓';
         }

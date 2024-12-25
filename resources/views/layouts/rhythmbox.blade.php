@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
         <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+        <link rel="icon" type="image/png" href="{{ asset('images/BScholarz_Logo_edit.png') }}">
 
         <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
@@ -28,7 +29,7 @@
             margin-right: 75px;
             width: 81.70%;
             z-index: 10;
-        } 
+        }
 
         .upload-button {
             font-size: 1.5em;
@@ -39,7 +40,7 @@
         .profile-file-input {
             position: absolute;
             font-size: 8px;
-            opacity: 0; 
+            opacity: 0;
             height: 2em;
             left: 0px;
             z-index: 0;
@@ -49,10 +50,10 @@
         .p-image {
             position: relative; top: -25px; left: 0em; width: 1.65em;
         }
-            
+
         .active-sect {
             position: absolute;
-            background: 
+            background:
                 url("data:image/svg+xml,%3Csvg viewBox='0 0 250 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='15.64' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             background-color: #ccf2ff;
             border-radius: 50px 0px 0px 50px;
@@ -67,7 +68,7 @@
         }
 
         .carousel-item{
-            float:none; 
+            float:none;
             transition: 0s !important;
             border-radius: 10px
         }
@@ -78,7 +79,7 @@
 
         .navigation-bar {
             width: 100%;
-            margin-left: auto; 
+            margin-left: auto;
             margin-right: 0px;
         }
 
@@ -112,7 +113,7 @@
             left: auto;
             right: 0px
 
-        } 
+        }
 
         /* The heart of the matter */
         .testimonial-group > .row {
@@ -133,7 +134,7 @@
         }
 
         /* Decorations */
-        .col-xs-4 { 
+        .col-xs-4 {
         }
 
         ul {
@@ -148,7 +149,7 @@
         .upload-file{
           position: absolute;
           font-size: 8px;
-          opacity: 0; 
+          opacity: 0;
           height: 2em;
           z-index: 0;
           width: 25.8%;
@@ -177,8 +178,8 @@
             font-weight: 600;
             color: #000
         }
-        
-        @media only screen and (max-width: 1290px) { 
+
+        @media only screen and (max-width: 1290px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 70px;
@@ -241,10 +242,10 @@
                 margin-right: 70px;
                 max-width: 73%;
             }
-        } 
+        }
 
         </style>
-        
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -266,7 +267,7 @@
                 </header>
             @endif
 
-            
+
 
             <!-- Page Content -->
             <main>
@@ -282,8 +283,8 @@
 
         </div>
 
-        <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>  
-        <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>  
+        <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
         <script src="{{ asset('bootstrap/dist/js/popper.js') }}"></script>
         <script src="{{ asset('bootstrap/dist/js/bootstrap.min.js') }}"></script>
@@ -317,7 +318,7 @@
       dom: "<'row'<'col-sm-12 col-md-4'><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4'l>>" +
         "<'row'<'col-sm-12'tr>>" +
         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-      
+
         "order": [[ 1, "asc" ]], // will it sort only for that page?
         // "paging":   false,
         "lengthMenu": [[10, 50, 100, 150], [10, 50, 100, 150]] ,
@@ -329,7 +330,7 @@
       // "dom": '<"myCustomClass">rt<"top"lp><"clear">', // Positions table elements
 
     } );
-    
+
 } );
 
 $('.nav-buttons').click(function() {
