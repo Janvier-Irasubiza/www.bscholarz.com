@@ -221,7 +221,11 @@ class AccountabilityController extends Controller
 
         $complete_transactions = $query->get();
 
-        $complete_transactions_unique = DB::table('served_requests')->where('payment_status', 'Confirmed')->groupBy('discipline_identifier', 'discipline_name')->get();
+        $complete_transactions_unique = DB::table('served_requests')
+        ->select('discipline_identifier', 'discipline_name', DB::raw('MIN(id) as id')) // Add an aggregated column
+        ->where('payment_status', 'Confirmed')
+        ->groupBy('discipline_identifier', 'discipline_name')
+        ->get();
 
         $staff_ids = [];
         foreach ($complete_transactions as $app) {
