@@ -13,29 +13,35 @@
                             <div class="card-header-tab card-header">
                                 Pending Transactions
                                 <div class="d-flex py-3">
-                                    <form method="GET" action="{{ route('sort-pending-apps') }}" style="display: contents;">
+                                    <form method="GET" action="{{ route('sort-pending-apps') }}"
+                                        style="display: contents;">
                                         <div class="sort-sect col-lg-8 d-flex gap-2">
                                             <div class="btn btn-primary" id="sortButton" onclick="showSortOptions()">
                                                 Sort Entries
                                             </div>
                                             <div class="col-lg-3" id="sortByContainer" style="display: none;">
-                                                <select id="sortBy" name="sortBy" class="w-full" required style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px" onchange="showRelevantInputs()">
+                                                <select id="sortBy" name="sortBy" class="w-full" required
+                                                    style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px"
+                                                    onchange="showRelevantInputs()">
                                                     <option value="">Sort By</option>
-                                                    <option value="date" {{ $sortBy == 'date' ? 'selected' : '' }}>Date</option>
+                                                    <option value="date" {{ $sortBy == 'date' ? 'selected' : '' }}>Date
+                                                    </option>
                                                     <option value="employee" {{ $sortBy == 'employee' ? 'selected' : '' }}>Employee</option>
                                                     <option value="application" {{ $sortBy == 'application' ? 'selected' : '' }}>Application</option>
                                                 </select>
                                             </div>
                                             <div id="employeeInput" class="col-lg-4" style="display: none;">
-                                                <select id="employee" name="employee" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
+                                                <select id="employee" name="employee" class="w-full"
+                                                    style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
                                                     <option value="">Select Employee</option>
                                                     @foreach ($employees as $staff)
-                                                    <option value="{{ $staff->id }}" {{ $employee == $staff->id ? 'selected' : '' }}>{{ $staff->names }}</option>
+                                                        <option value="{{ $staff->id }}" {{ $employee == $staff->id ? 'selected' : '' }}>{{ $staff->names }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div id="applicationInput" class="col-lg-4" style="display: none;">
-                                                <select id="application" name="application" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px;">
+                                                <select id="application" name="application" class="w-full"
+                                                    style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px;">
                                                     <option value="">Select Application</option>
 
                                                     @if (isset($applications_unique) && $applications_unique->isNotEmpty())
@@ -45,10 +51,12 @@
                                                             </option>
                                                         @endforeach
                                                     @elseif (isset($payments) && $payments->isNotEmpty())
+
                                                         @foreach ($payments as $payment)
                                                             @if ($payment->application) <!-- Ensure the relationship exists -->
-                                                                <option value="{{ $payment->application->discipline_identifier }}" {{ $application == $payment->application->discipline_identifier ? 'selected' : '' }}>
-                                                                    {{ $payment->application->discipline_name }}
+                                                                <option value="{{ $payment->application->discipline->discipline_identifier }}"
+                                                                    {{ $application == $payment->application->discipline->discipline_identifier ? 'selected' : '' }}>
+                                                                    {{ $payment->application->discipline->discipline_name }}
                                                                 </option>
                                                             @endif
                                                         @endforeach
@@ -57,24 +65,33 @@
 
                                             </div>
 
-                                            <div id="dateInputs" class="col-lg-5 d-flex gap-2" style="display: none !important">
+                                            <div id="dateInputs" class="col-lg-5 d-flex gap-2"
+                                                style="display: none !important">
                                                 <div>
-                                                    <x-input-label for="start_date" :value="__('From')" style="font-size: 10px; margin-top: -7px"/>
-                                                    <input class="block w-full px-1 p-0" type="date" name="start_date" id="start_date" value="{{ $startDate }}" style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;"/>
+                                                    <x-input-label for="start_date" :value="__('From')"
+                                                        style="font-size: 10px; margin-top: -7px" />
+                                                    <input class="block w-full px-1 p-0" type="date" name="start_date"
+                                                        id="start_date" value="{{ $startDate }}"
+                                                        style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;" />
                                                 </div>
                                                 <div>
-                                                    <x-input-label for="end_date" :value="__('To')" style="font-size: 10px; margin-top: -7px"/>
-                                                    <input class="block w-full px-1 p-0" type="date" name="end_date" id="end_date" value="{{ $endDate }}" style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;"/>
+                                                    <x-input-label for="end_date" :value="__('To')"
+                                                        style="font-size: 10px; margin-top: -7px" />
+                                                    <input class="block w-full px-1 p-0" type="date" name="end_date"
+                                                        id="end_date" value="{{ $endDate }}"
+                                                        style="padding: 6px 10px; border: 2px solid #4d4d4d; border-radius: 6px; margin-top: -4px; color: #808080;" />
                                                 </div>
                                             </div>
                                             <div id="sortBtn" class="sort-btn" style="display: none">
-                                                <button class="border bg-success px-2 py-1 rounded text-white" style="margin-top: 2px">Sort</button>
+                                                <button class="border bg-success px-2 py-1 rounded text-white"
+                                                    style="margin-top: 2px">Sort</button>
                                             </div>
                                         </div>
                                     </form>
 
                                     <div class="btn-actions-pane-right text-capitalize text-right col-lg-4">
-                                        <a href="{{ route('export.transactions', ['download' => 'excel', 'type' => 'pending', 'sortBy' => $sortBy, 'employee' => $employee, 'application' => $application, 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="btn btn-primary" id="exportExcel">Export to Excel</a>
+                                        <a href="{{ route('export.transactions', ['download' => 'excel', 'type' => 'pending', 'sortBy' => $sortBy, 'employee' => $employee, 'application' => $application, 'start_date' => $startDate, 'end_date' => $endDate]) }}"
+                                            class="btn btn-primary" id="exportExcel">Export to Excel</a>
                                     </div>
                                 </div>
                             </div>
@@ -92,29 +109,32 @@
                                     <tbody>
                                         @foreach($pen_transactions ?? $payments as $transaction)
 
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="">
-                                                        <p class="fw-normal mb-1">{{ $transaction->id }}</p>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="">
+                                                            <p class="fw-normal mb-1">{{ $transaction->id }}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <p class="fw-normal mb-1">{{ $transaction->amount }}</p>
-                                            </td>
-                                            <td>
-                                                <p class="fw-normal mb-1">{{ $transaction->created_at }}</p>
-                                            </td>
-                                            <td>
-                                                <p class="fw-normal mb-1">{{ $transaction->application->appAssistant->names }}</p>
-                                            </td>
-                                            <td class="text-center">
-                                                <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->id]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
-                                                    Review
-                                                </a>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                                <td>
+                                                    <p class="fw-normal mb-1">{{ $transaction->amount }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="fw-normal mb-1">{{ $transaction->created_at }}</p>
+                                                </td>
+                                                <td>
+                                                    <p class="fw-normal mb-1">
+                                                        {{ $transaction->application->appAssistant->names }}</p>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a style="font-weight: 600; border: 1.3px solid;"
+                                                        href="{{ route('transaction-review', ['transaction' => $transaction->id]) }}"
+                                                        class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                                                        Review
+                                                    </a>
+                                                </td>
+                                            </tr>
                                         @endforeach
 
                                     </tbody>
@@ -137,7 +157,7 @@
 
             <script>
                 // Initialize DataTable with buttons
-                $(document).ready(function() {
+                $(document).ready(function () {
 
                     // Keep selected options visible
                     const sortBy = '{{ $sortBy }}';
@@ -177,11 +197,11 @@
 
 
                     // Add event listeners to show the sort button when inputs change
-                    $('#sortBy, #employee, #application, #start_date, #end_date').on('change', function() {
+                    $('#sortBy, #employee, #application, #start_date, #end_date').on('change', function () {
                         $('#sortBtn').show();
                     });
 
-                    $('#sortBy').on('change', function() {
+                    $('#sortBy').on('change', function () {
                         $('#employee').val('');
                         $('#application').val('');
                         $('#start_date').val('');
@@ -214,7 +234,7 @@
 
                 // Show success modal if there is a success message
                 @if (session('success'))
-                    $(document).ready(function() {
+                    $(document).ready(function () {
                         $('#successModal').modal('show');
                     });
                 @endif

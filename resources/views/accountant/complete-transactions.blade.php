@@ -65,7 +65,7 @@
                                 </div>
 
                             </div>
-                            <div style="border-top: none" class="d-block p-3 card-footer"> here
+                            <div style="border-top: none" class="d-block p-3 card-footer">
                                 <table id="example1" class="table align-middle mb-0 bg-white">
                                     <thead class="bg-light">
                                         <tr>
