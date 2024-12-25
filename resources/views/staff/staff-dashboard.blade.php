@@ -400,7 +400,7 @@
         <div class="col-lg-6">
         <div class="client-pp d-flex align-items-center justify-content-center" style="">
         <strong>
-        <h1 style="font-size: 16px">{{ $discipline->discipline_name }}</h1>
+        <h1 style="font-size: 16px">{{ $client->discipline->discipline_name }}</h1>
         </strong>
 
         </div>
