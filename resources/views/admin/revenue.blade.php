@@ -23,7 +23,7 @@
                                         <!-- Left Column -->
                                         <div class="col-lg-6 text-center justify-content-center d-flex flex-column mt-1" style="height: 100px;">
                                             <h4>Total Income</h4>
-                                            <div class="widget-numbers">{{ number_format($total_revenues) }} K</div>
+                                            <div class="widget-numbers">{{ number_format($total_revenues) }} <small style="font-size: 15px">RWF</small></div>
                                         </div>
                                         <!-- Right Column -->
                                         <div class="justify-content-center col-lg-6 d-flex flex-column align-items-start justify-content-start" style="height: 100px; padding: 10px;">
