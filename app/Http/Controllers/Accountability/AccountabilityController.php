@@ -124,7 +124,10 @@ class AccountabilityController extends Controller
     public function sort_pending_applications(Request $request)
     {
         // Initialize the query
-        $query = DB::table('served_requests')->where('payment_status', 'Waiting For Review');
+        $query = Payment::whereHas('application', function ($query) {
+            $query->where('payment_status', 'Waiting For Review');
+        })->with(['customer', 'application'])
+        ->get();
 
         // Initialize variables to hold sorting criteria
         $sortBy = $request->input('sortBy');
@@ -157,14 +160,20 @@ class AccountabilityController extends Controller
         }
 
         // Get filtered transactions
-        $pen_transactions = $query->get();
+        $pen_transactions = $query;
 
         // Fetch unique applications for the dropdown
-        $applications = DB::table('served_requests')->where('payment_status', 'Waiting For Review')->groupBy('discipline_identifier', 'discipline_name')->get();
-        $applications_unique = DB::table('served_requests')->where('payment_status', 'Waiting For Review')->groupBy('discipline_identifier', 'discipline_name')->get();
+        $applications = $query->groupBy(function ($item) {
+            return $item->application->discipline_identifier;
+        });
+
+        $applications_unique = $query->pluck('application')->unique('discipline_identifier');
+
         $staff_ids = [];
-        foreach ($applications as $app) {
-            $staff_ids[] = $app->assistant;
+        foreach ($applications as $group) { // Each group is a collection of items
+            foreach ($group as $app) { // Iterate through individual items in the group
+                $staff_ids[] = $app->application->assistant;
+            }
         }
         $employees = DB::table('staff')->where('role', '!=', 'Accountant')->where('role', '!=', 'Admin')->where('role', '!=', 'Marketing')->whereIn('id', $staff_ids)->get();
 
@@ -215,7 +224,11 @@ class AccountabilityController extends Controller
         }
         $employees = DB::table('staff')->where('role', '!=', 'Accountant')->where('role', '!=', 'Admin')->where('role', '!=', 'Marketing')->whereIn('id', $staff_ids)->get();
 
-        return view('accountant.complete-transactions', compact('complete_transactions', 'complete_transactions_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
+        $payments = Payment::whereHas('application', function ($query) {
+            $query->where('payment_status', 'Confirmed');
+        })->with(['customer', 'application'])->get();
+
+        return view('accountant.complete-transactions', compact('complete_transactions', 'complete_transactions_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate', 'payments'));
     }
 
     public function transaction_review(Request $request)
@@ -245,6 +258,18 @@ class AccountabilityController extends Controller
             $payment->save();
         } elseif ($application->payment_status == 'Partial Payment Waiting For Review') {
             $application->payment_status = 'Partial Payment Confirmed';
+            $application->save();
+
+            $payment->status = 'Confirmed';
+            $payment->save();
+        } elseif ($application->payment_status == 'Agent Needs To Clarify' && $application->outstanding_payment_status == 'Partial payment') {
+            $application->payment_status = 'Partial Payment Confirmed';
+            $application->save();
+
+            $payment->status = 'Confirmed';
+            $payment->save();
+        } else {
+            $application->payment_status = 'Confirmed';
             $application->save();
 
             $payment->status = 'Confirmed';

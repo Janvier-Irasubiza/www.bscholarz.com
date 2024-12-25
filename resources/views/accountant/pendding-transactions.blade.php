@@ -35,12 +35,26 @@
                                                 </select>
                                             </div>
                                             <div id="applicationInput" class="col-lg-4" style="display: none;">
-                                                <select id="application" name="application" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
+                                                <select id="application" name="application" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px;">
                                                     <option value="">Select Application</option>
-                                                    @foreach ($payments as $app)
-                                                    <option value="{{ $app->discipline_identifier }}" {{ $application == $app->discipline_identifier ? 'selected' : '' }}>{{ $app->discipline_name }}</option>
-                                                    @endforeach
+
+                                                    @if (isset($applications_unique) && $applications_unique->isNotEmpty())
+                                                        @foreach ($applications_unique as $app)
+                                                            <option value="{{ $app->discipline_identifier }}" {{ $application == $app->discipline_identifier ? 'selected' : '' }}>
+                                                                {{ $app->discipline_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @elseif (isset($payments) && $payments->isNotEmpty())
+                                                        @foreach ($payments as $payment)
+                                                            @if ($payment->application) <!-- Ensure the relationship exists -->
+                                                                <option value="{{ $payment->application->discipline_identifier }}" {{ $application == $payment->application->discipline_identifier ? 'selected' : '' }}>
+                                                                    {{ $payment->application->discipline_name }}
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
                                                 </select>
+
                                             </div>
 
                                             <div id="dateInputs" class="col-lg-5 d-flex gap-2" style="display: none !important">

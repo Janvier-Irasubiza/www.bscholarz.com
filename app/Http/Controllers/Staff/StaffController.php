@@ -65,14 +65,18 @@ class StaffController extends Controller
             ->select('served_requests.*', 'applications.poked')
             ->get();
 
-
         $under_review = DB::table('user_requests')->where('status', '<>', 'Pending')->where('status', '<>', 'Complete')->where('status', '<>', 'Postponed')->WhereNull('deletion_status')->where('revied_by', Auth::guard('staff')->user()->id)->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))->get();
         //$under_review = DB::table('user_requests') -> where('status', '<>', 'Pending') -> where('status', '<>', 'Complete') -> where('status', '<>', 'Postponed') -> where('deletion_status', '<>', 'Requested') -> where('deletion_status', '<>', 'Deletion Confirmed') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> get();
         $user_info = DB::table('staff')
             ->where('id', Auth::guard('staff')->user()->id)
             ->first();
 
-        $balance = DB::table('served_requests')->where('assistant', Auth::guard('staff')->user()->id)->where('application_status', 'Complete')->get();
+        $balance = DB::table('served_requests')
+            ->where('assistant', Auth::guard('staff')
+            ->user()->id)->where('application_status', 'Complete')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
+            ->get();
         $active_emp = DB::table('staff')->select(DB::raw('count(id) as active'))->where('status', 'Online')->where('id', '<>', Auth::guard('staff')->user()->id)->first();
 
         return view('staff.staff-dashboard', compact('my_applications', 'my_funds', 'postponed_applications', 'ready_clients', 'outstanding_clients', 'active_emp', 'balance', 'under_review', 'user_info'));
@@ -225,7 +229,6 @@ class StaffController extends Controller
 
         return $paidAmount;
     }
-
 
     private function calculateCommission($paidAmount, $partners, $serviceFee)
     {
@@ -936,6 +939,8 @@ class StaffController extends Controller
         $balance = DB::table('served_requests')
             ->where('assistant', Auth::guard('staff')->user()->id)
             ->where('application_status', 'Complete')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
             ->whereBetween('served_on', [$startOfMonth, $endOfMonth])
             ->get();
 
@@ -1015,9 +1020,9 @@ class StaffController extends Controller
     public function request_to_pay(Request $request)
     {
         $serviceInfo = DB::table('served_requests')
-            ->where('id', $request->app_id)
+            ->where('application_id', $request->app_id)
             ->first();
-
+        
         $client = $serviceInfo->names;
         $app = $serviceInfo->discipline_name;
         $date = $serviceInfo->served_on;

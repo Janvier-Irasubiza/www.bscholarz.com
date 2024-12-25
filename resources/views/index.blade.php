@@ -79,8 +79,8 @@
                 <!-- Thumbnails -->
                 <div class="thumbnail">
                     @foreach ($carouselData as $index => $c_data)
-                        <div class="item {{ $index === 0 ? 'active' : '' }}">
-                            <img src="{{ asset('images/' . $c_data->poster) }}" alt="">
+                        <div class="item {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}">
+                            <img src="{{ asset('images/' . $c_data->poster) }}" alt="Thumbnail {{ $index }}">
                         </div>
                     @endforeach
                 </div>
@@ -227,10 +227,10 @@
             @endif
 
             @if(!$trainings->isEmpty())
-                    <div class="sch-trends-other mt-3 mb-0">
-                        <h1 class="mb-4" style="font-size: 2em">Trending Fellowships & Trainings</h1>
+                    <div class="sch-trends-other mb-0 px-3">
+                        <h1 class="" style="font-size: 2em">Trending Fellowships & Trainings</h1>
 
-                        <div class="container overflow-hidden p-0">
+                        <div class="container overflow-hidden p-0 mt-3">
                             <div class="row gy-5">
                                 @foreach($trainings as $training)
                                                     <div class="col-lg-4">
@@ -292,7 +292,7 @@
         </div>
 
         @if ($partners->count() > 0)
-            <div class="mt-5 mb-8">
+            <div class="px-3 mb-8">
                 <h1 style="font-size: 2em">Our Partners</h1>
                 <div class="mt-3 d-flex flex-wrap gap-3">
                     @foreach ($partners as $partner)
@@ -324,26 +324,63 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-        let slider = document.querySelector('.slider');
-        let nextBtn = document.querySelector('.arrows #next');
-        let prevBtn = document.querySelector('.arrows #prev');
-        let sliderList = document.querySelector('.list');
-        let sliderItems = document.querySelectorAll('.list .item');
+    const sliderList = document.querySelector('.list');
+    const sliderItems = Array.from(sliderList.children);
+    const thumbnails = Array.from(document.querySelector('.thumbnail').children);
+    const thumbnailContainer = document.querySelector('.thumbnail');
+    const nextBtn = document.querySelector('.arrows #next');
+    const prevBtn = document.querySelector('.arrows #prev');
+    let currentIndex = 0;
 
-        nextBtn.addEventListener('click', function () {
-            let firstItem = sliderList.children[0];
-            sliderList.appendChild(firstItem);
-            slider.classList.remove('prev');
-            slider.classList.add('next');
+    // Function to update the active slide
+    function updateActiveSlide(index) {
+        // Update slider items
+        sliderItems.forEach((item, i) => {
+            item.style.display = i === index ? 'block' : 'none';
         });
 
-        prevBtn.addEventListener('click', function () {
-            let lastItem = sliderList.children[sliderList.children.length - 1];
-            sliderList.insertBefore(lastItem, sliderList.children[0]);
-            slider.classList.remove('next');
-            slider.classList.add('prev');
+        // Update thumbnail active state and reorder
+        const activeThumbnail = thumbnails[index];
+        thumbnailContainer.prepend(activeThumbnail); // Move active thumbnail to the first position
+
+        thumbnails.forEach((thumb, i) => {
+            thumb.classList.toggle('active', i === index);
+        });
+
+        currentIndex = index;
+    }
+
+    // Initialize to show the first slide
+    updateActiveSlide(currentIndex);
+
+    // Next button functionality
+    nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % sliderItems.length; // Show the next thumbnail
+        updateActiveSlide(currentIndex);
+    });
+
+    // Previous button functionality
+    prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + sliderItems.length) % sliderItems.length; // Go to the last active thumbnail
+        updateActiveSlide(currentIndex);
+    });
+
+    // Thumbnail click functionality
+    thumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', () => {
+            updateActiveSlide(index);
         });
     });
+
+    // Auto-slide functionality
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % sliderItems.length; // Always move forward
+        updateActiveSlide(currentIndex);
+    }, 10000); // Slide every 10 seconds
+});
+
+
+
 </script>
 
 @stop
