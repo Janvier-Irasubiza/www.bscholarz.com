@@ -66,7 +66,7 @@
                 </div>
             @endif
 
-            @if($carouselData)
+            @if(!$carouselData->isEmpty())
                 <div class="slider border">
                     <!-- Carousel items -->
                     <div class="list">
