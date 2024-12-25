@@ -15,6 +15,7 @@ class Payment extends Model
         "applicant_id",
         "application_id",
         "amount",
+        "transaction_id",
         "status",
     ];
 

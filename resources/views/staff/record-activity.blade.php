@@ -38,7 +38,7 @@
 
                                             @php 
 
-                                                                                                Session::forget('email_error');
+                                                                                                                                            Session::forget('email_error');
                                                 Session::forget('applicant'); 
 
                                             @endphp

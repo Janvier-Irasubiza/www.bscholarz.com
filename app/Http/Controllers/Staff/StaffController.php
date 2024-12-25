@@ -32,8 +32,20 @@ class StaffController extends Controller
     public function staff_dashboard()
     {
         $my_applications = DB::table('served_requests')->where('assistant', Auth::guard('staff')->user()->id)->count();
-        $my_funds = DB::table('applications')->select(DB::raw('sum(assistant_pending_commission) as commission'))->where('assistant', Auth::guard('staff')->user()->id)->where('remittance_status', 'on hold')->first();
-        $postponed_applications = DB::table('applications')->where('assistant', Auth::guard('staff')->user()->id)->where('status', 'Postponed')->WhereNull('deletion_status')->get();
+        $my_funds = DB::table('applications')
+            ->select(DB::raw('sum(assistant_pending_commission) as commission'))
+            ->where('assistant', Auth::guard('staff')->user()->id)
+            ->where('remittance_status', 'on hold')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
+            ->first();
+
+        $postponed_applications = DB::table('applications')
+            ->where('assistant', Auth::guard('staff')->user()->id)
+            ->where('status', 'Postponed')
+            ->WhereNull('deletion_status')
+            ->get();
+
         // $ready_clients = DB::table('user_requests')->where('status', 'Pending')->whereNull('deletion_status')->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))->get();
         $ready_clients = Applications::with('discipline')
             ->with('user')
@@ -55,12 +67,32 @@ class StaffController extends Controller
             ->get();
 
 
-        $under_review = DB::table('user_requests')->where('status', '<>', 'Pending')->where('status', '<>', 'Complete')->where('status', '<>', 'Postponed')->WhereNull('deletion_status')->where('revied_by', Auth::guard('staff')->user()->id)->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))->get();
-        //$under_review = DB::table('user_requests') -> where('status', '<>', 'Pending') -> where('status', '<>', 'Complete') -> where('status', '<>', 'Postponed') -> where('deletion_status', '<>', 'Requested') -> where('deletion_status', '<>', 'Deletion Confirmed') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> get();
-        $user_info = DB::table('staff')->where('id', Auth::guard('staff')->user()->id)->first();
+        $under_review = DB::table('user_requests')
+            ->where('status', '<>', 'Pending')
+            ->where('status', '<>', 'Complete')
+            ->where('status', '<>', 'Postponed')
+            ->WhereNull('deletion_status')
+            ->where('revied_by', Auth::guard('staff')->user()->id)
+            ->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))
+            ->get();
 
-        $balance = DB::table('served_requests')->where('assistant', Auth::guard('staff')->user()->id)->where('application_status', 'Complete')->get();
-        $active_emp = DB::table('staff')->select(DB::raw('count(id) as active'))->where('status', 'Online')->where('id', '<>', Auth::guard('staff')->user()->id)->first();
+        //$under_review = DB::table('user_requests') -> where('status', '<>', 'Pending') -> where('status', '<>', 'Complete') -> where('status', '<>', 'Postponed') -> where('deletion_status', '<>', 'Requested') -> where('deletion_status', '<>', 'Deletion Confirmed') -> where('revied_by', Auth::guard('staff') -> user() -> id) -> get();
+        $user_info = DB::table('staff')
+            ->where('id', Auth::guard('staff')->user()->id)
+            ->first();
+
+        $balance = DB::table('served_requests')
+            ->where('assistant', Auth::guard('staff')->user()->id)
+            ->where('application_status', 'Complete')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
+            ->get();
+
+        $active_emp = DB::table('staff')
+            ->select(DB::raw('count(id) as active'))
+            ->where('status', 'Online')
+            ->where('id', '<>', Auth::guard('staff')->user()->id)
+            ->first();
 
         return view('staff.staff-dashboard', compact('my_applications', 'my_funds', 'postponed_applications', 'ready_clients', 'outstanding_clients', 'active_emp', 'balance', 'under_review', 'user_info'));
     }
@@ -138,7 +170,7 @@ class StaffController extends Controller
         }
 
         $request->validate([
-            'activityName' => 'required|integer|exists:disciplines,id',
+            'activityName' => 'required',
             'consumerNames' => 'required',
             'consumerEmail' => 'required',
             'consumerPhoneNumber' => 'required',
@@ -157,13 +189,12 @@ class StaffController extends Controller
 
         if (!empty($request->customActivityName)) {
             $newDiscipline = $this->createNewDiscipline($request);
-            $paidAmount = $this->processPayment($request, $newDiscipline->service_fee, $partners, $activityApplicationInfo, $userId);
+            $paidAmount = $this->processPayment($request, $request->serviceCost, $partners, $activityApplicationInfo, $userId, $newDiscipline->id);
         } else {
             $existingDiscipline = DB::table('disciplines')->where('id', $request->activityName)->first();
-            $paidAmount = $this->processPayment($request, $existingDiscipline->service_fee, $partners, $activityApplicationInfo, $userId);
+            $paidAmount = $this->processPayment($request, $request->serviceCost, $partners, $activityApplicationInfo, $userId, $existingDiscipline->id);
         }
 
-        dd($activityApplicationInfo);
         $newApplicationId = DB::table('applications')->insertGetId($activityApplicationInfo);
 
         if ($paidAmount > 0) {
@@ -194,26 +225,26 @@ class StaffController extends Controller
         return DB::table('disciplines')->where('identifier', $identifier)->first();
     }
 
-    private function processPayment($request, $serviceFee, $partners, &$activityApplicationInfo, $userId)
+    private function processPayment($request, $serviceFee, $partners, &$activityApplicationInfo, $userId, $app)
     {
         $paidAmount = 0;
         $commission = 0;
 
         if ($request->paymentStatus === 'Paid') {
             $paidAmount = $serviceFee;
-            $commission = $this->calculateCommission($paidAmount, $partners, $serviceFee);
-            $this->buildActivityInfo($activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission);
         } elseif ($request->paymentStatus === 'Partial-payment') {
-            $paidAmount = $request->receivedAmount;
-            $outstandingAmount = $serviceFee - $paidAmount;
-            $commission = $this->calculateCommission($paidAmount, $partners, $serviceFee);
-            $this->buildActivityInfo($activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission, $outstandingAmount);
-        } else {
-            $this->buildActivityInfo($activityApplicationInfo, $userId, $request, $serviceFee, 0, 0);
+            $paidAmount = $request->receivedAmount ?? 0;
         }
+
+        $commission = $this->calculateCommission($paidAmount, $partners, $serviceFee);
+
+        $outstandingAmount = $serviceFee - $paidAmount;
+
+        $this->buildActivityInfo($activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission, $outstandingAmount, $app);
 
         return $paidAmount;
     }
+
 
     private function calculateCommission($paidAmount, $partners, $serviceFee)
     {
@@ -225,11 +256,11 @@ class StaffController extends Controller
         return ($paidAmount * Auth::guard('staff')->user()->percentage) / 100;
     }
 
-    private function buildActivityInfo(&$activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission, $outstandingAmount = 0)
+    private function buildActivityInfo(&$activityApplicationInfo, $userId, $request, $serviceFee, $paidAmount, $commission, $outstandingAmount = 0, $discipline)
     {
-        array_push($activityApplicationInfo, [
+        $activityApplicationInfo = [
             'applicant' => $userId->id,
-            'discipline_id' => $request->activityName,
+            'discipline_id' => $discipline,
             'payment_status' => $request->paymentStatus,
             'amount_paid' => $paidAmount,
             'outstanding_amount' => $outstandingAmount,
@@ -240,7 +271,7 @@ class StaffController extends Controller
             'served_on' => now(),
             'observation' => $request->desc,
             'assistant_pending_commission' => $commission,
-        ]);
+        ];
     }
 
 
@@ -438,7 +469,6 @@ class StaffController extends Controller
         return redirect()->route('staff-dashboard');
     }
 
-
     public function mark_application_as_complete(Request $request)
     {
 
@@ -537,8 +567,6 @@ class StaffController extends Controller
 
         }
     }
-
-
 
     public function delete_request(Request $request)
     {
@@ -910,6 +938,8 @@ class StaffController extends Controller
             ->select(DB::raw('sum(assistant_pending_commission) as commission'))
             ->where('assistant', Auth::guard('staff')->user()->id)
             ->where('remittance_status', 'on hold')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
             ->whereBetween('served_on', [$startOfMonth, $endOfMonth])
             ->first();
 
@@ -917,6 +947,8 @@ class StaffController extends Controller
         $balance = DB::table('served_requests')
             ->where('assistant', Auth::guard('staff')->user()->id)
             ->where('application_status', 'Complete')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
             ->whereBetween('served_on', [$startOfMonth, $endOfMonth])
             ->get();
 
@@ -925,10 +957,29 @@ class StaffController extends Controller
 
     public function sortRecsAll(Request $request)
     {
-        $my_funds = DB::table('applications')->select(DB::raw('sum(assistant_pending_commission) as commission'))->where('assistant', Auth::guard('staff')->user()->id)->where('remittance_status', 'on hold')->first();
+        $my_funds = DB::table('applications')
+            ->select(DB::raw('sum(assistant_pending_commission) as commission'))
+            ->where('assistant', Auth::guard('staff')->user()->id)
+            ->where('remittance_status', 'on hold')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
+            ->first();
 
-        $completedApp = DB::table('served_requests')->where('assistant', Auth::guard('staff')->user()->id)->where('application_status', 'Complete')->orderBy('served_on', 'desc')->get();
-        return view('staff.sheet-all-apps', compact('completedApp', 'my_funds'));
+        // Query for balance within the current month
+        $balance = DB::table('served_requests')
+            ->where('assistant', Auth::guard('staff')->user()->id)
+            ->where('application_status', 'Complete')
+            ->where('payment_status', 'Confirmed')
+            ->orWhere('payment_status', 'Partial Payment Confirmed')
+            ->get();
+
+        $completedApp = DB::table('served_requests')
+            ->where('assistant', Auth::guard('staff')->user()->id)
+            ->where('application_status', 'Complete')
+            ->orderBy('served_on', 'desc')
+            ->get();
+
+        return view('staff.sheet-all-apps', compact('completedApp', 'my_funds', 'balance'));
     }
 
     public function mark_as_greed(Request $request)
