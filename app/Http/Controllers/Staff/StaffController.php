@@ -274,7 +274,6 @@ class StaffController extends Controller
         ];
     }
 
-
     public function add_client_app(Request $request)
     {
 
