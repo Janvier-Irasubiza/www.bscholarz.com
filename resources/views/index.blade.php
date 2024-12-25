@@ -6,7 +6,7 @@
 
 <div class="content-wrapper">
 
-    <div class="sidebar" style="top: 45px !important;">
+    <div class="sidebar" style="">   
         <div class="d-flex align-items-center mb-4">
             <h1 style="margin: 0px; font-size: 1.3em;">BScholarz Trends</h1>
 
@@ -40,7 +40,7 @@
 
         <div class="p-3">
 
-            @if ($ads && count($ads) > 0)
+            @if ($ads->isEmpty())
                 <div id="carouselExampleIndicators" class="carousel slide mt-3" data-bs-ride="carousel">
                     <!-- Indicators -->
                     <ol class="carousel-indicators">
