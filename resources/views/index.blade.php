@@ -66,80 +66,83 @@
                 </div>
             @endif
 
-            <div class="slider border">
-                <!-- Carousel items -->
-                <div class="list">
-                    @foreach ($carouselData as $index => $c_data)
-                        <div class="item {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}"
-                            data-identifier="{{ $c_data->identifier }}">
-                            <img src="{{ asset('images/' . $c_data->poster) }}" alt="">
-                        </div>
-                    @endforeach
-                </div>
-
-                <!-- Thumbnails -->
-                <div class="thumbnail">
-                    @foreach ($carouselData as $index => $c_data)
-                        <div class="item {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}">
-                            <img src="{{ asset('images/' . $c_data->poster) }}" alt="Thumbnail {{ $index }}">
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="arrows align-items-center">
-                    <button type="button" id="prev"><i class="fa-solid fa-arrow-left"></i></button>
-                    <div class="buttons align-items-center">
-                        <a href="#" class="apply-btn" id="applyBtn">REQUEST SERVICE</a>
-                        <a href="#" class="snd-apply-btn" id="learnMoreBtn">LEARN MORE</a>
+            @if($carouselData)
+                <div class="slider border">
+                    <!-- Carousel items -->
+                    <div class="list">
+                        @foreach ($carouselData as $index => $c_data)
+                            <div class="item {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}"
+                                data-identifier="{{ $c_data->identifier }}">
+                                <img src="{{ asset('images/' . $c_data->poster) }}" alt="">
+                            </div>
+                        @endforeach
                     </div>
-                    <button type="button" id="next"><i class="fa-solid fa-arrow-right"></i></button>
+
+                    <!-- Thumbnails -->
+                    <div class="thumbnail">
+                        @foreach ($carouselData as $index => $c_data)
+                            <div class="item {{ $index === 0 ? 'active' : '' }}" data-index="{{ $index }}">
+                                <img src="{{ asset('images/' . $c_data->poster) }}" alt="Thumbnail {{ $index }}">
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="arrows align-items-center">
+                        <button type="button" id="prev"><i class="fa-solid fa-arrow-left"></i></button>
+                        <div class="buttons align-items-center">
+                            <a href="#" class="apply-btn" id="applyBtn">REQUEST SERVICE</a>
+                            <a href="#" class="snd-apply-btn" id="learnMoreBtn">LEARN MORE</a>
+                        </div>
+                        <button type="button" id="next"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
                 </div>
-            </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    const carouselItems = document.querySelectorAll('.list .item');
-                    const applyBtn = document.getElementById('applyBtn');
-                    const learnMoreBtn = document.getElementById('learnMoreBtn');
-                    const prevButton = document.getElementById('prev');
-                    const nextButton = document.getElementById('next');
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const carouselItems = document.querySelectorAll('.list .item');
+                        const applyBtn = document.getElementById('applyBtn');
+                        const learnMoreBtn = document.getElementById('learnMoreBtn');
+                        const prevButton = document.getElementById('prev');
+                        const nextButton = document.getElementById('next');
 
-                    let activeIndex = 0;
+                        let activeIndex = 0;
 
-                    const updateButtons = () => {
-                        const activeItem = carouselItems[activeIndex];
-                        const identifier = activeItem.getAttribute('data-identifier');
+                        const updateButtons = () => {
+                            const activeItem = carouselItems[activeIndex];
+                            const identifier = activeItem.getAttribute('data-identifier');
 
-                        // Dynamically construct the URLs using the identifier
-                        const applyUrl = `/apply/${identifier}`;
-                        const learnMoreUrl = `/learnMore/${identifier}`;
+                            // Dynamically construct the URLs using the identifier
+                            const applyUrl = `/apply/${identifier}`;
+                            const learnMoreUrl = `/learnMore/${identifier}`;
 
-                        applyBtn.setAttribute('href', applyUrl);
-                        learnMoreBtn.setAttribute('href', learnMoreUrl);
-                    };
+                            applyBtn.setAttribute('href', applyUrl);
+                            learnMoreBtn.setAttribute('href', learnMoreUrl);
+                        };
 
-                    const setActiveSlide = (index) => {
-                        carouselItems.forEach((item, i) => {
-                            item.classList.toggle('active', i === index);
+                        const setActiveSlide = (index) => {
+                            carouselItems.forEach((item, i) => {
+                                item.classList.toggle('active', i === index);
+                            });
+                            activeIndex = index;
+                            updateButtons();
+                        };
+
+                        prevButton.addEventListener('click', () => {
+                            const newIndex = (activeIndex - 1 + carouselItems.length) % carouselItems.length;
+                            setActiveSlide(newIndex);
                         });
-                        activeIndex = index;
+
+                        nextButton.addEventListener('click', () => {
+                            const newIndex = (activeIndex + 1) % carouselItems.length;
+                            setActiveSlide(newIndex);
+                        });
+
+                        // Initialize the buttons for the first slide
                         updateButtons();
-                    };
-
-                    prevButton.addEventListener('click', () => {
-                        const newIndex = (activeIndex - 1 + carouselItems.length) % carouselItems.length;
-                        setActiveSlide(newIndex);
                     });
+                </script>
 
-                    nextButton.addEventListener('click', () => {
-                        const newIndex = (activeIndex + 1) % carouselItems.length;
-                        setActiveSlide(newIndex);
-                    });
-
-                    // Initialize the buttons for the first slide
-                    updateButtons();
-                });
-            </script>
+            @endif
 
 
         </div>
