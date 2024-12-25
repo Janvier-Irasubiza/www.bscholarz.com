@@ -6,6 +6,7 @@ use Illuminate\View\Component;
 use Illuminate\View\View;
 use App\Models\Message;
 use App\Models\MessageReply;
+use App\Models\Comment;
 
 class AppLayout extends Component
 {
@@ -20,6 +21,10 @@ class AppLayout extends Component
         })->where('status', 'unread')
             ->count();
 
-        return view('layouts.app', compact('nots'));
+        $recommendedComments = Comment::where('recommended_to', auth('staff')->user()->id)
+            ->doesntHave('replies')
+            ->count();
+
+        return view('layouts.app', compact('nots', 'recommendedComments'));
     }
 }

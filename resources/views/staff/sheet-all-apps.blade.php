@@ -23,7 +23,7 @@
                     <div class="widget-chart-content ml-2 px-3">
                     <div class="widget-subheading">Balance <small>(RWF)</small></div>
 
-                    <div class="widget-numbers text-success"><span style="font-weight: 600">{{ number_format($completedApp -> sum('assistant_pending_commission')) }}</span></div>
+                    <div class="widget-numbers text-success"><span style="font-weight: 600">{{ number_format($balance -> sum('assistant_pending_commission')) }}</span></div>
                     </div>
 
                     <div class="icon-wrapper d-flex align-items-center justify-content-center">
