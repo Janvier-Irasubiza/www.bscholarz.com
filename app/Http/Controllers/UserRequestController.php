@@ -23,64 +23,7 @@ class UserRequestController extends Controller
   public function apply(Request $request)
   {
     $discipline_info = DB::table('disciplines')->where('identifier', $request->discipline_id)->first();
-
-    if (isset($_COOKIE['user_email']) || isset($_COOKIE['user_phone'])) {
-
-      $applicant_data = [
-        'names' => $_COOKIE['user_names'],
-        'email' => $_COOKIE['user_email'],
-        'phone_number' => $_COOKIE['user_phone'],
-      ];
-
-      if (!DB::table('applicant_info')->where('email', $_COOKIE['user_email'])->exists()) {
-        DB::table('applicant_info')->insert($applicant_data);
-      }
-
-      $applicant_info = DB::table('applicant_info')->where('email', $_COOKIE['user_email'])->first();
-
-      $application_info = [
-        'applicant' => $applicant_info->id,
-        'discipline_id' => $discipline_info->id,
-      ];
-
-      if (DB::table('applications')->where('applicant', $applicant_info->id)->where('discipline_id', $discipline_info->id)->exists()) {
-
-        Session::put('exist', 'You already have requested this application!');
-
-        return back();
-
-      } elseif (DB::table('applications')->insert($application_info)) {
-
-        $url = url(route('login', ['user_email' => $_COOKIE['user_email']]));
-
-        $user = $_COOKIE['user_names'];
-
-        $app = $discipline_info->discipline_name;
-
-        $application = DB::table('applications')->where('applicant', $applicant_info->id)->select('app_id')->first();
-
-        Session::put('scss', 'Your request was successfully sent!');
-
-        if (!Auth::guard('client')->user())
-          $applicantId = Crypt::encrypt($applicant_info->id);
-
-        Mail::to($_COOKIE['user_email'])->send(new RequestReceived($url, $user, $app));
-
-        return redirect()->route('follow-up', ['discipline' => $discipline_info->identifier, 'app_id' => $request->app_id, 'applicant' => $applicantId]);
-
-        Mail::to($_COOKIE['user_email'])->send(new RequestReceived($url, $user, $app));
-
-        return redirect()->route('client.client-dashboard');
-
-      } else {
-
-        Session::put('failed_req', 'There was an error sending your request, please');
-        return back();
-      }
-
-    } else {
-      return view('apply', compact('discipline_info'));
-    }
+    return view('apply', compact('discipline_info'));
   }
 
   public function user_request_application(Request $request)
