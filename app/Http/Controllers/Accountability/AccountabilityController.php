@@ -60,7 +60,12 @@ class AccountabilityController extends Controller
         $ready_services = DB::table('disciplines')->where('status', 'Available')->count();
         $upcoming_services = DB::table('disciplines')->where('status', 'Upcoming')->orWhere('status', 'Comming Soon')->count();
 
-        $clarifications_unique = DB::table('served_requests')->where('payment_status', 'Agent Needs To Clarify')->groupBy('discipline_identifier', 'discipline_name')->get();
+        $clarifications_unique = DB::table('served_requests')
+            ->select('discipline_identifier', 'discipline_name', DB::raw('MIN(id) as id')) // Aggregate non-grouped columns
+            ->where('payment_status', 'Agent Needs To Clarify')
+            ->groupBy('discipline_identifier', 'discipline_name')
+            ->get();
+
         $staff_ids = [];
         foreach ($payments as $payment) {
             if ($payment->application) { // Check if the relationship exists
@@ -127,7 +132,7 @@ class AccountabilityController extends Controller
         $query = Payment::whereHas('application', function ($query) {
             $query->where('payment_status', 'Waiting For Review');
         })->with(['customer', 'application'])
-        ->get();
+            ->get();
 
         // Initialize variables to hold sorting criteria
         $sortBy = $request->input('sortBy');
@@ -234,8 +239,8 @@ class AccountabilityController extends Controller
     public function transaction_review(Request $request)
     {
         $payments = Payment::with(['customer', 'application'])
-        ->where('id', $request->transaction)
-        ->first();
+            ->where('id', $request->transaction)
+            ->first();
 
         $transaction_info = DB::table('applications')->where('app_id', $request->transaction)->first();
         $applicant_info = DB::table('applicant_info')->where('id', $request->applicant)->first();
