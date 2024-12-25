@@ -365,21 +365,6 @@
         </div>
       </div>
 
-<<<<<<< HEAD
-          <a style="color: black"
-          href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
-          class="staff-resume-btn-1 text-white" style="padding: 5px; border-radius: 5px">
-          Review request
-          </a>
-
-          <a href="#" class="ml-4 postpone-btn text-white" style="color: black" data-bs-toggle="modal"
-          data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}"
-          data-service="{{ $discipline->discipline_name }}"
-          data-client="{{ $client_info->names }}">
-          Delete
-          </a>
-          </div>
-=======
       <div class="d-flex justify-content-between py-2 px-4">
 
         <a style="color: black"
@@ -387,7 +372,6 @@
         class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
         Review request
         </a>
->>>>>>> a3866db81def091946a3184279a498c28beb001f
 
         <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal"
         data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}"
@@ -429,21 +413,6 @@
 
       <div class="d-flex justify-content-between py-2 px-4">
 
-<<<<<<< HEAD
-          <a style="color: black"
-          href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
-          class="staff-resume-btn-1 text-white" style="padding: 5px; border-radius: 5px">
-          Review request
-          </a>
-
-          <a href="#" class="ml-4 postpone-btn text-white" style="color: black" data-bs-toggle="modal"
-          data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}"
-          data-service="{{ $discipline->discipline_name }}"
-          data-client="{{ $client_info->names }}">
-          Delete
-          </a>
-          </div>
-=======
         <a style="color: black"
         href="{{ route('customer-details', ['customer_info' => $client->user->id, 'application_info' => $client->app_id]) }}"
         class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
@@ -457,7 +426,6 @@
         Delete
         </a>
       </div>
->>>>>>> a3866db81def091946a3184279a498c28beb001f
 
       </div>
     @endif
