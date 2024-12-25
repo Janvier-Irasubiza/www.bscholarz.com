@@ -69,7 +69,7 @@
                                 <table id="example1" class="table align-middle mb-0 bg-white">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th>Transaction ID</th>
+                                            <th>Service Paid</th>
                                             <th>Amount Paid</th>
                                             <th>Payment Date</th>
                                             <th>Assistant</th>
@@ -81,7 +81,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="">
-                                                        <p class="fw-normal mb-1">{{ $transaction->payment_id }}</p>
+                                                        <p class="fw-normal mb-1">{{ $transaction->discipline_name }}</p>
                                                     </div>
                                                 </div>
                                             </td>

@@ -71,7 +71,7 @@
 
                         <div class="trend-content flex align-items-center gap-2" style="text-align: left">
                             <h5>Recommended Comments</h5>
-                            @if ($recommendedComments > 0)
+                            @if ($recommendedComments && $recommendedComments > 0)
                                 <i class="fa-solid fa-circle mt-1" style="font-size: 0.4em; color: #ec6c55bd"></i>
                             @endif
                         </div>

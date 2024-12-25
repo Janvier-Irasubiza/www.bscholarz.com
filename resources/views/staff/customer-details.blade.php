@@ -217,7 +217,7 @@
                                                                 <option value="Male" selected>Male</option>
                                                                 <option value="Female">Female</option>
 
-                                                            @elseif($client_info->gender == "Female")  
+                                                            @elseif($client_info->gender == "Female")
 
                                                                 <option value="Male">Male</option>
                                                                 <option value="Female" selected>Female</option>
@@ -661,24 +661,25 @@
                                             </button>
                                         </div>
 
-                                        <div>
+                                        <div class="d-flex gap-2">
                                             @if(!is_null($applications_items->username))
 
                                                 <a target="blank" id="startApp"
                                                     href="{{ route('resume-postponed-application', ['application_info' => $application_requested->application_id]) }}"
-                                                    style="color: black" class="ml-4 apply-btn">
+                                                    style="color: white; padding: 5px 10px;" class="ml-4 apply-btn">
                                                     {{ __('Resume Application') }}
                                                 </a>
 
                                                 <div class="d-flex justify-content-end">
 
-                                                    <a id="completeApp"
-                                                        href="{{ route('mark-application-complete', ['application_id' => $application_requested->application_id]) }}"
-                                                        style="color: black; display: none" class="ml-4 mark-as-btn">Mark as
-                                                        Complete</a>
+                                                    <button type="button" data-bs-toggle="modal" data-bs-target="#paymentModal{{ $application_requested->application_id }}" id="completeApp"
+                                                        style="color: black; padding: 5px 10px; border: none; background-color: #5AB8A4; display: none"
+                                                        class="staff-resume-btn text-white">
+                                                        Mark as Complete
+                                                    </button>
 
                                                     <a href="{{ route('staff-dashboard') }}" class="ml-4 postpone-btn"
-                                                        style="color: black">
+                                                        style="color: white">
                                                         Cancel
                                                     </a>
 
@@ -712,6 +713,39 @@
                                     </div>
 
                             </form>
+
+
+                            <!-- Modal for payment amount -->
+                            <div class="modal fade" id="paymentModal{{ $application_requested->application_id }}" data-bs-backdrop="static" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <strong>
+                                        <h1 class="modal-title fs-5" id="paymentModalLabel">Enter Payment Amount</h1>
+                                    </strong>
+                                    <button type="button" class="bg-danger px-2 rounded text-white" data-bs-dismiss="modal" aria-label="Close">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <form method="POST" action="{{ route('mark-application-complete', ['application_id' => $application_requested->application_id]) }}">
+                                        @csrf
+                                        <!-- Amount input field -->
+                                        <div class="mb-3">
+                                        <label for="amount" class="form-label">Amount to be paid</label>
+                                        <input type="number" class="form-control" id="amount" name="amount_to_be_paid" required placeholder="Enter amount to be paid">
+                                        </div>
+
+                                        <!-- Hidden input for application ID (this is now dynamically set) -->
+
+                                        <div class="d-flex justify-content-end gap-2">
+                                        <button type="submit" class="btn bg-success text-white">Submit</button>
+                                        </div>
+                                    </form>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
 
 
                             <!-- Modal -->

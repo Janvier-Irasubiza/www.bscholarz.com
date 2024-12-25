@@ -32,11 +32,11 @@ class Payment extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Applicant_info::class);
+        return $this->belongsTo(Applicant_info::class, 'applicant_id');
     }
 
     public function application()
     {
-        return $this->belongsTo(Request::class);
+        return $this->belongsTo(Request::class, 'application_id');
     }
 }

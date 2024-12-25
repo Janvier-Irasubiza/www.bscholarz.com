@@ -335,7 +335,7 @@ Route::prefix('staff')->middleware('staff', 'strack')->group(function () {
     Route::get('/client/change-password/{customer_info}/{application_info}', [StaffController::class, 'changeClientPasswordForm'])->name('staff.client-password.change');
     Route::post('/client/update-password', [StaffController::class, 'updateClientPassword'])->name('staff.update-client-password');
     Route::get('/record-activity', [StaffController::class, 'record_activity'])->name('record-activity');
-    Route::get('/mark-application-complete/{application_id}', [StaffController::class, 'mark_application_as_complete'])->name('mark-application-complete');
+    Route::post('/mark-application-complete/{application_id}', [StaffController::class, 'mark_application_as_complete'])->name('mark-application-complete');
     Route::get('/delete-request/{application_id}', [StaffController::class, 'delete_request'])->name('delete-request');
     Route::get('/begin-application', [StaffController::class, 'begin_application'])->name('begin-application');
     Route::post('/postponed-data/{application_id}', [StaffController::class, 'postponed_data'])->name('postponed-data');
@@ -384,8 +384,8 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard'])->name('accountant-dashboard');
     Route::get('/clarifications', [AccountabilityController::class, 'accountant_dashboard'])->name('sort-clarifications');
     Route::get('/transactions', [AccountabilityController::class, 'pending_transactions'])->name('pending-transactions');
-    Route::post('/approve/{application_id}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
-    Route::get('/review/{transaction}/{applicant}/{application}/{agent}', [AccountabilityController::class, 'transaction_review'])->name('transaction-review');
+    Route::post('/approve/{transaction}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
+    Route::get('/review/{transaction}', [AccountabilityController::class, 'transaction_review'])->name('transaction-review');
     Route::get('/debtors', [AccountabilityController::class, 'accountant_deptors'])->name('accountant-deptors');
     Route::get('/complete-transactions', [AccountabilityController::class, 'complete_transactions'])->name('complete-transactions');
     Route::get('/accountant/staff', [AdminController::class, 'organization'])->name('accountant-staff');
@@ -399,7 +399,7 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/accountant/export-transactions', [ExportsController::class, 'exportTransactions'])->name('export.transactions');
     Route::get('/export-revenue', [AccountabilityController::class, 'revenue'])->name('export-revenues');
     Route::get('/accountant-remind/{transaction}', [AccountabilityController::class, 'remind_debtor'])->name('remind-debtor');
-    Route::post('/send-clarification-message', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
+    Route::post('/send-clarification-message/{transaction}', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
 });
 
 require __DIR__ . '/auth.php';

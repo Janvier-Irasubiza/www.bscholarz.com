@@ -2,42 +2,57 @@
 
 namespace App\Http\Controllers\Accountability;
 
-use App\Models\MessageReply;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Exports\RevenueExport;
+use App\Exports\UnpaidApplicationsExport;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\RhythmBox;
+use App\Mail\Remind;
+use App\Models\Message;
+use App\Models\MessageReply;
+use App\Models\Payment;
 use App\Models\Request as Applications;
-use App\Models\Staff;
 use Carbon\Carbon;
 use DB;
-use File;
-use Mail;
-use App\Mail\DisbursedSalary;
-use App\Mail\Remind;
-use Illuminate\Support\Facades\Cache;
-use App\Exports\TransactionsExport;
-use App\Exports\UnpaidApplicationsExport;
-use App\Exports\RevenueExport;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use App\Models\Message;
-use App\Http\Controllers\Notifications;
-use App\Http\Controllers\Utils;
+use Maatwebsite\Excel\Facades\Excel;
+use Mail;
 
 class AccountabilityController extends Controller
 {
     public function accountant_dashboard(Request $request)
     {
-        $clarifications = DB::table('served_requests')->where('payment_status', 'Agent Needs To Clarify')->get();
+        $payments = Payment::whereHas('application', function ($query) {
+            $query->where('payment_status', 'Agent Needs To Clarify');
+        })->with(['customer', 'application'])->get();
 
         $week_start = Carbon::now()->startOfWeek();
         $week_end = Carbon::now()->endOfWeek();
-        $total_revenues = DB::table('applications')->where('payment_status', 'Paid')->sum('amount_paid');
-        $today_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereDate('payment_date', Carbon::today())->sum('amount_paid');
-        $this_week_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereBetween('payment_date', [$week_start, $week_end])->sum('amount_paid');
+
+        $revenues = DB::table('applications')->where('payment_status', 'Confirmed')->get();
+        $total_revenues = 0;
+        foreach ($revenues as $revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $revenue->assistant)->select('percentage')->first();
+            $total_revenue = ($revenue->amount_paid) - ($revenue->amount_paid * $assistant_commission->percentage / 100);
+            $total_revenues += $total_revenue;
+        }
+
+        $tdy_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereDate('payment_date', Carbon::today())->get();
+        $today_revenues = 0;
+        foreach ($tdy_revenues as $t_revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $t_revenue->assistant)->select('percentage')->first();
+            $today_revenue = ($t_revenue->amount_paid) - ($t_revenue->amount_paid * $assistant_commission->percentage / 100);
+            $today_revenues += $today_revenue;
+        }
+
+        $week_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereBetween('payment_date', [$week_start, $week_end])->get();
+        $this_week_revenues = 0;
+        foreach ($week_revenues as $week_revenue) {
+            $assistant_commission = DB::table('staff')->where('id', $week_revenue->assistant)->select('percentage')->first();
+            $this_week_revenue = ($week_revenue->amount_paid) - ($week_revenue->amount_paid * $assistant_commission->percentage / 100);
+            $this_week_revenues += $this_week_revenue;
+        }
+
         $total_requests = DB::table('user_requests')->count();
         $today_requests = DB::table('user_requests')->whereDate('requested_on', Carbon::today())->count();
         $this_week_requests = DB::table('user_requests')->whereBetween('requested_on', [$week_start, $week_end])->count();
@@ -47,8 +62,10 @@ class AccountabilityController extends Controller
 
         $clarifications_unique = DB::table('served_requests')->where('payment_status', 'Agent Needs To Clarify')->groupBy('discipline_identifier', 'discipline_name')->get();
         $staff_ids = [];
-        foreach ($clarifications as $app) {
-            $staff_ids[] = $app->assistant;
+        foreach ($payments as $payment) {
+            if ($payment->application) { // Check if the relationship exists
+                $staff_ids[] = $payment->application->assistant;
+            }
         }
         $employees = DB::table('staff')->where('role', '!=', 'Accountant')->where('role', '!=', 'Admin')->where('role', '!=', 'Marketing')->whereIn('id', $staff_ids)->get();
 
@@ -59,19 +76,30 @@ class AccountabilityController extends Controller
         $startDate = $request->input('start_date', '');
         $endDate = $request->input('end_date', '');
 
-        return view('accountant.dashboard', compact('total_revenues', 'today_revenues', 'this_week_revenues', 'total_requests', 'today_requests', 'this_week_requests', 'total_services', 'ready_services', 'upcoming_services', 'clarifications', 'clarifications_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
+        return view('accountant.dashboard', compact('total_revenues', 'today_revenues', 'this_week_revenues', 'total_requests', 'today_requests', 'this_week_requests', 'total_services', 'ready_services', 'upcoming_services', 'clarifications_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate', 'payments'));
     }
 
     public function pending_transactions(Request $request)
     {
-        // $pen_transactions = DB::table('applications') -> where('payment_status', 'Waiting For Review') -> get();
-        $applications = DB::table('served_requests')->where('payment_status', 'Waiting For Review')->get();
-        $applications_unique = DB::table('served_requests')->where('payment_status', 'Waiting For Review')->groupBy('discipline_identifier', 'discipline_name')->get();
+        $payments = Payment::whereHas('application', function ($query) {
+            $query->where('payment_status', 'Waiting For Review');
+        })->with(['customer', 'application'])->get();
+
+        // Initialize staff_ids array
         $staff_ids = [];
-        foreach ($applications as $app) {
-            $staff_ids[] = $app->assistant;
+
+        // Loop through the $applications array to get staff IDs
+        foreach ($payments as $payment) {
+            if ($payment->application) { // Check if the relationship exists
+                $staff_ids[] = $payment->application->assistant;
+            }
         }
-        $employees = DB::table('staff')->where('role', '!=', 'Accountant')->where('role', '!=', 'Admin')->where('role', '!=', 'Marketing')->whereIn('id', $staff_ids)->get();
+
+        // Fetch employees who are not Accountants, Admins, or Marketers, and whose IDs are in the staff_ids array
+        $employees = DB::table('staff')
+            ->whereNotIn('role', ['Accountant', 'Admin', 'Marketing'])
+            ->whereIn('id', $staff_ids)
+            ->get();
 
         // Initialize sorting variables with default values
         $sortBy = $request->input('sortBy', '');
@@ -80,13 +108,26 @@ class AccountabilityController extends Controller
         $startDate = $request->input('start_date', '');
         $endDate = $request->input('end_date', '');
 
-        return view('accountant.pendding-transactions', compact('applications', 'employees', 'applications_unique', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
+        // Return the view with the necessary data
+        return view('accountant.pendding-transactions', compact(
+            'payments',
+            'employees',
+            'sortBy',
+            'employee',
+            'application',
+            'startDate',
+            'endDate'
+        ));
+
     }
 
     public function sort_pending_applications(Request $request)
     {
         // Initialize the query
-        $query = DB::table('served_requests')->where('payment_status', 'Waiting For Review');
+        $query = Payment::whereHas('application', function ($query) {
+            $query->where('payment_status', 'Waiting For Review');
+        })->with(['customer', 'application'])
+        ->get();
 
         // Initialize variables to hold sorting criteria
         $sortBy = $request->input('sortBy');
@@ -119,21 +160,26 @@ class AccountabilityController extends Controller
         }
 
         // Get filtered transactions
-        $pen_transactions = $query->get();
+        $pen_transactions = $query;
 
         // Fetch unique applications for the dropdown
-        $applications = DB::table('served_requests')->where('payment_status', 'Waiting For Review')->groupBy('discipline_identifier', 'discipline_name')->get();
-        $applications_unique = DB::table('served_requests')->where('payment_status', 'Waiting For Review')->groupBy('discipline_identifier', 'discipline_name')->get();
+        $applications = $query->groupBy(function ($item) {
+            return $item->application->discipline_identifier;
+        });
+
+        $applications_unique = $query->pluck('application')->unique('discipline_identifier');
+
         $staff_ids = [];
-        foreach ($applications as $app) {
-            $staff_ids[] = $app->assistant;
+        foreach ($applications as $group) { // Each group is a collection of items
+            foreach ($group as $app) { // Iterate through individual items in the group
+                $staff_ids[] = $app->application->assistant;
+            }
         }
         $employees = DB::table('staff')->where('role', '!=', 'Accountant')->where('role', '!=', 'Admin')->where('role', '!=', 'Marketing')->whereIn('id', $staff_ids)->get();
 
         // Pass all required variables to the view
         return view('accountant.pendding-transactions', compact('pen_transactions', 'applications', 'employees', 'applications_unique', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
     }
-
 
     public function complete_transactions(Request $request)
     {
@@ -178,23 +224,59 @@ class AccountabilityController extends Controller
         }
         $employees = DB::table('staff')->where('role', '!=', 'Accountant')->where('role', '!=', 'Admin')->where('role', '!=', 'Marketing')->whereIn('id', $staff_ids)->get();
 
-        return view('accountant.complete-transactions', compact('complete_transactions', 'complete_transactions_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate'));
+        $payments = Payment::whereHas('application', function ($query) {
+            $query->where('payment_status', 'Confirmed');
+        })->with(['customer', 'application'])->get();
+
+        return view('accountant.complete-transactions', compact('complete_transactions', 'complete_transactions_unique', 'employees', 'sortBy', 'employee', 'application', 'startDate', 'endDate', 'payments'));
     }
 
     public function transaction_review(Request $request)
     {
+        $payments = Payment::with(['customer', 'application'])
+        ->where('id', $request->transaction)
+        ->first();
+
         $transaction_info = DB::table('applications')->where('app_id', $request->transaction)->first();
         $applicant_info = DB::table('applicant_info')->where('id', $request->applicant)->first();
         $application_info = DB::table('disciplines')->where('id', $request->application)->first();
         $agent_info = DB::table('staff')->where('id', $request->agent)->first();
 
-        return view('accountant.transaction-review', compact('transaction_info', 'applicant_info', 'application_info', 'agent_info'));
+        return view('accountant.transaction-review', compact('transaction_info', 'applicant_info', 'application_info', 'agent_info', 'payments'));
     }
 
     public function approve_transaction(Request $request)
     {
-        DB::table('applications')->where('app_id', $request->application_id)->update(['payment_status' => 'Confirmed']);
-        session()->flash('success', 'Transaction confirmed successfully.');
+        $payment = Payment::find($request->transaction);
+        $application = Applications::find($payment->application->app_id);
+
+        if ($application->payment_status == 'Waiting For Review') {
+            $application->payment_status = 'Confirmed';
+            $application->save();
+
+            $payment->status = 'Confirmed';
+            $payment->save();
+        } elseif ($application->payment_status == 'Partial Payment Waiting For Review') {
+            $application->payment_status = 'Partial Payment Confirmed';
+            $application->save();
+
+            $payment->status = 'Confirmed';
+            $payment->save();
+        } elseif ($application->payment_status == 'Agent Needs To Clarify' && $application->outstanding_payment_status == 'Partial payment') {
+            $application->payment_status = 'Partial Payment Confirmed';
+            $application->save();
+
+            $payment->status = 'Confirmed';
+            $payment->save();
+        } else {
+            $application->payment_status = 'Confirmed';
+            $application->save();
+
+            $payment->status = 'Confirmed';
+            $payment->save();
+        }
+
+        session()->flash('success', 'Transaction was approved successfully.');
 
         return redirect()->route('pending-transactions');
     }
@@ -290,7 +372,6 @@ class AccountabilityController extends Controller
         return redirect()->route('accountant-deptors');
     }
 
-
     public function sendClarificationMessage(Request $request)
     {
         // Validate the incoming request data
@@ -302,9 +383,13 @@ class AccountabilityController extends Controller
         ]);
 
         $app = Applications::find($request->input('application_id'));
+        $payment = Payment::find($request->transaction);
         if ($app) {
             $app->payment_status = 'Agent Needs To Clarify';
             $app->save();
+
+            $payment->status = 'Agent Needs To Clarify';
+            $payment->save();
         }
 
         $message = Message::create([
@@ -326,6 +411,5 @@ class AccountabilityController extends Controller
         session()->flash('success', 'A clarification request has been sent to the agent! this transaction will now be found on your dashboard, under "Waiting for clarificarion"');
         return redirect()->route('pending-transactions');
     }
-
 
 }

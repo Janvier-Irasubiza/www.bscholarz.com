@@ -42,9 +42,31 @@ class AdminController extends Controller
 
         $week_start = Carbon::now()->startOfWeek();
         $week_end = Carbon::now()->endOfWeek();
-        $total_revenues = DB::table('applications')->where('payment_status', 'Paid')->sum('amount_paid');
-        $today_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereDate('payment_date', Carbon::today())->sum('amount_paid');
-        $this_week_revenues = DB::table('applications')->where('payment_status', 'Paid')->whereBetween('payment_date', [$week_start, $week_end])->sum('amount_paid');
+
+        $revenues = DB::table('applications') -> where('payment_status', 'Paid') -> get();
+        $total_revenues = 0;
+        foreach ($revenues as $revenue) {
+            $assistant_commission = DB::table('staff') -> where('id', $revenue->assistant) -> select('percentage') -> first();
+            $total_revenue = ($revenue -> amount_paid) - ($revenue -> amount_paid * $assistant_commission -> percentage / 100);
+            $total_revenues += $total_revenue;
+        }
+
+        $tdy_revenues = DB::table('applications') -> where('payment_status', 'Paid') -> whereDate('payment_date', Carbon::today()) -> get();
+        $today_revenues = 0;
+        foreach ($tdy_revenues as $t_revenue) {
+            $assistant_commission = DB::table('staff') -> where('id', $t_revenue->assistant) -> select('percentage') -> first();
+            $today_revenue = ($t_revenue -> amount_paid) - ($t_revenue -> amount_paid * $assistant_commission -> percentage / 100);
+            $today_revenues += $today_revenue;
+        }
+
+        $week_revenues = DB::table('applications') -> where('payment_status', 'Paid') -> whereBetween('payment_date', [$week_start, $week_end]) -> get();
+        $this_week_revenues = 0;
+        foreach ($week_revenues as $week_revenue) {
+            $assistant_commission = DB::table('staff') -> where('id', $week_revenue->assistant) -> select('percentage') -> first();
+            $this_week_revenue = ($week_revenue -> amount_paid) - ($week_revenue -> amount_paid * $assistant_commission -> percentage / 100);
+            $this_week_revenues += $this_week_revenue;
+        }
+
         $total_requests = DB::table('user_requests')->count();
         $today_requests = DB::table('user_requests')->whereDate('requested_on', Carbon::today())->count();
         $this_week_requests = DB::table('user_requests')->whereBetween('requested_on', [$week_start, $week_end])->count();

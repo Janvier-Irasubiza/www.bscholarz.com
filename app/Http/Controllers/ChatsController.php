@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Comment;
+use App\Models\Request as Applications;
 use App\Models\Staff;
 use App\Models\Message;
 use App\Models\MessageReply;
@@ -66,6 +67,10 @@ class ChatsController extends Controller
                 }
             ])
             ->first();
+        $app_info = null;
+        if (!is_null($message->app)) {
+            $app_info = Applications::with(['user'])->where('app_id', $message->app)->first();
+        }
 
         if ($message && $message->replies) {
             foreach ($message->replies as $reply) {
@@ -74,7 +79,7 @@ class ChatsController extends Controller
             }
         }
 
-        return view('chats.chat-conv', compact('message'));
+        return view('chats.chat-conv', compact('message', 'app_info'));
     }
 
     public function users($commentId)

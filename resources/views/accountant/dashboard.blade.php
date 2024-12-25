@@ -161,26 +161,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($clarifications ?? $clarifications as $transaction)
+                            @foreach($payments as $transaction)
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="">
-                                            <p class="fw-normal mb-1">{{ $transaction->payment_id }}</p>
+                                            <p class="fw-normal mb-1">{{ $transaction->id }}</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <p class="fw-normal mb-1">{{ $transaction->amount_paid }}</p>
+                                    <p class="fw-normal mb-1">{{ $transaction->amount }}</p>
                                 </td>
                                 <td>
-                                    <p class="fw-normal mb-1">{{ $transaction->served_on }}</p>
+                                    <p class="fw-normal mb-1">{{ $transaction->created_at }}</p>
                                 </td>
                                 <td>
-                                    <p class="fw-normal mb-1">{{ $transaction->assistant_names }}</p>
+                                    <p class="fw-normal mb-1">{{ $transaction->application->appAssistant->names }}</p>
                                 </td>
                                 <td class="text-center">
-                                    <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                                    <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->id]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
                                         Review
                                     </a>
                                 </td>

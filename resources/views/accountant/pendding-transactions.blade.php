@@ -35,12 +35,26 @@
                                                 </select>
                                             </div>
                                             <div id="applicationInput" class="col-lg-4" style="display: none;">
-                                                <select id="application" name="application" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
+                                                <select id="application" name="application" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px;">
                                                     <option value="">Select Application</option>
-                                                    @foreach ($applications_unique as $app)
-                                                    <option value="{{ $app->discipline_identifier }}" {{ $application == $app->discipline_identifier ? 'selected' : '' }}>{{ $app->discipline_name }}</option>
-                                                    @endforeach
+
+                                                    @if (isset($applications_unique) && $applications_unique->isNotEmpty())
+                                                        @foreach ($applications_unique as $app)
+                                                            <option value="{{ $app->discipline_identifier }}" {{ $application == $app->discipline_identifier ? 'selected' : '' }}>
+                                                                {{ $app->discipline_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @elseif (isset($payments) && $payments->isNotEmpty())
+                                                        @foreach ($payments as $payment)
+                                                            @if ($payment->application) <!-- Ensure the relationship exists -->
+                                                                <option value="{{ $payment->application->discipline_identifier }}" {{ $application == $payment->application->discipline_identifier ? 'selected' : '' }}>
+                                                                    {{ $payment->application->discipline_name }}
+                                                                </option>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
                                                 </select>
+
                                             </div>
 
                                             <div id="dateInputs" class="col-lg-5 d-flex gap-2" style="display: none !important">
@@ -76,31 +90,33 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($pen_transactions ?? $applications as $transaction)
+                                        @foreach($pen_transactions ?? $payments as $transaction)
+
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="">
-                                                        <p class="fw-normal mb-1">{{ $transaction->payment_id }}</p>
+                                                        <p class="fw-normal mb-1">{{ $transaction->id }}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="fw-normal mb-1">{{ $transaction->amount_paid }}</p>
+                                                <p class="fw-normal mb-1">{{ $transaction->amount }}</p>
                                             </td>
                                             <td>
-                                                <p class="fw-normal mb-1">{{ $transaction->served_on }}</p>
+                                                <p class="fw-normal mb-1">{{ $transaction->created_at }}</p>
                                             </td>
                                             <td>
-                                                <p class="fw-normal mb-1">{{ $transaction->assistant_names }}</p>
+                                                <p class="fw-normal mb-1">{{ $transaction->application->appAssistant->names }}</p>
                                             </td>
                                             <td class="text-center">
-                                                <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                                                <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->id]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
                                                     Review
                                                 </a>
                                             </td>
                                         </tr>
                                         @endforeach
+
                                     </tbody>
                                 </table>
                             </div>

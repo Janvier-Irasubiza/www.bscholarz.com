@@ -2827,7 +2827,7 @@ input:focus, select:focus, textarea:focus {
 
 .mp {
     padding: 2em;
-}   
+}
 
 .mpx {
     padding: 0px 3em;
@@ -2875,7 +2875,7 @@ input:focus, select:focus, textarea:focus {
     padding-right: 30%;
     box-sizing: border-box;
     color: #000;
-    text-shadow: 0 5px 10px #fff    ; 
+    text-shadow: 0 5px 10px #fff    ;
 }
 
 .slider .list .item:nth-child(1) {
@@ -2937,13 +2937,34 @@ input:focus, select:focus, textarea:focus {
     animation: contentOut 0.3s .1s linear 1 forwards;
 }
 
+.thumbnail {
+    display: flex;
+    overflow: hidden; /* Prevent extra thumbnails from being visible outside the container */
+    border-radius: 10px;
+}
+
+.thumbnail .item {
+    flex: 0 0 auto;
+    width: 80px; /* Thumbnail width */
+    height: 80px;
+    margin-right: 10px;
+    opacity: 0.5;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.thumbnail .item.active {
+    opacity: 1;
+    border: 2px solid #2D5FA3;
+}
+
+
 @keyframes showContent {
     to {
         transform: translateY(0);
         filter: blur(0);
         opacity: 1;
-    } 
-} 
+    }
+}
 
 @keyframes showImage {
     to {
@@ -2953,20 +2974,20 @@ input:focus, select:focus, textarea:focus {
         height: 100%;
         border-radius: 0;
     }
-} 
+}
 
 @keyframes showThumbnail {
     to {
         width: 90px;
     }
-    
+
 }
 
 @keyframes transformThumbnail {
     to {
         transform: translateX(0);
     }
-    
+
 }
 
 @keyframes outImage {
@@ -2977,7 +2998,7 @@ input:focus, select:focus, textarea:focus {
         left: 78%;
         border-radius: 10px;
     }
-    
+
 }
 
 @keyframes contentOut {
