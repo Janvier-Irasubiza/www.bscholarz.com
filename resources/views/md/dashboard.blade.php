@@ -6,7 +6,7 @@
 
     <div style="padding: 0px 20px 32px 20px">
         <!-- Working Progress Section -->
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mt-2 p-2">
+        <div class="bg-white dark:bg-gray-800 overflow-hidden sm:rounded-lg p-2">
             <div class="app-inner-layout__content">
                 <div class="tab-content">
                     <div>
@@ -24,13 +24,15 @@
                                                 </div>
                                             </div>
                                             <div style="" class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Applications</div>
+                                                <div class="widget-subheading">
+                                                    <h1>Applications</h1>
+                                                </div>
                                                 <div class="widget-numbers">
                                                     <span class="active-apps">---</span>
                                                 </div>
                                                 <div class="widget-description opacity-8 text-focus">
                                                     <u>
-                                                        <span class="a-apps">---</span> Active</u> &nbsp;
+                                                        <span class="a-apps muted-text">---</span> Active</u> &nbsp;
                                                     <u>
                                                         <span class="x-apps">---</span> Expired
                                                     </u>
@@ -52,11 +54,14 @@
                                                 </div>
                                             </div>
                                             <div class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Adverts</div>
+                                                <div class="widget-subheading">
+                                                    <h1>Adverts</h1>
+                                                </div>
                                                 <div class="widget-numbers text-success"><span
                                                         class="active-ads">---</span></div>
                                                 <div class="widget-description text-focus">
-                                                    <u><span class="a-ads">---</span> Active</u> &nbsp; <u><span class="x-ads"></span> Expired</u>
+                                                    <u><span class="a-ads">---</span> Active</u> &nbsp; <u><span
+                                                            class="x-ads"></span> Expired</u>
                                                 </div>
                                             </div>
                                         </div>
@@ -75,7 +80,9 @@
                                                 </div>
                                             </div>
                                             <div class="widget-chart-content col-lg-9 ml-1">
-                                                <div class="widget-subheading">Subscribers</div>
+                                                <div class="widget-subheading">
+                                                    <h1>Subscribers</h1>
+                                                </div>
                                                 <div class="widget-numbers text-success"><span class="subs">---</span>
                                                 </div>
                                                 <div class="widget-description text-focus">
@@ -87,8 +94,16 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white mt-3 p-3 rounded-lg">
+            <h1 class="" style="font-size: 1.4em; font-weight: 600">Comments</h1>
+            <div class="mt-3">
+                <div class="modal-body text-left mt-3" id="commentsBody">
+                    <!-- comments -->
                 </div>
             </div>
         </div>

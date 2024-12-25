@@ -161,7 +161,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($clarifications ?? $clarifications as $transaction)
+                            @foreach($clarifications ?? $payments as $transaction)
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center">
@@ -180,7 +180,7 @@
                                     <p class="fw-normal mb-1">{{ $transaction->assistant_names }}</p>
                                 </td>
                                 <td class="text-center">
-                                    <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                                    <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->applicant_id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant, 'amount_paid' => $transaction->amount, 'creation_time' => $transaction->created_at]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
                                         Review
                                     </a>
                                 </td>

@@ -331,46 +331,41 @@
                   <div class="requests-scroll">
                     @if($ready_clients->isNotEmpty())
 
-                  @foreach($ready_clients as $client)
-              @php
-        $client_info = DB::table('applicant_info')->where('id', $client->id)->first();
-        $discipline = DB::table('disciplines')->where('id', $client->discipline)->first();
-        $reviewer = DB::table('staff')->where('id', $client->revied_by)->first();
-      @endphp
+            @foreach($ready_clients as $client)
 
 
-              @if($client->review_ccl == 'yes')
-          <div class="mb-4 client-info-1 customer-search-item" style="border: 3px solid #FAC898">
-          <div class="px-2 py-1 d-flex align-items-center">
-          <small style="font-weight: 500">Reviewed by: &nbsp </small>
-          <h5 style="font-weight: bold; font-size: 12px">{{ $reviewer->names }}</h5>
-          </div>
-          <div class="container staff-client-1" style="">
-          <div class="row">
-          <div class="col-lg-6" style="padding: 5px 10px">
-          <strong>
-          <h1 class="client-name" style="font-size: 20px">{{ $client_info->names }}</h1>
-          </strong>
-          <p class="client-email">{{ $client_info->email }}</p>
-          <p class="client-phone-number">{{ $client_info->phone_number }}</p>
-          </div>
 
-          <div class="col-lg-6">
-          <div class="client-pp d-flex align-items-center justify-content-center" style="">
-          <strong>
-          <h1 style="font-size: 16px">{{ $discipline->discipline_name }}</h1>
-          </strong>
+        @if($client->review_ccl == 'yes')
+      <div class="mb-4 client-info-1 customer-search-item" style="border: 3px solid #FAC898">
+      <div class="px-2 py-1 d-flex align-items-center">
+        <small style="font-weight: 500">Reviewed by: &nbsp </small>
+        <h5 style="font-weight: bold; font-size: 12px">{{ $client->appAssistant->names }}</h5>
+      </div>
+      <div class="container staff-client-1" style="">
+        <div class="row">
+        <div class="col-lg-6" style="padding: 5px 10px">
+        <strong>
+        <h1 class="client-name" style="font-size: 20px">{{ $client->user->names }}</h1>
+        </strong>
+        <p class="client-email">{{ $client->user->email }}</p>
+        <p class="client-phone-number">{{ $client->user->phone_number }}</p>
+        </div>
 
-          </div>
-          <div class="px-2">
-          <small><strong>{{ $client->requested_on }} </strong> </small>
-          </div>
-          </div>
-          </div>
-          </div>
+        <div class="col-lg-6">
+        <div class="client-pp d-flex align-items-center justify-content-center" style="">
+        <strong>
+        <h1 style="font-size: 16px">{{ $client->discipline->discipline_name }}</h1>
+        </strong>
 
-          <div class="d-flex justify-content-between py-2 px-4">
+        </div>
+        <div class="px-2">
+        <small><strong>{{ $client->requested_on }} </strong> </small>
+        </div>
+        </div>
+        </div>
+      </div>
 
+<<<<<<< HEAD
           <a style="color: black"
           href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
           class="staff-resume-btn-1 text-white" style="padding: 5px; border-radius: 5px">
@@ -384,39 +379,57 @@
           Delete
           </a>
           </div>
+=======
+      <div class="d-flex justify-content-between py-2 px-4">
 
-          </div>
-        @endif
+        <a style="color: black"
+        href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
+        class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
+        Review request
+        </a>
+>>>>>>> a3866db81def091946a3184279a498c28beb001f
+
+        <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}"
+        data-service="{{ $discipline->discipline_name }}"
+        data-client="{{ $client_info->names }}">
+        Delete
+        </a>
+      </div>
+
+      </div>
+    @endif
 
 
-              @if($client->review_ccl != 'yes')
-          <div class="mb-4 client-info-1 customer-search-item" style="">
-          <div class="container staff-client-1" style="">
-          <div class="row">
-          <div class="col-lg-6" style="padding: 5px 10px">
-          <strong>
-          <h1 class="client-name" style="font-size: 20px">{{ $client_info->names }}</h1>
-          </strong>
-          <p class="client-email">{{ $client_info->email }}</p>
-          <p class="client-phone-number">{{ $client_info->phone_number }}</p>
-          </div>
+        @if($client->review_ccl != 'yes')
+      <div class="mb-4 client-info-1 customer-search-item" style="">
+      <div class="container staff-client-1" style="">
+        <div class="row">
+        <div class="col-lg-6" style="padding: 5px 10px">
+        <strong>
+        <h1 class="client-name" style="font-size: 20px">{{ $client->user->names }}</h1>
+        </strong>
+        <p class="client-email">{{ $client->user->email }}</p>
+        <p class="client-phone-number">{{ $client->user->phone_number }}</p>
+        </div>
 
-          <div class="col-lg-6">
-          <div class="client-pp d-flex align-items-center justify-content-center" style="">
-          <strong>
-          <h1 style="font-size: 16px">{{ $discipline->discipline_name }}</h1>
-          </strong>
+        <div class="col-lg-6">
+        <div class="client-pp d-flex align-items-center justify-content-center" style="">
+        <strong>
+        <h1 style="font-size: 16px">{{ $discipline->discipline_name }}</h1>
+        </strong>
 
-          </div>
-          <div class="px-2">
-          <small><strong>{{ $client->requested_on }} </strong></small>
-          </div>
-          </div>
-          </div>
-          </div>
+        </div>
+        <div class="px-2">
+        <small><strong>{{ $client->requested_on }} </strong></small>
+        </div>
+        </div>
+        </div>
+      </div>
 
-          <div class="d-flex justify-content-between py-2 px-4">
+      <div class="d-flex justify-content-between py-2 px-4">
 
+<<<<<<< HEAD
           <a style="color: black"
           href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
           class="staff-resume-btn-1 text-white" style="padding: 5px; border-radius: 5px">
@@ -430,78 +443,93 @@
           Delete
           </a>
           </div>
+=======
+        <a style="color: black"
+        href="{{ route('customer-details', ['customer_info' => $client->user->id, 'application_info' => $client->app_id]) }}"
+        class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
+        Review request
+        </a>
 
-          </div>
-        @endif
-          @endforeach
+        <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop" data-application-id="{{ $client->app_id }}"
+        data-service="{{ $client->discipline->discipline_name }}"
+        data-client="{{ $client->user->names }}">
+        Delete
+        </a>
+      </div>
+>>>>>>> a3866db81def091946a3184279a498c28beb001f
 
-                  <!-- Modal -->
-                  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered"
-                    style="margin-left: auto; margin-right: 16em;">
-                    <div class="modal-content">
-                    <div class="p-3" style="border-bottom: 1px solid #e6e6e6">
-                    <p class="m-0" style="font-size: 18px;">Delete request</p>
-                    </div>
-                    <div class="modal-body">
-                    Are you sure you want to delete this application?
-                    <div class="mt-3">
-                    Service: <span id="service"></span><br>
-                    By: <span id="client"></span>
-                    </div>
-                    <div class="mt-3 mb-2" style="border-radius: 5px;">
-                    <i class="fa-solid fa-triangle-exclamation btn btn-danger"
-                      style="font-size: 16px; padding: 7px 10px;"></i>&nbsp; Remember that this action
-                    cannot be undone
-                    </div>
-                    </div>
-                    <div class="p-3 text-center" style="border-top: 1px solid #e6e6e6">
-                    <button type="button" class="btn apply-btn" data-bs-dismiss="modal"
-                    style="padding: 3px 20px; color: ghostwhite">Cancel</button>
-                    <a href="#" id="delete-link"
-                    class="ml-2 btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger">
-                    <span class="mr-2 opacity-7">
-                      <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
-                    </span>
-                    <small><span class="fa fa-trash"></span></small>&nbsp;
-                    <span class="mr-1">Yes, Delete</span>
-                    </a>
-                    </div>
-                    </div>
-                  </div>
-                  </div>
-                  <!-- End of modal -->
+      </div>
+    @endif
+      @endforeach
 
-
-                  <!-- <toast> -->
-                  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header d-flex justify-content-between bg-secondary text-white">
-                    <strong class="mr-auto">Request deleted</strong>
-                    <small class="text-muted">just now</small>
-                    </div>
-                    <div class="toast-body">
-                    {{ session('delete_success') }}
-                    </div>
-                  </div>
-                  </div>
-                  <!-- </tast>  -->
+            <!-- Modal -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"
+              style="margin-left: auto; margin-right: 16em;">
+              <div class="modal-content">
+              <div class="p-3" style="border-bottom: 1px solid #e6e6e6">
+              <p class="m-0" style="font-size: 18px;">Delete request</p>
+              </div>
+              <div class="modal-body">
+              Are you sure you want to delete this application?
+              <div class="mt-3">
+              Service: <span id="service"></span><br>
+              By: <span id="client"></span>
+              </div>
+              <div class="mt-3 mb-2" style="border-radius: 5px;">
+              <i class="fa-solid fa-triangle-exclamation btn btn-danger"
+                style="font-size: 16px; padding: 7px 10px;"></i>&nbsp; Remember that this action
+              cannot be undone
+              </div>
+              </div>
+              <div class="p-3 text-center" style="border-top: 1px solid #e6e6e6">
+              <button type="button" class="btn apply-btn" data-bs-dismiss="modal"
+              style="padding: 3px 20px; color: ghostwhite">Cancel</button>
+              <a href="#" id="delete-link"
+              class="ml-2 btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-danger">
+              <span class="mr-2 opacity-7">
+                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+              </span>
+              <small><span class="fa fa-trash"></span></small>&nbsp;
+              <span class="mr-1">Yes, Delete</span>
+              </a>
+              </div>
+              </div>
+            </div>
+            </div>
+            <!-- End of modal -->
 
 
-                  <!-- <toast> -->
-                  <div class="toast-container position-fixed bottom-0 end-0 p-3">
-                  <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header d-flex justify-content-between bg-secondary text-white">
-                    <strong class="mr-auto">Poke email sent</strong>
-                    <small class="text-muted">just now</small>
-                    </div>
-                    <div class="toast-body">
-                    {{ session('poked') }}
-                    </div>
-                  </div>
-                  </div>
-                  <!-- </tast>  -->
+            <!-- <toast> -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header d-flex justify-content-between bg-secondary text-white">
+              <strong class="mr-auto">Request deleted</strong>
+              <small class="text-muted">just now</small>
+              </div>
+              <div class="toast-body">
+              {{ session('delete_success') }}
+              </div>
+            </div>
+            </div>
+            <!-- </tast>  -->
+
+
+            <!-- <toast> -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="toast-header d-flex justify-content-between bg-secondary text-white">
+              <strong class="mr-auto">Poke email sent</strong>
+              <small class="text-muted">just now</small>
+              </div>
+              <div class="toast-body">
+              {{ session('poked') }}
+              </div>
+            </div>
+            </div>
+            <!-- </tast>  -->
 
           @else
 

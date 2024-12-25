@@ -37,7 +37,7 @@
                                             <div id="applicationInput" class="col-lg-4" style="display: none;">
                                                 <select id="application" name="application" class="w-full" style="border: 2px solid; border-radius: 7px; font-size: 14px; padding: 5px 5px">
                                                     <option value="">Select Application</option>
-                                                    @foreach ($applications_unique as $app)
+                                                    @foreach ($payments as $app)
                                                     <option value="{{ $app->discipline_identifier }}" {{ $application == $app->discipline_identifier ? 'selected' : '' }}>{{ $app->discipline_name }}</option>
                                                     @endforeach
                                                 </select>
@@ -76,17 +76,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($pen_transactions ?? $applications as $transaction)
+                                        @foreach($pen_transactions ?? $payments as $transaction)
+
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="">
-                                                        <p class="fw-normal mb-1">{{ $transaction->payment_id }}</p>
+                                                        <p class="fw-normal mb-1">{{ $transaction->uuid }}</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="fw-normal mb-1">{{ $transaction->amount_paid }}</p>
+                                                <p class="fw-normal mb-1">{{ $transaction->amount }}</p>
                                             </td>
                                             <td>
                                                 <p class="fw-normal mb-1">{{ $transaction->served_on }}</p>
@@ -95,12 +96,13 @@
                                                 <p class="fw-normal mb-1">{{ $transaction->assistant_names }}</p>
                                             </td>
                                             <td class="text-center">
-                                                <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
+                                                <a style="font-weight: 600; border: 1.3px solid;" href="{{ route('transaction-review', ['transaction' => $transaction->application_id, 'applicant' => $transaction->applicant_id, 'application' => $transaction->discipline, 'agent' => $transaction->assistant, 'amount_paid' => $transaction->amount, 'creation_time' => $transaction->created_at]) }}" class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm mr-1 sd-btn">
                                                     Review
                                                 </a>
                                             </td>
                                         </tr>
                                         @endforeach
+
                                     </tbody>
                                 </table>
                             </div>

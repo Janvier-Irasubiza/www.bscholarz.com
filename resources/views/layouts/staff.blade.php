@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>BScholarz - @yield('title')</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <link rel="stylesheet" href="{{ asset('styles.css') }}?v={{ filemtime(public_path('styles.css')) }}">
-        <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
-        <link rel="stylesheet" href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+    <title>BScholarz - @yield('title')</title>
+
+    <link rel="stylesheet" href="{{ asset('styles.css') }}?v={{ filemtime(public_path('styles.css')) }}">
+    <link rel="stylesheet"
+        href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
+    <link rel="stylesheet"
+        href="{{ asset('fa-icons/css/all.css') }}?v={{ filemtime(public_path('fa-icons/css/all.css')) }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
 
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
@@ -19,39 +22,39 @@
     <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
     <script src="{{ asset('bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 
-    @if($errors -> has('email') || $errors -> has('password'))
-    <script>
-        $(window).on('load', function() {
-            $('#createNewStudent').modal('show');
-        });
-    </script>
+    @if($errors->has('email') || $errors->has('password'))
+        <script>
+            $(window).on('load', function () {
+                $('#createNewStudent').modal('show');
+            });
+        </script>
     @endif
 
     @if(session('poked'))
-    <script>
-        $(document).ready(function() {
-            $('.toast').toast('show');
-        });
-    </script>
+        <script>
+            $(document).ready(function () {
+                $('.toast').toast('show');
+            });
+        </script>
     @endif
 
     <style>
-
-        body, .modal-content{
+        body,
+        .modal-content {
             margin: 0px;
             background-color: #EBF0FF
-            }
+        }
 
         .modal-xl {
             margin-left: auto;
             margin-right: 75px;
             width: 81.70%;
             z-index: 10;
-        } 
-        
+        }
+
         .active-sect {
             position: absolute;
-            background: 
+            background:
                 url("data:image/svg+xml,%3Csvg viewBox='0 0 250 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='15.64' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
             background-color: #ccf2ff;
             border-radius: 50px 0px 0px 50px;
@@ -66,19 +69,19 @@
         }
 
 
-        .carousel-item{
-            float:none; 
+        .carousel-item {
+            float: none;
             transition: 0s !important;
             border-radius: 10px
         }
 
-        .modal-backdrop{
+        .modal-backdrop {
             z-index: 0;
         }
 
         .navigation-bar {
             width: 80%;
-            margin-left: auto; 
+            margin-left: auto;
             margin-right: 0px;
         }
 
@@ -105,23 +108,22 @@
             width: 80%;
             left: auto;
             right: 0px
+        }
 
-        } 
-      
-      	.file-upload{
-          position: absolute;
-          font-size: 8px;
-          opacity: 0; 
-          height: 2em;
-          left: 0px;
-          z-index: 0;
-          width: 25.8%;
+        .file-upload {
+            position: absolute;
+            font-size: 8px;
+            opacity: 0;
+            height: 2em;
+            left: 0px;
+            z-index: 0;
+            width: 25.8%;
         }
 
         .profile-file {
             position: absolute;
             font-size: 8px;
-            opacity: 0; 
+            opacity: 0;
             height: 2em;
             left: 0px;
             z-index: 0;
@@ -129,17 +131,17 @@
         }
 
         .remove-file {
-          display: none;
-          z-index: 1;
-          margin-top: 1px
+            display: none;
+            z-index: 1;
+            margin-top: 1px
         }
-      
-      	 .profile-pic-cstm {
-      
-        max-width: 100%;
-    	max-height: 100%;
-      }
-        
+
+        .profile-pic-cstm {
+
+            max-width: 100%;
+            max-height: 100%;
+        }
+
 
         #txt-custom {
             display: none
@@ -161,9 +163,9 @@
             display: none
         }
 
-        
 
-        @media only screen and (max-width: 1290px) { 
+
+        @media only screen and (max-width: 1290px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 70px;
@@ -171,7 +173,7 @@
             }
         }
 
-         @media only screen and (max-width: 1200px){
+        @media only screen and (max-width: 1200px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 65px;
@@ -179,7 +181,7 @@
             }
         }
 
-        @media only screen and (max-width: 1150px){
+        @media only screen and (max-width: 1150px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 64px;
@@ -188,7 +190,7 @@
 
         }
 
-        @media only screen and (max-width: 995px){
+        @media only screen and (max-width: 995px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 70px;
@@ -196,7 +198,7 @@
             }
         }
 
-        @media only screen and (max-width: 900px){
+        @media only screen and (max-width: 900px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 70px;
@@ -204,7 +206,7 @@
             }
         }
 
-        @media only screen and (max-width: 800px){
+        @media only screen and (max-width: 800px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 70px;
@@ -212,7 +214,7 @@
             }
         }
 
-        @media only screen and (max-width: 700px){
+        @media only screen and (max-width: 700px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 70px;
@@ -220,59 +222,59 @@
             }
         }
 
-        @media only screen and (max-width: 350px){
+        @media only screen and (max-width: 350px) {
             .modal-xl {
                 margin-left: auto;
                 margin-right: 70px;
                 max-width: 73%;
             }
-        } 
+        }
+    </style>
 
-        </style>
-        
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
+    <!-- Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
 
-        @include('layouts.staff-sidebar')
+<body class="font-sans antialiased">
 
-        <div class="min-h-screen">
+    @include('layouts.staff-sidebar')
+
+    <div class="min-h-screen">
 
         <div class="navigation-bar">
             @include('layouts.navigation')
         </div>
 
-            <!-- Page Heading -->
-            @if (isset($header))
-                <header class="shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endif
+        <!-- Page Heading -->
+        @if (isset($header))
+            <header class="shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endif
 
-            
 
-            <!-- Page Content -->
-            <main>
+
+        <!-- Page Content -->
+        <main>
 
             <div class="section-right" style="padding: 0px; margin-left: auto; right: 0px">
                 {{ $slot }}
             </div>
-            
-                <!-- <div class="footer">
+
+            <!-- <div class="footer">
                     @include('layouts.footer')
                 </div> -->
-            </main>
+        </main>
 
-        </div>
+    </div>
 
-        <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>  
-        <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>  
-        <script src="{{ asset('bootstrap/dist/js/popper.js') }}"></script>
-        <script src="{{ asset('bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        <script src="{{ asset('bootstrap/dist/js/main.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/dist/js/popper.js') }}"></script>
+    <script src="{{ asset('bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bootstrap/dist/js/main.js') }}"></script>
 
 
     <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
@@ -281,44 +283,46 @@
     <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{ asset('scripts/staffScripts.js') }}"></script>
 
     <script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
 
-  $(document).ready(function() {
-    $('#myTable2').DataTable( {
-      dom: "<'row'<'col-sm-12 col-md-4'><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4'l>>" +
-        "<'row'<'col-sm-12'tr>>" +
-        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-      
-        "order": [[ 1, "asc" ]], // will it sort only for that page?
-        // "paging":   false,
-        "lengthMenu": [[10, 50, 100, 150], [10, 50, 100, 150]] ,
-        // scrollY: 400
-        language: {
-        searchPlaceholder: "Search records",
-        search: "",
-      },
-      // "dom": '<"myCustomClass">rt<"top"lp><"clear">', // Positions table elements
+        $(document).ready(function () {
+            $('#myTable2').DataTable({
+                dom: "<'row'<'col-sm-12 col-md-4'><'col-sm-12 col-md-4'f><'col-sm-12 col-md-4'l>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 
-    } );
-    
-} );
-</script>
+                "order": [[1, "asc"]], // will it sort only for that page?
+                // "paging":   false,
+                "lengthMenu": [[10, 50, 100, 150], [10, 50, 100, 150]],
+                // scrollY: 400
+                language: {
+                    searchPlaceholder: "Search records",
+                    search: "",
+                },
+                // "dom": '<"myCustomClass">rt<"top"lp><"clear">', // Positions table elements
 
-    </body>
+            });
+
+        });
+    </script>
+
+</body>
+
 </html>

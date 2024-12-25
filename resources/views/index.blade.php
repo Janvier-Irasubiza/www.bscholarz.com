@@ -57,8 +57,8 @@
                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                 <a href="{{ route('open-advert', ['advert' => $ad->id]) }}" target="_blank">
                                     <img src="{{ asset('images/ads/' . $ad->poster) }}"
-                                         alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
-                                         style="height: 300px; object-fit: cover;">
+                                        alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
+                                        style="height: 300px; object-fit: cover;">
                                 </a>
                             </div>
                         @endforeach
@@ -88,8 +88,10 @@
                 <div class="arrows align-items-center">
                     <button type="button" id="prev"><i class="fa-solid fa-arrow-left"></i></button>
                     <div class="buttons align-items-center">
-                        <a href="{{ route('apply', ['discipline_id' => $c_data->identifier]) }}" class="apply-btn">REQUEST SERVICE</a>
-                        <a href="{{ route('learnMore', ['discipline_id' => $c_data->identifier]) }}" class="snd-apply-btn">LEARN MORE</a>
+                        <a href="{{ route('apply', ['discipline_id' => $c_data->identifier]) }}"
+                            class="apply-btn">REQUEST SERVICE</a>
+                        <a href="{{ route('learnMore', ['discipline_id' => $c_data->identifier]) }}"
+                            class="snd-apply-btn">LEARN MORE</a>
                     </div>
                     <button type="button" id="next"><i class="fa-solid fa-arrow-right"></i></button>
                 </div>
@@ -99,199 +101,205 @@
         <div class="section-right-body">
 
             @if(!$scholarships->isEmpty())
-                <div class="sch-trends">
-                    <h1 class="mb-4" style="font-size: 2em">Trending Scholarships</h1>
+                    <div class="sch-trends">
+                        <h1 class="mb-4" style="font-size: 2em">Trending Scholarships</h1>
 
-                    <div class="container overflow-hidden p-0">
-                        <div class="row gy-5">
-                            @foreach($scholarships as $scholarship)
-                                <div class="col-lg-4 w-5">
-                                    <!-- Card Wider -->
-                                    <div class="card card-cascade wider pb-4" style="background-color: #EBF0FF">
-                                        <div class="view view-cascade overlay">
-                                            <img class="card-img-top" src="{{ asset('images') }}/{{ $scholarship->poster }}" alt="Card image cap">
-                                            <div class="the-status" style="color: #2D5FA3">
-                                                @php
-                                                    $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
-                                                    $due_date = \Carbon\Carbon::parse($scholarship->due_date);
-                                                    $rem = $due_date->diffInDays($today);
-                                                @endphp
+                        <div class="container overflow-hidden p-0">
+                            <div class="row gy-5">
+                                @foreach($scholarships as $scholarship)
+                                                    <div class="col-lg-4 w-5">
+                                                        <!-- Card Wider -->
+                                                        <div class="card card-cascade wider pb-4" style="background-color: #EBF0FF">
+                                                            <div class="view view-cascade overlay">
+                                                                <img class="card-img-top" src="{{ asset('images') }}/{{ $scholarship->poster }}"
+                                                                    alt="Card image cap">
+                                                                <div class="the-status" style="color: #2D5FA3">
+                                                                    @php
+                                                                        $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
+                                                                        $due_date = \Carbon\Carbon::parse($scholarship->due_date);
+                                                                        $rem = $due_date->diffInDays($today);
+                                                                    @endphp
 
-                                                @if($scholarship->status == 'Comming soon')
-                                                    {{ $scholarship->status }}
-                                                @elseif($rem > 1)
-                                                    Remaining {{ $rem }} Days
-                                                @elseif($rem == 1)
-                                                    Remaining {{ $rem }} Day
-                                                @elseif($rem == 0)
-                                                    Ends Today
-                                                @else
-                                                    Ended
-                                                @endif
-                                            </div>
-                                            <a href="#!">
-                                                <div class="mask rgba-white-slight"></div>
-                                            </a>
-                                        </div>
+                                                                    @if($scholarship->status == 'Comming soon')
+                                                                        {{ $scholarship->status }}
+                                                                    @elseif($rem > 1)
+                                                                        Remaining {{ $rem }} Days
+                                                                    @elseif($rem == 1)
+                                                                        Remaining {{ $rem }} Day
+                                                                    @elseif($rem == 0)
+                                                                        Ends Today
+                                                                    @else
+                                                                        Ended
+                                                                    @endif
+                                                                </div>
+                                                                <a href="#!">
+                                                                    <div class="mask rgba-white-slight"></div>
+                                                                </a>
+                                                            </div>
 
-                                        <div class="card-body card-body-cascade text-center pb-2">
-                                            <p class="card-text muted-text" style="text-align: left">
-                                                {{ $scholarship->discipline_desc }}
-                                            </p>
+                                                            <div class="card-body card-body-cascade text-center pb-2">
+                                                                <p class="card-text muted-text" style="text-align: left">
+                                                                    {{ $scholarship->discipline_desc }}
+                                                                </p>
 
-                                            <div class="d-flex" style="justify-content: center">
-                                                <a class="scholarship-learn-more muted-text"
-                                                   href="{{ route('learnMore', ['discipline_id' => $scholarship->identifier]) }}">
-                                                   Learn More <i class="fa fa-arrow-right"></i></a>
-                                                <div>
-                                                    <a class="apply-btn" href="{{ route('apply', ['discipline_id' => $scholarship->identifier]) }}">
-                                                        Request Service
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Card Wider -->
-                                </div>
-                            @endforeach
+                                                                <div class="d-flex" style="justify-content: center">
+                                                                    <a class="scholarship-learn-more muted-text"
+                                                                        href="{{ route('learnMore', ['discipline_id' => $scholarship->identifier]) }}">
+                                                                        Learn More <i class="fa fa-arrow-right"></i></a>
+                                                                    <div>
+                                                                        <a class="apply-btn"
+                                                                            href="{{ route('apply', ['discipline_id' => $scholarship->identifier]) }}">
+                                                                            Request Service
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Card Wider -->
+                                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
-                </div>
             @endif
 
             @if(!$opportunity->isEmpty())
-                <div class="other-section mt-3">
-                    <h1 class="mb-4" style="font-size: 2em">Trending Job Opportunities</h1>
+                    <div class="other-section mt-3">
+                        <h1 class="mb-4" style="font-size: 2em">Trending Job Opportunities</h1>
 
-                    <div class="container overflow-hidden p-0">
-                        <div class="row gy-5">
-                            @foreach($opportunity as $opportunity)
-                                <div class="col-lg-4">
-                                    <!-- Card Wider -->
-                                    <div class="card card-cascade wider pb-4" style="background-color: #EBF0FF">
-                                        <div class="view view-cascade overlay">
-                                            <img class="card-img-top" src="{{ asset('images') }}/{{ $opportunity->poster }}" alt="Card image cap">
-                                            <div class="the-status" style="color: #2D5FA3">
-                                                @php
-                                                    $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
-                                                    $due_date = \Carbon\Carbon::parse($opportunity->due_date);
-                                                    $rem = $due_date->diffInDays($today);
-                                                @endphp
+                        <div class="container overflow-hidden p-0">
+                            <div class="row gy-5">
+                                @foreach($opportunity as $opportunity)
+                                                    <div class="col-lg-4">
+                                                        <!-- Card Wider -->
+                                                        <div class="card card-cascade wider pb-4" style="background-color: #EBF0FF">
+                                                            <div class="view view-cascade overlay">
+                                                                <img class="card-img-top" src="{{ asset('images') }}/{{ $opportunity->poster }}"
+                                                                    alt="Card image cap">
+                                                                <div class="the-status" style="color: #2D5FA3">
+                                                                    @php
+                                                                        $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
+                                                                        $due_date = \Carbon\Carbon::parse($opportunity->due_date);
+                                                                        $rem = $due_date->diffInDays($today);
+                                                                    @endphp
 
-                                                @if($opportunity->status == 'Comming soon')
-                                                    {{ $opportunity->status }}
-                                                @elseif($rem > 1)
-                                                    Remaining {{ $rem }} Days
-                                                @elseif($rem == 1)
-                                                    Remaining {{ $rem }} Day
-                                                @elseif($rem == 0)
-                                                    Ends Today
-                                                @else
-                                                    Ended
-                                                @endif
-                                            </div>
-                                            <a href="#!">
-                                                <div class="mask rgba-white-slight"></div>
-                                            </a>
-                                        </div>
+                                                                    @if($opportunity->status == 'Comming soon')
+                                                                        {{ $opportunity->status }}
+                                                                    @elseif($rem > 1)
+                                                                        Remaining {{ $rem }} Days
+                                                                    @elseif($rem == 1)
+                                                                        Remaining {{ $rem }} Day
+                                                                    @elseif($rem == 0)
+                                                                        Ends Today
+                                                                    @else
+                                                                        Ended
+                                                                    @endif
+                                                                </div>
+                                                                <a href="#!">
+                                                                    <div class="mask rgba-white-slight"></div>
+                                                                </a>
+                                                            </div>
 
-                                        <div class="card-body card-body-cascade text-center pb-0">
-                                            <p class="card-text muted-text" style="text-align: left">
-                                                {{ $opportunity->discipline_desc }}
-                                            </p>
+                                                            <div class="card-body card-body-cascade text-center pb-0">
+                                                                <p class="card-text muted-text" style="text-align: left">
+                                                                    {{ $opportunity->discipline_desc }}
+                                                                </p>
 
-                                            <div class="d-flex" style="justify-content: center">
-                                                <a class="scholarship-learn-more muted-text"
-                                                   href="{{ route('learnMore', ['discipline_id' => $opportunity->identifier]) }}">
-                                                   Learn more <i class="fa fa-arrow-right"></i></a>
-                                                <div>
-                                                    <a class="apply-btn" href="{{ route('apply', ['discipline_id' => $opportunity->identifier]) }}">
-                                                        Request Service
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Card Wider -->
-                                </div>
-                            @endforeach
+                                                                <div class="d-flex" style="justify-content: center">
+                                                                    <a class="scholarship-learn-more muted-text"
+                                                                        href="{{ route('learnMore', ['discipline_id' => $opportunity->identifier]) }}">
+                                                                        Learn more <i class="fa fa-arrow-right"></i></a>
+                                                                    <div>
+                                                                        <a class="apply-btn"
+                                                                            href="{{ route('apply', ['discipline_id' => $opportunity->identifier]) }}">
+                                                                            Request Service
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Card Wider -->
+                                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
-                </div>
             @endif
 
             @if(!$trainings->isEmpty())
-                <div class="sch-trends-other mt-3 mb-0">
-                    <h1 class="mb-4" style="font-size: 2em">Trending Fellowships & Trainings</h1>
+                    <div class="sch-trends-other mt-3 mb-0">
+                        <h1 class="mb-4" style="font-size: 2em">Trending Fellowships & Trainings</h1>
 
-                    <div class="container overflow-hidden p-0">
-                        <div class="row gy-5">
-                            @foreach($trainings as $training)
-                                <div class="col-lg-4">
-                                    <!-- Card Wider -->
-                                    <div class="card card-cascade wider pb-4" style="background-color: #EBF0FF">
-                                        <div class="view view-cascade overlay">
-                                            <img class="card-img-top" src="{{ asset('images') }}/{{ $training->poster }}" alt="Card image cap">
-                                            <div class="the-status" style="color: #2D5FA3">
-                                                @php
-                                                    $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
-                                                    $due_date = \Carbon\Carbon::parse($training->due_date);
-                                                    $rem = $due_date->diffInDays($today);
-                                                @endphp
+                        <div class="container overflow-hidden p-0">
+                            <div class="row gy-5">
+                                @foreach($trainings as $training)
+                                                    <div class="col-lg-4">
+                                                        <!-- Card Wider -->
+                                                        <div class="card card-cascade wider pb-4" style="background-color: #EBF0FF">
+                                                            <div class="view view-cascade overlay">
+                                                                <img class="card-img-top" src="{{ asset('images') }}/{{ $training->poster }}"
+                                                                    alt="Card image cap">
+                                                                <div class="the-status" style="color: #2D5FA3">
+                                                                    @php
+                                                                        $today = \Carbon\Carbon::now()->format('Y-m-d H:i:s.u');
+                                                                        $due_date = \Carbon\Carbon::parse($training->due_date);
+                                                                        $rem = $due_date->diffInDays($today);
+                                                                    @endphp
 
-                                                @if($training->status == 'Comming soon')
-                                                    {{ $training->status }}
-                                                @elseif($rem > 1)
-                                                    Remaining {{ $rem }} Days
-                                                @elseif($rem == 1)
-                                                    Remaining {{ $rem }} Day
-                                                @elseif($rem == 0)
-                                                    Ends Today
-                                                @else
-                                                    Ended
-                                                @endif
-                                            </div>
-                                            <a href="#!">
-                                                <div class="mask rgba-white-slight"></div>
-                                            </a>
-                                        </div>
+                                                                    @if($training->status == 'Comming soon')
+                                                                        {{ $training->status }}
+                                                                    @elseif($rem > 1)
+                                                                        Remaining {{ $rem }} Days
+                                                                    @elseif($rem == 1)
+                                                                        Remaining {{ $rem }} Day
+                                                                    @elseif($rem == 0)
+                                                                        Ends Today
+                                                                    @else
+                                                                        Ended
+                                                                    @endif
+                                                                </div>
+                                                                <a href="#!">
+                                                                    <div class="mask rgba-white-slight"></div>
+                                                                </a>
+                                                            </div>
 
-                                        <div class="card-body card-body-cascade text-center pb-0">
-                                            <p class="card-text muted-text" style="text-align: left">
-                                                {{ $training->discipline_desc }}
-                                            </p>
+                                                            <div class="card-body card-body-cascade text-center pb-0">
+                                                                <p class="card-text muted-text" style="text-align: left">
+                                                                    {{ $training->discipline_desc }}
+                                                                </p>
 
-                                            <div class="d-flex" style="justify-content: center">
-                                                <a class="scholarship-learn-more muted-text"
-                                                   href="{{ route('learnMore', ['discipline_id' => $training->identifier]) }}">
-                                                   Learn More <i class="fa fa-arrow-right"></i></a>
-                                                <div>
-                                                    <a class="apply-btn" href="{{ route('apply', ['discipline_id' => $training->identifier]) }}">
-                                                        Request Service
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Card Wider -->
-                                </div>
-                            @endforeach
+                                                                <div class="d-flex" style="justify-content: center">
+                                                                    <a class="scholarship-learn-more muted-text"
+                                                                        href="{{ route('learnMore', ['discipline_id' => $training->identifier]) }}">
+                                                                        Learn More <i class="fa fa-arrow-right"></i></a>
+                                                                    <div>
+                                                                        <a class="apply-btn"
+                                                                            href="{{ route('apply', ['discipline_id' => $training->identifier]) }}">
+                                                                            Request Service
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- Card Wider -->
+                                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
-                </div>
             @endif
 
         </div>
 
         @if ($partners->count() > 0)
-            <div class="mt-5">
+            <div class="mt-5 mb-8">
                 <h1 style="font-size: 2em">Our Partners</h1>
                 <div class="mt-3 d-flex flex-wrap gap-3">
                     @foreach ($partners as $partner)
                         <a href="">
-                            <div style="width: 100px; height: 100px;" class="overflow-hidden">
+                            <div style="width: 100px; height: 100px;" class="overflow-hidden rounded">
                                 <img src="{{ asset('profile_pictures/' . $partner->poster) }}" alt=""
-                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
                         </a>
                     @endforeach

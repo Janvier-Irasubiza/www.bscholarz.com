@@ -25,15 +25,15 @@
                                                         <div class="widget-chart-content col-lg-12 ml-1">
                                                             <div class="widget-description text-focus"><p><small>ID: &nbsp;</small><strong>{{ $transaction_info -> payment_id }}</strong></p></div>
                                                             <div class="widget-subheading"><small style="font-weight: 400">Service: &nbsp;</small>{{ $application_info -> discipline_name }}</div>
-                                                            <div class="widget-subheading"><small style="font-weight: 400">Amount Paid: &nbsp;</small>{{ number_format($transaction_info -> amount_paid) }} <small style="font-weight: 400">frw</small></div>
+                                                            <div class="widget-subheading"><small style="font-weight: 400">Amount Paid: &nbsp;</small>{{ number_format($amount) }} <small style="font-weight: 400">frw</small></div>
                                                             <div class="widget-description text-focus"><p><small>Organization: &nbsp;</small>{{ $application_info -> organization }}</p></div>
-                                                            <div class="widget-description text-focus"><p><small>Transaction Time: &nbsp;</small>{{ $transaction_info -> payment_date }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Transaction Time: &nbsp;</small>{{ $created_at }}</p></div>
                                                             <div class="widget-description text-focus"><p><small>Service Time: &nbsp;</small>{{ $transaction_info -> served_on }}</p></div>
                                                         </div>
                                                     </div>
 
                                                     <div class="mt-2 mb-2 d-flex gap-3 justify-content-center">
-                                                        <form action="{{ route('approve-transaction', ['application_id' => $transaction_info -> app_id]) }}" method="POST">
+                                                        <form action="{{ route('approve-transaction', ['application_id' => $transaction_info -> app_id, 'creation_time' => $created_at]) }}" method="POST">
                                                             @csrf <!-- Include CSRF token for security -->
                                                             <input type="hidden" name="application_id" value="{{ $transaction_info -> app_id }}">
                                                             <button type="submit" class="btn bg-success">
@@ -82,7 +82,7 @@
                                             <!-- Modal -->
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
-                                                        <form action="{{ route('send-clarification-message') }}" method="POST">
+                                                        <form action="{{ route('send-clarification-message', ['creation_time' => $created_at]) }}" method="POST">
                                                             @csrf
                                                             <div class="modal-content" style="top: 100px">
                                                                 <div class="modal-header">

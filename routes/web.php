@@ -172,20 +172,21 @@ Route::prefix('admin')->group(function () {
     Route::post('/edit-testmony-info', [PagesController::class, 'edit_testmony'])->middleware(['staff'])->name('edit-testmony-info');
     Route::get('/delete-testmony/{id}/{file}', [PagesController::class, 'delete_testmony'])->middleware(['staff'])->name('delete-testmony');
     Route::get('/new-testmony', function () {
-        return view('admin.new-testmony'); })->middleware(['staff'])->name('new-testmony');
+        return view('admin.new-testmony');
+    })->middleware(['staff'])->name('new-testmony');
     Route::post('/post-testmony', [PagesController::class, 'post_testmony'])->middleware(['staff'])->name('post-testmony');
     Route::get('/faqs', [PagesController::class, 'faqs'])->middleware(['staff'])->name('faqs');
     Route::post('/edit-faq', [PagesController::class, 'edit_faqs'])->middleware(['staff'])->name('edit-faq');
     Route::post('/post-faq', [PagesController::class, 'post_faqs'])->middleware(['staff'])->name('post-faq');
     Route::get('/delete-faq/{id}', [PagesController::class, 'delete_faq'])->middleware(['staff'])->name('delete-faq');
     Route::get('/partners', [AdminController::class, 'parteners'])->middleware(['staff'])->name('admin.parteners');
-    Route::get('/partners/new', [AdminController::class,'newPartner'])->middleware('staff')->name('admin.partners.new');
-    Route::post('/add-partner', [AdminController::class,'addPartner'])->middleware('staff')->name('admin.partners.add');
-    Route::get('/partner/edit/{partner}', [AdminController::class,'editPartner'])->middleware('staff')->name('admin.partners.edit');
-    Route::post('/update-partner', [AdminController::class,'updatePartner'])->middleware('staff')->name('admin.partners.update');
-    Route::get('/partner/delete/{partner}', [AdminController::class,'deletePartner'])->middleware('staff')->name('admin.partners.delete');
-    Route::get('/partner/activate/{partner}', [AdminController::class,'activatePartner'])->middleware('staff')->name('admin.partners.activate');
-    Route::get('/partner/deactivate/{partner}', [AdminController::class,'deactivatePartner'])->middleware('staff')->name('admin.partners.deactivate');
+    Route::get('/partners/new', [AdminController::class, 'newPartner'])->middleware('staff')->name('admin.partners.new');
+    Route::post('/add-partner', [AdminController::class, 'addPartner'])->middleware('staff')->name('admin.partners.add');
+    Route::get('/partner/edit/{partner}', [AdminController::class, 'editPartner'])->middleware('staff')->name('admin.partners.edit');
+    Route::post('/update-partner', [AdminController::class, 'updatePartner'])->middleware('staff')->name('admin.partners.update');
+    Route::get('/partner/delete/{partner}', [AdminController::class, 'deletePartner'])->middleware('staff')->name('admin.partners.delete');
+    Route::get('/partner/activate/{partner}', [AdminController::class, 'activatePartner'])->middleware('staff')->name('admin.partners.activate');
+    Route::get('/partner/deactivate/{partner}', [AdminController::class, 'deactivatePartner'])->middleware('staff')->name('admin.partners.deactivate');
     Route::post('/invalidate-partner', [AdminController::class, 'invalidate_partner'])->middleware(['staff'])->name('admin.invalidate-partner');
     Route::get('/validate-partner', [AdminController::class, 'validate_partner'])->middleware(['staff'])->name('admin.validate-partner');
     Route::post('/disburse-full-to-partner', [AdminController::class, 'disburse_full_to_partner'])->name('admin.disburse-full-to-partner');
@@ -211,12 +212,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/appt/{appt}/delete', [AdminController::class, 'appointmentDelete'])->middleware('staff')->name('appointment.delete');
     Route::get('/web/content', [AdminController::class, 'webContent'])->middleware('staff')->name('web.content');
     Route::post('/web/content/update', [AdminController::class, 'updateWebContent'])->middleware('staff')->name('web.content.upadte');
-    Route::get('/services-costs', [AdminController::class,'set_services_costs'])->middleware('staff')->name('admin.services-costs');
-    Route::get('/new-service-costs', [AdminController::class,'add_new_service_cost'])->middleware('staff')->name('admin.service-costs.new');
-    Route::post('/add-new-service-cost', [AdminController::class,'new_service_cost'])->middleware('staff')->name('admin.add-new-service-cost');
-    Route::get('/delete-service-cost/{cost}', [AdminController::class,'delete_service_cost'])->middleware('staff')->name('admin.delete-service-cost');
-    Route::get('/edit-service-cost/{cost}', [AdminController::class,'edit_service_cost'])->middleware('staff')->name('admin.edit-service-cost');
-    Route::post('/update-service-cost', [AdminController::class,'update_service_cost'])->middleware('staff')->name('admin.update-service-cost');
+    Route::get('/services-costs', [AdminController::class, 'set_services_costs'])->middleware('staff')->name('admin.services-costs');
+    Route::get('/new-service-costs', [AdminController::class, 'add_new_service_cost'])->middleware('staff')->name('admin.service-costs.new');
+    Route::post('/add-new-service-cost', [AdminController::class, 'new_service_cost'])->middleware('staff')->name('admin.add-new-service-cost');
+    Route::get('/delete-service-cost/{cost}', [AdminController::class, 'delete_service_cost'])->middleware('staff')->name('admin.delete-service-cost');
+    Route::get('/edit-service-cost/{cost}', [AdminController::class, 'edit_service_cost'])->middleware('staff')->name('admin.edit-service-cost');
+    Route::post('/update-service-cost', [AdminController::class, 'update_service_cost'])->middleware('staff')->name('admin.update-service-cost');
 });
 
 
@@ -254,7 +255,8 @@ Route::prefix('md')->middleware('staff', 'strack')->group(function () {
     Route::post('/edit-testmony-info', [PagesController::class, 'edit_testmony'])->name('md.edit-testmony-info');
     Route::get('/delete-testmony/{id}/{file}', [PagesController::class, 'delete_testmony'])->name('md.delete-testmony');
     Route::get('/new-testmony', function () {
-        return view('admin.new-testmony'); })->name('md.new-testmony');
+        return view('admin.new-testmony');
+    })->name('md.new-testmony');
     Route::post('/post-testmony', [PagesController::class, 'post_testmony'])->name('md.post-testmony');
     Route::get('/faqs', [PagesController::class, 'faqs'])->name('md.faqs');
     Route::post('/edit-faq', [PagesController::class, 'edit_faqs'])->name('md.edit-faq');
@@ -358,6 +360,8 @@ Route::prefix('staff')->middleware('staff', 'strack')->group(function () {
     Route::get('/unreachable/{application_id}/{applicant}', [StaffController::class, 'unreachable'])->name('unreachable');
     Route::post('/request-to-pay', [StaffController::class, 'request_to_pay'])->name('request-to-pay');
     Route::get('/appointments', [StaffController::class, 'appointments'])->middleware('staff')->name('my.appointments');
+    Route::get('/app/comments', [ApplicationsController::class, 'recommendedComments'])->name('md.app-comments');
+    Route::get('/comments', [StaffController::class, 'comments'])->middleware('staff')->name('my.comments');
 });
 
 Route::get('/failed-session', function () {
@@ -368,9 +372,11 @@ Route::get('/failed-session', function () {
 Route::get('rhythmbox-logout', [AuthenticatedSessionController::class, 'rhythmbox_destroy'])->name('rhythmbox.logout');
 Route::get('staff-logout', [AuthenticatedSessionController::class, 'staff_destroy'])->name('staff.logout');
 Route::post('error', function () {
-    return view('error'); })->name('error');
+    return view('error');
+})->name('error');
 Route::get('notice', function () {
-    return view('error'); })->name('notice');
+    return view('error');
+})->name('notice');
 
 Route::post('/send-email', 'App\Http\Controllers\Dev\SendEmailController@sendEmail')->name('send.email');
 
@@ -378,8 +384,8 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard'])->name('accountant-dashboard');
     Route::get('/clarifications', [AccountabilityController::class, 'accountant_dashboard'])->name('sort-clarifications');
     Route::get('/transactions', [AccountabilityController::class, 'pending_transactions'])->name('pending-transactions');
-    Route::post('/approve/{application_id}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
-    Route::get('/review/{transaction}/{applicant}/{application}/{agent}', [AccountabilityController::class, 'transaction_review'])->name('transaction-review');
+    Route::post('/approve/{application_id}/{creation_time}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
+    Route::get('/review/{transaction}/{applicant}/{application}/{agent}/{amount_paid}/{creation_time}', [AccountabilityController::class, 'transaction_review'])->name('transaction-review');
     Route::get('/debtors', [AccountabilityController::class, 'accountant_deptors'])->name('accountant-deptors');
     Route::get('/complete-transactions', [AccountabilityController::class, 'complete_transactions'])->name('complete-transactions');
     Route::get('/accountant/staff', [AdminController::class, 'organization'])->name('accountant-staff');
@@ -393,7 +399,7 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/accountant/export-transactions', [ExportsController::class, 'exportTransactions'])->name('export.transactions');
     Route::get('/export-revenue', [AccountabilityController::class, 'revenue'])->name('export-revenues');
     Route::get('/accountant-remind/{transaction}', [AccountabilityController::class, 'remind_debtor'])->name('remind-debtor');
-    Route::post('/send-clarification-message', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
+    Route::post('/send-clarification-message/{creation_time}', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
 });
 
 require __DIR__ . '/auth.php';

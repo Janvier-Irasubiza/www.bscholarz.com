@@ -114,13 +114,13 @@
 
                         <div class="mt-3">
                             <x-input-label for="media" :value="__('Media')" />
-                            <small class="text-muted mb-0">Advert media file</small>
+                            <small class="text-muted mb-0">A 300x300 Image or SVG file</small>
                             <div class="d-flex gap-1 mt-2">
                                 <input class="text-left" type="button" id="uploadPreview" value="Select file"
                                     style="border: 2px solid #4d4d4d; border-radius: 6px; background: ghostwhite; padding: 4px 10px;"
                                     id="olBtn" data-element="insertOrderedList">
-                                <input type="file" id="uploadFile" class="col-lg-11 upload-file" onchange="exc();"
-                                    name="media">
+                                <input type="file" id="uploadFile" style="opacity: 0; position: absolute; width: 8%"
+                                    onchange="exc();" name="media">
                                 <button class="remove-file" id="removeFile" onclick="removeFileFun()" type="button">
                                     <span class="fa-solid fa-folder-minus"
                                         style="border: 1px solid #b30000; border-radius: 3px; padding: 7px; color: #b30000;"></span>

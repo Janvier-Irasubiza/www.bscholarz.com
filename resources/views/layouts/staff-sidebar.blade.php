@@ -60,6 +60,24 @@
                     </div>
                 </a>
             </li>
+
+            <li class="sb-li" style="border-bottom: 1px solid rgba(0, 0, 0, 0.096); margin: 0px">
+                <a href="{{ route('my.comments') }}" class="sd-bar-link">
+                    <div class="flex" style="">
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-comment"
+                                style="font-size: 16px; font-weight: 600; margin-top: 1px; color: #000000a8"></i>
+                        </div>
+
+                        <div class="trend-content flex align-items-center gap-2" style="text-align: left">
+                            <h5>Recommended Comments</h5>
+                            @if ($recommendedComments && $recommendedComments > 0)
+                                <i class="fa-solid fa-circle mt-1" style="font-size: 0.4em; color: #ec6c55bd"></i>
+                            @endif
+                        </div>
+                    </div>
+                </a>
+            </li>
         </ul>
 
     </div>

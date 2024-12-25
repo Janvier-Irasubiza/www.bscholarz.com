@@ -21,6 +21,7 @@ class Request extends Model
         'request_time',
         'service_amount',
         'payment_status',
+        'request_service_paid',
         'payment_id',
         'amount_paid',
         'outstanding_amount',
