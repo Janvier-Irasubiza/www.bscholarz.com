@@ -95,7 +95,6 @@ class StaffController extends Controller
         $under_review = DB::table('user_requests')->where('status', 'Under Review')->where('revied_by', Auth::guard('staff')->user()->id)->get();
 
         $outs = DB::table('served_requests')->where('id', $request->customer_info)->where('outstanding_amount', '<>', 0)->get();
-        dd($outs);
 
         return view('staff.customer-details', compact(
             'client_info',
@@ -177,7 +176,6 @@ class StaffController extends Controller
             $paidAmount = $this->processPayment($request, $request->serviceCost, $partners, $activityApplicationInfo, $userId, $existingDiscipline->id);
         }
 
-        dd($activityApplicationInfo);
         $newApplicationId = DB::table('applications')->insertGetId($activityApplicationInfo);
 
         if ($paidAmount > 0) {
@@ -244,7 +242,7 @@ class StaffController extends Controller
         $activityApplicationInfo = [
             'applicant' => $userId->id,
             'discipline_id' => $discipline,
-            'payment_status' => $request->paymentStatus,
+            'payment_status' => 'Waiting For Review',
             'amount_paid' => $paidAmount,
             'outstanding_amount' => $outstandingAmount,
             'payment_date' => now(),
@@ -783,11 +781,11 @@ class StaffController extends Controller
         if ($amount_paid->outstanding_amount - $sum > 0) {
 
             $my_percentage = ((intval($amount_paid->outstanding_amount - $sum) * Auth::guard('staff')->user()->percentage) / 100);
-            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $paid_amount, 'assistant_pending_commission' => $my_percentage, 'remittance_status' => 'on hold', 'payment_status' => 'Waiting For Confirmation', 'amount_paid' => $amount_paid->outstanding_amount]);
+            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $paid_amount, 'assistant_pending_commission' => $my_percentage, 'remittance_status' => 'on hold', 'payment_status' => 'Waiting For Review', 'amount_paid' => $amount_paid->outstanding_amount]);
         } else {
 
             $my_percentage = ((intval($amount_paid->outstanding_amount) * Auth::guard('staff')->user()->percentage) / 100);
-            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $paid_amount, 'assistant_pending_commission' => $my_percentage, 'remittance_status' => 'on hold', 'payment_status' => 'Waiting For Confirmation', 'amount_paid' => $amount_paid->outstanding_amount]);
+            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $paid_amount, 'assistant_pending_commission' => $my_percentage, 'remittance_status' => 'on hold', 'payment_status' => 'Waiting For Review', 'amount_paid' => $amount_paid->outstanding_amount]);
 
         }
 
@@ -854,7 +852,7 @@ class StaffController extends Controller
 
         if (intval($request->amountReceived) == $app_info->outstanding_amount) {
 
-            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $request->amountReceived . '=>' . $date->format('Y-m-d H:i:s'), 'assistant_pending_commission' => $assist_pending_amount, 'payment_status' => 'Waiting For Confirmation', 'remittance_status' => 'on hold', 'amount_paid' => $request->amountReceived]);
+            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $request->amountReceived . '=>' . $date->format('Y-m-d H:i:s'), 'assistant_pending_commission' => $assist_pending_amount, 'payment_status' => 'Waiting For Review', 'remittance_status' => 'on hold', 'amount_paid' => $request->amountReceived]);
 
             foreach ($partners as $partner) {
 
@@ -868,7 +866,7 @@ class StaffController extends Controller
 
             $new_amount = $app_info->outstanding_paid_amount . ';' . $request->amountReceived . '=>' . $date->format('Y-m-d H:i:s');
 
-            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $new_amount, 'assistant_pending_commission' => $assist_pending_amount, 'payment_status' => 'Waiting For Confirmation', 'remittance_status' => 'on hold', 'amount_paid' => $request->amountReceived]);
+            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Cleared', 'outstanding_paid_amount' => $new_amount, 'assistant_pending_commission' => $assist_pending_amount, 'payment_status' => 'Waiting For Review', 'remittance_status' => 'on hold', 'amount_paid' => $request->amountReceived]);
 
             foreach ($partners as $partner) {
 
@@ -882,7 +880,7 @@ class StaffController extends Controller
 
             $new_amount = $app_info->outstanding_paid_amount . ';' . $request->amountReceived . '=>' . $date->format('Y-m-d H:i:s');
 
-            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Partial payment', 'outstanding_paid_amount' => $new_amount, 'assistant_pending_commission' => $assist_pending_amount, 'remittance_status' => 'on hold', 'payment_status' => 'Partial Payment Waiting For Confirmation', 'amount_paid' => $request->amountReceived]);
+            DB::table('applications')->where('app_id', $request->app_id)->limit(1)->update(['outstanding_payment_status' => 'Partial payment', 'outstanding_paid_amount' => $new_amount, 'assistant_pending_commission' => $assist_pending_amount, 'remittance_status' => 'on hold', 'payment_status' => 'Partial Payment Waiting For Review', 'amount_paid' => $request->amountReceived]);
 
             foreach ($partners as $partner) {
 

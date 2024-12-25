@@ -384,8 +384,8 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/dashboard', [AccountabilityController::class, 'accountant_dashboard'])->name('accountant-dashboard');
     Route::get('/clarifications', [AccountabilityController::class, 'accountant_dashboard'])->name('sort-clarifications');
     Route::get('/transactions', [AccountabilityController::class, 'pending_transactions'])->name('pending-transactions');
-    Route::post('/approve/{application_id}/{creation_time}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
-    Route::get('/review/{transaction}/{applicant}/{application}/{agent}/{amount_paid}/{creation_time}', [AccountabilityController::class, 'transaction_review'])->name('transaction-review');
+    Route::post('/approve/{transaction}', [AccountabilityController::class, 'approve_transaction'])->name('approve-transaction');
+    Route::get('/review/{transaction}', [AccountabilityController::class, 'transaction_review'])->name('transaction-review');
     Route::get('/debtors', [AccountabilityController::class, 'accountant_deptors'])->name('accountant-deptors');
     Route::get('/complete-transactions', [AccountabilityController::class, 'complete_transactions'])->name('complete-transactions');
     Route::get('/accountant/staff', [AdminController::class, 'organization'])->name('accountant-staff');
@@ -399,7 +399,7 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/accountant/export-transactions', [ExportsController::class, 'exportTransactions'])->name('export.transactions');
     Route::get('/export-revenue', [AccountabilityController::class, 'revenue'])->name('export-revenues');
     Route::get('/accountant-remind/{transaction}', [AccountabilityController::class, 'remind_debtor'])->name('remind-debtor');
-    Route::post('/send-clarification-message/{creation_time}', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
+    Route::post('/send-clarification-message/{transaction}', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
 });
 
 require __DIR__ . '/auth.php';

@@ -23,19 +23,18 @@
                                                 <div class="align-items-center no-shadow rm-border bg-transparent widget-chart text-left border rounded">
                                                     <div class="pb-2 pt-2" style="border-bottom: 1px solid #d9d9d9">
                                                         <div class="widget-chart-content col-lg-12 ml-1">
-                                                            <div class="widget-description text-focus"><p><small>ID: &nbsp;</small><strong>{{ $transaction_info -> payment_id }}</strong></p></div>
-                                                            <div class="widget-subheading"><small style="font-weight: 400">Service: &nbsp;</small>{{ $application_info -> discipline_name }}</div>
-                                                            <div class="widget-subheading"><small style="font-weight: 400">Amount Paid: &nbsp;</small>{{ number_format($amount) }} <small style="font-weight: 400">frw</small></div>
-                                                            <div class="widget-description text-focus"><p><small>Organization: &nbsp;</small>{{ $application_info -> organization }}</p></div>
-                                                            <div class="widget-description text-focus"><p><small>Transaction Time: &nbsp;</small>{{ $created_at }}</p></div>
-                                                            <div class="widget-description text-focus"><p><small>Service Time: &nbsp;</small>{{ $transaction_info -> served_on }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>ID: &nbsp;</small><strong>{{ $payments -> id }}</strong></p></div>
+                                                            <div class="widget-subheading"><small style="font-weight: 400">Service: &nbsp;</small>{{ $payments -> application -> discipline-> discipline_name }}</div>
+                                                            <div class="widget-subheading"><small style="font-weight: 400">Amount Paid: &nbsp;</small>{{ number_format($payments -> amount) }} <small style="font-weight: 400">frw</small></div>
+                                                            <div class="widget-description text-focus"><p><small>Organization: &nbsp;</small>{{ $payments -> application -> discipline->organization }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Transaction Time: &nbsp;</small>{{ $payments->created_at }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Service Time: &nbsp;</small>{{ $payments -> application -> served_on }}</p></div>
                                                         </div>
                                                     </div>
 
                                                     <div class="mt-2 mb-2 d-flex gap-3 justify-content-center">
-                                                        <form action="{{ route('approve-transaction', ['application_id' => $transaction_info -> app_id, 'creation_time' => $created_at]) }}" method="POST">
+                                                        <form action="{{ route('approve-transaction', ['transaction' => $payments -> id]) }}" method="POST">
                                                             @csrf <!-- Include CSRF token for security -->
-                                                            <input type="hidden" name="application_id" value="{{ $transaction_info -> app_id }}">
                                                             <button type="submit" class="btn bg-success">
                                                                 <span class="mr-1"><strong class="text-white">APPROVE</strong></span>
                                                             </button>
@@ -56,12 +55,12 @@
                                                 <div class="align-items-center no-shadow rm-border bg-transparent widget-chart text-left border rounded">
                                                     <div class="pb-2 pt-2" style="border-bottom: 1px solid #d9d9d9">
                                                         <div class="widget-chart-content col-lg-12 ml-1">
-                                                            <div class="widget-subheading"><small style="font-weight: 400">Names: &nbsp;</small>{{ $agent_info -> names }}</div>
-                                                            <div class="widget-description text-focus"><p><small>Phone: &nbsp;</small>{{ $agent_info -> phone_number }}</p></div>
-                                                            <div class="widget-description text-focus"><p><small>Email: &nbsp;</small>{{ $agent_info -> email }}</p></div>
-                                                            <div class="widget-description text-focus"><p><small>Role: &nbsp;</small>{{ $agent_info -> role }}</p></div>
-                                                            <div class="widget-description text-focus"><p><small>Percentage: &nbsp;</small>{{ $agent_info -> percentage }}</p></div>
-                                                            <div class="widget-description text-focus"><p><small>Current Status: &nbsp;</small>{{ $agent_info -> status }}</p></div>
+                                                            <div class="widget-subheading"><small style="font-weight: 400">Names: &nbsp;</small>{{ $payments -> application -> appAssistant -> names }}</div>
+                                                            <div class="widget-description text-focus"><p><small>Phone: &nbsp;</small>{{ $payments -> application -> appAssistant -> phone_number }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Email: &nbsp;</small>{{ $payments -> application -> appAssistant -> email }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Role: &nbsp;</small>{{ $payments -> application -> appAssistant -> role }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Percentage: &nbsp;</small>{{ $payments -> application -> appAssistant -> percentage }}</p></div>
+                                                            <div class="widget-description text-focus"><p><small>Current Status: &nbsp;</small>{{ $payments -> application -> appAssistant -> status }}</p></div>
                                                         </div>
                                                     </div>
 
@@ -82,7 +81,7 @@
                                             <!-- Modal -->
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
-                                                        <form action="{{ route('send-clarification-message', ['creation_time' => $created_at]) }}" method="POST">
+                                                        <form action="{{ route('send-clarification-message', ['transaction' => $payments->id]) }}" method="POST">
                                                             @csrf
                                                             <div class="modal-content" style="top: 100px">
                                                                 <div class="modal-header">
@@ -105,8 +104,8 @@
                                                                     </div>
 
                                                                     <!-- Hidden inputs for agent information and application details -->
-                                                                    <input type="hidden" name="agent_id" value="{{ $agent_info->id }}">
-                                                                    <input type="hidden" name="application_id" value="{{ $transaction_info->app_id }}">
+                                                                    <input type="hidden" name="agent_id" value="{{ $payments->application->assistant }}">
+                                                                    <input type="hidden" name="application_id" value="{{ $payments->application->app_id }}">
 
                                                                 </div>
                                                                 <div class="modal-footer">

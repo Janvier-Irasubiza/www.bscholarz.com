@@ -6,18 +6,31 @@
     <div class="chat-container flex bg-white h-screen">
         <div class="dashboard-container col-lg-10 px-5">
             <header class="dashboard-header">
-                <div class="d-flex align-items-center gap-2 justify-content-between">
-                    <div class="d-flex gap-4 align-items-center">
-                        <a href="{{ route('chats.index') }}">
-                            <i class="fa-solid fa-arrow-left"></i> Back
-                        </a>
-                        <h2 class="muted-text" style="font-size: 1.4em">{{ $message->issue }}</h2>
+                <div class="d-flex align-items-start gap-4">
+                    <a href="{{ route('chats.index') }}">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <div class="w-full">
+                        <div class="d-flex justify-content-between align-items-center w-full">
+                            <h2 class="muted-text" style="font-size: 1.4em">{{ $message->issue }}</h2>
+                            <div>
+                                <p class="text-muted" id="time-{{ $message->id }}"></p>
+                                <script>
+                                    document.getElementById("time-{{ $message->id }}").innerHTML = new Date('{{ $message->created_at }}').toLocaleTimeString();
+                                </script>
+                            </div>
+                        </div>
+
+                        @if (!is_null($app_info))
+                            <div class="p-1 rounded mt-2 text-left border">
+                                <p class="text-muted f-13" style="font-weight: 600">Applicant:&nbsp;&nbsp; {{ $app_info -> user -> names }}</p>
+                                <p class="text-muted f-13" style="font-weight: 600">Service:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ $app_info -> discipline -> discipline_name }}</p>
+                            </div>
+                        @endif
+
                     </div>
-                    <p class="text-muted" id="time-{{ $message->id }}"></p>
-                    <script>
-                        document.getElementById("time-{{ $message->id }}").innerHTML = new Date('{{ $message->created_at }}').toLocaleTimeString();
-                    </script>
                 </div>
+
             </header>
 
             <div class="border rounded-lg p-3">
