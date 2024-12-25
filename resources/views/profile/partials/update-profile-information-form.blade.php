@@ -26,7 +26,7 @@
 
         <div>
             <x-input-label for="name" :value="__('Name')" />
-            
+
             @if(Auth::guard('staff'))
 
             <x-text-input id="name" name="names" type="text" class="mt-1 block w-full" :value="old('name', Auth::guard('staff')-> user()->names)" readonly autocomplete="name" />
@@ -48,7 +48,7 @@
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', Auth::guard('staff')-> user()->email)" readonly autocomplete="username" />
 
             @else
-            
+
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
 
             @endif
@@ -90,9 +90,11 @@
         </div>
 
         <div class="flex items-center gap-4">
-        <x-primary-button class="apply-btn" style="border: none">
+            @if (auth('staff')->user()->type == 'admin')
+            <x-primary-button class="apply-btn" style="border: none">
                 {{ __('save changes') }}
             </x-primary-button>
+            @endif
 
             @if (session('status') === 'profile-updated')
                 <p
