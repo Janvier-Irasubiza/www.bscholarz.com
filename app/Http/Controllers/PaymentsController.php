@@ -168,7 +168,7 @@ class PaymentsController extends Controller
 
     // Prepare api data
     $data = [
-      'amount' => 10,
+      'amount' => $validatedData['amount'],
       'phone' => $phoneNumber,
       'key' => $apiKey
     ];
@@ -268,7 +268,7 @@ class PaymentsController extends Controller
     // Prepare api data
     $data = [
       // 'amount' => intval($validatedData['amount']),
-      'amount' => 10,
+      'amount' => $validatedData['amount'],
       'phone' => $phoneNumber,
       'key' => $apiKey
     ];
@@ -347,7 +347,7 @@ class PaymentsController extends Controller
       : $this->getApiKey();
 
     $data = [
-      'amount' => 10,
+      'amount' => $validatedData['amount'],
       'phone' => $phoneNumber,
       'key' => $apiKey
     ];
