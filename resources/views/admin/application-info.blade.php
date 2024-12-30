@@ -82,7 +82,7 @@
 
                     @if(Session::has('success'))
 
-                        <div class="alert alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
+                        <div class="alert mt-4 alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
                             style="font-size: 17px" role="alert">
                             <div>
                                 {{ Session::get('success') }}
@@ -101,7 +101,7 @@
 
 @if(Session::has('error'))
 
-<div class="alert alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
+<div class="alert mt-4 alert-danger p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
     style="font-size: 17px" role="alert">
     <div>
         {{ Session::get('error') }}
