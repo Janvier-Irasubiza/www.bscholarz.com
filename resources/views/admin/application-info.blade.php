@@ -97,6 +97,7 @@
                             Session::forget('success');
 
                         @endphp
+                        @endif
 
 @if(Session::has('error'))
 
@@ -115,6 +116,8 @@
     Session::forget('success');
 
 @endphp
+
+@endif
 
                     <form method="post" action="{{ Auth::user() ? route('admin.edit-app') : route('md.edit-app') }}"
                         class="mt-6 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
