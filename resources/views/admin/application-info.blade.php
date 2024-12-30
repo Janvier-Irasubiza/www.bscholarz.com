@@ -80,6 +80,42 @@
                         </div>
                     </div>
 
+                    @if(Session::has('success'))
+
+                        <div class="alert alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
+                            style="font-size: 17px" role="alert">
+                            <div>
+                                {{ Session::get('success') }}
+                            </div>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true" class="fa fa-times" style="font-size: 18px"></span>
+                            </button>
+                        </div>
+
+                        @php
+
+                            Session::forget('success');
+
+                        @endphp
+
+@if(Session::has('error'))
+
+<div class="alert alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
+    style="font-size: 17px" role="alert">
+    <div>
+        {{ Session::get('error') }}
+    </div>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true" class="fa fa-times" style="font-size: 18px"></span>
+    </button>
+</div>
+
+@php
+
+    Session::forget('success');
+
+@endphp
+
                     <form method="post" action="{{ Auth::user() ? route('admin.edit-app') : route('md.edit-app') }}"
                         class="mt-6 space-y-6 mt-4 mb-3" enctype="multipart/form-data">
                         @csrf
