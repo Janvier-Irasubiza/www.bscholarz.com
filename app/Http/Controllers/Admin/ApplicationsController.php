@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Models\Comment;
 use App\Models\CommentReply;
+use App\Models\Request as Applications;
 use App\Models\Discipline;
 use File;
 use Illuminate\Http\Request;
@@ -291,33 +292,17 @@ class ApplicationsController extends Controller
                 // $mail_sender = new MailController();
                 // $mail_sender->new_app_mail($receipients, $url, $title, $type, $desc);
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Application created successfully',
-                    'data' => $mail_data
-                ], 201);
-
-                // return Auth::user() 
-                //   ? redirect() -> route('admin.applications') 
-                //   : redirect() -> route('md.apps');
+                return Auth::user()
+                    ? redirect()->route('admin.applications')
+                        ->with('success', 'Application created successfully!')
+                    : redirect()->route('md.apps')
+                        ->with('success', 'Application created successfully!');
 
             } catch (\Exception $e) {
-                // return response()->json([
-                //     'status' => 'error',
-                //     'message' => 'Application created successfully',
-                //     'error' => $e->getMessage()
-                // ], 500);
-
                 return back()->with('success', 'Application created successfully');
             }
         } else {
             Session::put('failed', 'Application exists');
-            // return back() -> withInput($inputs);
-            // return response()->json([
-            //     'status' => 'error',
-            //     'message' => 'Application exists',
-            // ], 400);
-
             return back()->with('error', 'Something went wrong');
         }
     }
@@ -399,11 +384,18 @@ class ApplicationsController extends Controller
     public function delete_application(Request $request)
     {
         $app = DB::table('disciplines')->where('id', $request->app_id)->first();
-        if (DB::table('disciplines')->where('id', $request->app_id)->limit(1)->delete()) {
-            File::delete(public_path('images/' . $app->poster));
-            return view('admin.delete-app-resp', compact('app'));
+        $requests = Applications::where('discipline_id')->get();
+
+        if (!$requests) {
+
+            if (DB::table('disciplines')->where('id', $request->app_id)->limit(1)->delete()) {
+                File::delete(public_path('images/' . $app->poster));
+                return view('admin.delete-app-resp', compact('app'));
+            } else {
+                return to_route('admin.applications');
+            }
         } else {
-            return to_route('admin.applications');
+            return back()->with('error', 'The operation failed because there are requests associated to this application. You can change its status to \'Ended\' instead.');
         }
     }
 
