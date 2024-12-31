@@ -6,7 +6,7 @@
 
 <div class="content-wrapper">
 
-    <div class="sidebar" style="">   
+    <div class="sidebar" style="">
         <div class="d-flex align-items-center mb-4">
             <h1 style="margin: 0px; font-size: 1.3em;">BScholarz Trends</h1>
 
@@ -37,34 +37,29 @@
     </div>
 
     <div class="section-right">
-
-        <div class="p-3">
-
-            @if ($ads->isEmpty())
-                <div id="carouselExampleIndicators" class="carousel slide mt-3" data-bs-ride="carousel">
-                    <!-- Indicators -->
-                    <ol class="carousel-indicators">
-                        @foreach ($ads as $index => $ad)
-                            <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}"
-                                class="{{ $index === 0 ? 'active' : '' }}">
-                            </li>
-                        @endforeach
-                    </ol>
-
+        @if (!$ads->isEmpty())
+                <!-- Display Advertisements -->
+                <div id="carouselExampleIndicators"
+                    class="slider border mt-0"
+                    data-bs-ride="carousel"
+                    style="border-radius: 0px; height: 10em"
+                    @if ($ads->count() > 1) data-bs-interval="60000" @endif>
                     <!-- Carousel Items -->
                     <div class="carousel-inner">
                         @foreach ($ads as $index => $ad)
                             <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                 <a href="{{ route('open-advert', ['advert' => $ad->id]) }}" target="_blank">
-                                    <img src="{{ asset('images/ads/' . $ad->poster) }}"
-                                        alt="{{ $c_data->name ?? 'Carousel Slide' }}" class="d-block w-100"
-                                        style="height: 300px; object-fit: cover;">
+                                    <img src="{{ asset('ads/' . $ad->media) }}"
+                                        class="d-block w-100"
+                                        style="object-fit: cover;">
                                 </a>
                             </div>
                         @endforeach
                     </div>
                 </div>
             @endif
+
+        <div class="p-3">
 
             @if(!$carouselData->isEmpty())
                 <div class="slider border">
