@@ -16,6 +16,7 @@ use App\Models\Applicant_info;
 use App\Models\Subscriber;
 use App\Models\Costs;
 use App\Models\Request as Applications;
+use App\Models\GeneralPayments;
 use Mail;
 use App\Mail\AppLinkMail;
 
@@ -702,7 +703,7 @@ class PaymentsController extends Controller
       CURLOPT_FOLLOWLOCATION => true,
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => 'POST',
-      CURLOPT_POSTFIELDS => '{ 
+      CURLOPT_POSTFIELDS => '{
               "action":"checkstatus",
                     "refid":"'.$request->refid.'",
                   }',
@@ -749,6 +750,123 @@ class PaymentsController extends Controller
 
   }
 
+    public function stdlnePayment()
+    {
+        return view('stdlne-pay');
+    }
+
+    public function processStdlnePayment(Request $request) {
+        // Validate the request
+        $request->validate([
+            'phone' => 'required|string|min:10|max:15',
+            'amount' => 'required|numeric|min:0',
+            'names' => 'nullable|string',
+            'email' => 'nullable|email',
+            'description' => 'nullable|string',
+            'type' => 'required|string',
+            'payment_method' => 'required|string|in:momo,cc', // Restrict to specific values
+        ]);
+
+        // Format the phone number
+        $phone = $this->formatPhoneNumber($request->phone);
+
+        // Get the API URL
+        $url = $this->getApiUrl();
+
+        // Get the API key based on the payment method
+        $apiKey = $request->payment_method == 'momo'
+            ? $this->getApiKey($phone) // Use $phone instead of $phoneNumber
+            : $this->getApiKey();
+
+        // Create a payment record
+        try {
+            $payment = GeneralPayments::create([
+                'type' => $request->type,
+                'amount' => $request->amount,
+                'names' => $request->names,
+                'email' => $request->email,
+                'phone' => $phone,
+                'description' => $request->description,
+                'status' => 'pending',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create payment record.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+
+        // Prepare data for the payment request
+        $data = [
+            'amount' => $request->amount,
+            'phone' => $phone,
+            'key' => $apiKey, // Use $apiKey instead of $api_key
+        ];
+
+        // Send the payment request
+        try {
+            $response = $this->sendPaymentRequest($data);
+
+            // Check if the payment was successful
+            if ($response['status'] == 200) {
+                // Handle different response structures based on payment method
+                if ($request->payment_method == 'momo' && isset($response['data']['transID'])) {
+                    // Update the payment record with transaction details for MoMo
+                    $payment->update([
+                        'transaction_id' => $response['data']['transID'],
+                        'status' => 'completed',
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Payment processed successfully.',
+                        'response' => $response,
+                    ]);
+                } elseif ($request->payment_method == 'cc' && isset($response['PCODE'])) {
+                    // For credit card payments, return the response without updating the payment record
+
+                    $payment->update([
+                        'pcode' => $response['PCODE'],
+                        'status' => 'pending',
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Payment link generated successfully.',
+                        'response' => $response,
+                    ]);
+                } else {
+                    // Handle unexpected response structure
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Unexpected response structure.',
+                        'response' => $response,
+                    ], 400);
+                }
+            } else {
+                // Payment failed, update the payment record with the failure status
+                $payment->update([
+                    'status' => 'failed',
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment failed.',
+                    'response' => $response,
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            // Update the payment record with the error status
+            $payment->update([
+                'status' => 'failed',
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process payment.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
-
-

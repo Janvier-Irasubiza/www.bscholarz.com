@@ -591,12 +591,12 @@ h1 {
 }
 
 .paybtn {
-    border: 1px solid; border-radius: 5px
+    border: 1px solid #5d3fd3; border-radius: 5px
 }
 
 
 .paybtn:focus{
-    border: 2px solid
+    border: 2px solid #5d3fd3
 }
 
 .action-success-icon {
@@ -1761,6 +1761,35 @@ footer{
     background-color: #5d3fd3 !important;
     font-weight: bold;
   color: ghostwhite;
+}
+
+.bg-pry {
+    background-color: #5d3fd3 !important;
+}
+
+.rnd {
+    border-radius: 5px;
+}
+
+.rnd-md {
+    border-radius: 10px;
+}
+
+.rnd-lg {
+    border-radius: 15px;
+}
+
+.rnd-xl {
+    border-radius: 20px;
+}
+
+.rnd-b-none {
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.font-semibold {
+    font-weight: 600;
 }
 
 .sort-div {
@@ -3827,7 +3856,7 @@ input:focus, select:focus, textarea:focus {
        margin-right: 10px;
 
     }
-    
+
 
     .section-right {
         width: 100%;

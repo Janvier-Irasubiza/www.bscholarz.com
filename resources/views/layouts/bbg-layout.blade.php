@@ -332,7 +332,7 @@
 
             <div class="nav-wrapper">
 
-                <div class="d-flex gap-2">
+                <div class="d-flex gap-2 border justify-content-between align-items-center">
                     <button class="nav-drawer" href="">
                         <i class="fa-solid fa-bars dft-btn"></i>
                     </button>
@@ -346,10 +346,10 @@
                     </div>
                 </div>
 
-                <div style="padding: 0px;" class="col-lg-11 nav-container container-fluid">
-                    <div class="d-flex align-items-center" style="margin-left: 10px; width: 100%;">
+                <div style="padding: 0px;" class="nav-container container-fluid">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-left: 10px; width: 100%;">
 
-                        <div style="padding: 0px" class="col-lg-9 nav-links-contianer">
+                        <div style="padding: 0px" class="nav-links-contianer">
                             <ul style="margin: 0px;">
                                 <li class="navigator">
                                     <a class="{{ request()->routeIs('home') ? 'active-navigator' : '' }}"
@@ -382,21 +382,21 @@
                             </ul>
                         </div>
 
-                        <div class="col-lg-3 nav-section-right" style="padding: 0px;">
-                            <div class="d-flex gap-3 justify-content-end" style="padding: 0px;">
-                                <div class="col-lg-9 d-flex align-items-center" style="">
-                                    <button class="search-btn text-left w-full" style="padding-left: 6px"
-                                        data-toggle="modal" data-target="#exampleModal">
-                                        Search
+                        <div class="nav-section-right" style="padding: 0px;">
+                            <div class="d-flex gap-3 justify-content-end align-items-center" style="padding: 0px;">
+
+                                <div class="d-flex align-items-center" style="margin-right: 10px;">
+
+                                    <button style="padding: 0px; border: none; background: none; font-size: 1.2rem; color: #646464" data-toggle="modal" data-target="#exampleModal">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
                                     </button>
 
                                     <!-- Modal -->
                                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
-                                        <div class="modal-dialog modal-xl" role="document" style="">
-                                            <div class="modal-content" style="">
+                                        <div class="modal-dialog modal-xl" style="z-index: 1000;" role="document">
+                                            <div class="modal-content">
                                                 <div style="" class="modal-header">
-
                                                     <form action="{{ route('search') }}" class="w-full">
                                                         <div class="d-flex">
                                                             <input id="searchBox" class="input-box" type="text"
@@ -407,7 +407,6 @@
                                                             </button>
                                                         </div>
                                                     </form>
-
                                                 </div>
 
                                                 @php $sugs = DB::table('search_suggestions')->where('count', '>', 2)->get(); @endphp
@@ -442,8 +441,12 @@
 
                                 </div>
 
+                            <button class="apply-btn py-2" style="border: none;">
+                                Pay
+                            </button>
+
                                 <a
-                                    href="{{ Auth::guard('client')->user() ? route('client.client-dashboard') : route('login') }}">
+                                    href="{{ Auth::guard('client')->user() ? route('client.client-dashboard') : route('login') }}" class="snd-apply-btn py-2">
 
 
                                     @if(Auth::guard('client')->user() && Auth::guard('client')->user()->profile_picture)
@@ -453,7 +456,7 @@
                                                 alt="">
                                         </div>
                                     @else
-                                        <i class="fa-regular fa-user" style="font-size: 1.7em"></i>
+                                        Join Us
                                     @endif
                                 </a>
                             </div>

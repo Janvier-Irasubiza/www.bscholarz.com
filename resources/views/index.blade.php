@@ -6,9 +6,9 @@
 
 <div class="content-wrapper">
 
-    <div class="sidebar" style="">   
+    <div class="sidebar" style="">
         <div class="d-flex align-items-center mb-4">
-            <h1 style="margin: 0px; font-size: 1.3em;">BScholarz Trends</h1>
+            <h1 style="margin: 0px; font-size: 1.3em; font-weight: 600">BScholarz Trends</h1>
 
             <select class="selectpicker" id="filterKeyword">
                 <option class="sel-option muted-text" title="#" selected>Filter by</option>
@@ -151,7 +151,7 @@
 
             @if(!$scholarships->isEmpty())
                     <div class="sch-trends">
-                        <h1 class="mb-4" style="font-size: 2em">Trending Scholarships</h1>
+                        <h1 class="mb-4" style="font-size: 2em; font-weight: 700">Trending Scholarships</h1>
 
                         <div class="container overflow-hidden p-0">
                             <div class="row gy-5">
@@ -342,7 +342,7 @@
 
         @if ($partners->count() > 0)
             <div class="px-3 mb-8">
-                <h1 style="font-size: 2em">Our Partners</h1>
+                <h1 style="font-size: 2em; font-weight: 700">Our Partners</h1>
                 <div class="mt-3 d-flex flex-wrap gap-3">
                     @foreach ($partners as $partner)
                         <a href="">

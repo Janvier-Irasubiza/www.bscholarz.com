@@ -82,42 +82,42 @@
 
                     @if(Session::has('success'))
 
-                        <div class="alert mt-4 alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
-                            style="font-size: 17px" role="alert">
-                            <div>
-                                {{ Session::get('success') }}
-                            </div>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true" class="fa fa-times" style="font-size: 18px"></span>
-                            </button>
-                        </div>
+                                        <div class="alert mt-4 alert-success p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
+                                            style="font-size: 17px" role="alert">
+                                            <div>
+                                                {{ Session::get('success') }}
+                                            </div>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true" class="fa fa-times" style="font-size: 18px"></span>
+                                            </button>
+                                        </div>
 
-                        @php
+                                        @php
 
-                            Session::forget('success');
+                                            Session::forget('success');
 
-                        @endphp
-                        @endif
+                                        @endphp
+                    @endif
 
-@if(Session::has('error'))
+                    @if(Session::has('error'))
 
-<div class="alert mt-4 alert-danger p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
-    style="font-size: 17px" role="alert">
-    <div>
-        {{ Session::get('error') }}
-    </div>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true" class="fa fa-times" style="font-size: 18px"></span>
-    </button>
-</div>
+                                        <div class="alert mt-4 alert-danger p-3 alert-dismissible mb-0 mt-0 fade show d-flex align-items-center justify-content-between"
+                                            style="font-size: 17px" role="alert">
+                                            <div>
+                                                {{ Session::get('error') }}
+                                            </div>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true" class="fa fa-times" style="font-size: 18px"></span>
+                                            </button>
+                                        </div>
 
-@php
+                                        @php
 
-    Session::forget('success');
+                                            Session::forget('success');
 
-@endphp
+                                        @endphp
 
-@endif
+                    @endif
 
                     <form method="post" action="{{ Auth::user() ? route('admin.edit-app') : route('md.edit-app') }}"
                         class="mt-6 space-y-6 mt-4 mb-3" enctype="multipart/form-data">

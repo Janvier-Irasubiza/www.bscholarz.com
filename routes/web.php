@@ -68,7 +68,8 @@ Route::get('/apply/{discipline_id}', [UserRequestController::class, 'apply'])->n
 // }) -> name('ksp-apply');
 
 Route::post('/sendsms', [Notifications::class, 'testSms']);
-
+Route::get('/pay', [PaymentsController::class, 'stdlnePayment'])->name('payment');
+Route::post('/stdlne-pay', [PaymentsController::class, 'processStdlnePayment'])->name('stdlne-payment');
 Route::get('/open-advert/{advert}', [AdvertsController::class, 'openAdvert'])->name('open-advert');
 Route::get('/apply/{discipline}/payment', [PaymentsController::class, 'payment_view'])->middleware('guest')->name('app-payment');
 Route::get('/link/payment/{app}', [PaymentsController::class, 'service_payment_view'])->middleware('guest')->name('link.payment');
