@@ -252,8 +252,6 @@
 
                 if (response.data.status === 200) {
                     // Handle transaction ID display
-
-                    console.log(response);
                     if (response.data?.data?.transID) {
                         transIdDiv.innerHTML = `
                             <p class="text-gray-500">Transaction ID:</p>
