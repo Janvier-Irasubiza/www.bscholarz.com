@@ -820,8 +820,9 @@ class PaymentsController extends Controller
 
                     return response()->json([
                         'success' => true,
+                        'title' => 'Payment Successful',
                         'message' => 'Payment processed successfully.',
-                        'response' => $response,
+                        'data' => $response,
                     ]);
                 } elseif ($request->payment_method == 'cc' && isset($response['PCODE'])) {
                     // For credit card payments, return the response without updating the payment record
@@ -833,15 +834,17 @@ class PaymentsController extends Controller
 
                     return response()->json([
                         'success' => true,
-                        'message' => 'Payment link generated successfully.',
-                        'response' => $response,
+                        'title' => 'Redirection',
+                        'message' => 'Redirecting to payment gateway...',
+                        'data' => $response,
                     ]);
                 } else {
                     // Handle unexpected response structure
                     return response()->json([
                         'success' => false,
+                        'title' => 'Unexpected Response',
                         'message' => 'Unexpected response structure.',
-                        'response' => $response,
+                        'data' => $response,
                     ], 400);
                 }
             } else {
@@ -852,8 +855,9 @@ class PaymentsController extends Controller
 
                 return response()->json([
                     'success' => false,
-                    'message' => 'Payment failed.',
-                    'response' => $response,
+                    'title' => 'Payment Failed',
+                    'message' => 'Failed to process payment.',
+                    'data' => $response,
                 ], 400);
             }
         } catch (\Exception $e) {

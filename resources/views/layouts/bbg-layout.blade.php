@@ -445,9 +445,9 @@
 
                                 </div>
 
-                            <button class="apply-btn py-2" style="border: none;">
+                            <a href="{{ route('payment') }}" class="apply-btn py-2" style="border: none;">
                                 Pay
-                            </button>
+                            </a>
 
                                 <a
                                     href="{{ Auth::guard('client')->user() ? route('client.client-dashboard') : route('login') }}" class="snd-apply-btn py-2">

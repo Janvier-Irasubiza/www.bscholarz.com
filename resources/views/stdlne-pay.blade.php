@@ -121,123 +121,205 @@
           </div>
 
           <div class="button-section mt-4 mb-4">
+            <!-- Spinner inside the button -->
             <button type="submit" id="payBtn" class="apply-btn w-full text-center py-3 uppercase f-12"
-              style="border: none; font-weight: 600"> Continue With MoMo
+                style="border: none; font-weight: 600">
+                <span id="btnTxt">Continue With MoMo</span> &nbsp; <i class="hidden fa-solid fa-spinner animate-spin" id="Spinner"></i>
             </button>
+
+            <!-- Response Modal -->
+            <div class="modal fade" id="responseModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center">
+                            <h1 class="modal-title f-20 font-semibold" id="responseModalLabel"></h1>
+                            <button type="button" onclick="closeModal()" class="btn-close f-20 text-center" data-bs-dismiss="modal" aria-label="Close">
+                                <i class="fa-solid fa-square-xmark"></i>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="responseMessage" class="text-gray-500"></p>
+                            <div id="transIdDiv" class="mt-4"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" onclick="closeModal()" class="btn btn-secondary py-2" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Response Modal -->
+
           </div>
 
           </div>
         </div>
 
       </div>
-
   </div>
 
   <script>
-    const pyToggler = document.getElementById('pyToggler');
-    const donateToggler = document.getElementById('donateToggler');
-    const paymentForm = document.getElementById('paymentForm');
-    const donateForm = document.getElementById('donateForm');
-    const payBtn = document.getElementById('payBtn');
-    const momobtn = document.getElementById('momobtn');
-    const visabtn = document.getElementById('visabtn');
-    const momochk = document.getElementById('momochk');
-    const visachk = document.getElementById('visachk');
-    let type = 'payment';
+    document.addEventListener("DOMContentLoaded", function () {
+        const payBtn = document.getElementById("payBtn");
+        const spinner = document.getElementById("Spinner");
+        const btnTxt = document.getElementById("btnTxt");
+        const responseMessage = document.getElementById("responseMessage");
+        const transIdDiv = document.getElementById("transIdDiv");
+        const responseModalLabel = document.getElementById("responseModalLabel");
+        const responseModal = new bootstrap.Modal(document.getElementById("responseModal"));
+        let type = 'payment';
 
-    pyToggler.addEventListener('click', () => {
-      donateToggler.classList.remove('bg-pry', 'text-white');
-      pyToggler.classList.add('bg-pry', 'text-white');
-      paymentForm.classList.remove('hidden');
-      donateForm.classList.add('hidden');
-      type = 'payment';
-    });
-
-    donateToggler.addEventListener('click', () => {
-      donateForm.classList.remove('hidden');
-      donateToggler.classList.add('bg-pry', 'text-white');
-      pyToggler.classList.remove('bg-pry', 'text-white');
-      paymentForm.classList.add('hidden');
-      type = 'donate';
-    });
-
-    document.querySelectorAll('.amount-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove the classes from all buttons
-            document.querySelectorAll('.amount-btn').forEach(btn => {
-                btn.classList.remove('bg-pry', 'text-white');
-            });
-
-            // Add the classes only to the clicked button
-            this.classList.add('bg-pry', 'text-white');
+        // Toggle between Payment and Donate forms
+        pyToggler.addEventListener('click', () => {
+            donateToggler.classList.remove('bg-pry', 'text-white');
+            pyToggler.classList.add('bg-pry', 'text-white');
+            paymentForm.classList.remove('hidden');
+            donateForm.classList.add('hidden');
+            type = 'payment';
         });
-    });
 
-    momobtn.addEventListener('click', () => {
-      momochk.checked = true;
-      payBtn.textContent = 'Continue With MoMo';
-    });
+        donateToggler.addEventListener('click', () => {
+            donateForm.classList.remove('hidden');
+            donateToggler.classList.add('bg-pry', 'text-white');
+            pyToggler.classList.remove('bg-pry', 'text-white');
+            paymentForm.classList.add('hidden');
+            type = 'donate';
+        });
 
-    visabtn.addEventListener('click', () => {
-      visachk.checked = true;
-      payBtn.textContent = 'Continue With Credit Card';
-    });
+        // Payment method selection
+        document.getElementById("momobtn").addEventListener("click", () => {
+            document.getElementById("momochk").checked = true;
+            btnTxt.textContent = "Continue With MoMo";
+        });
 
-    payBtn.addEventListener('click', () => {
-        const form = type === 'payment' ? paymentForm : donateForm;
-        const formData = new FormData(form);
+        document.getElementById("visabtn").addEventListener("click", () => {
+            document.getElementById("visachk").checked = true;
+            btnTxt.textContent = "Continue With Credit Card";
+        });
 
-        // Validate required fields
-        if (!formData.get('amount') || !formData.get('phone')) {
-            alert('Please fill out all required fields.');
-            return;
-        }
+        // Handle payment submission
+        payBtn.addEventListener("click", function () {
+            spinner.classList.remove("hidden");
 
-        // Prepare the data to send to the server
-        const data = {
-            amount: formData.get('amount'),
-            phone: formData.get('phone'),
-            email: formData.get('email'),
-            name: formData.get('name'),
-            description: formData.get('description'),
-            payment_method: document.querySelector('input[name="payment_method"]:checked').value,
-            type
-        };
+            const form = type === 'payment' ? paymentForm : donateForm;
+            const formData = new FormData(form);
+            const amount = formData.get('amount');
+            const phone = formData.get('phone');
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const description = formData.get('description');
 
-        // Send the request to the server
-        fetch('/stdlne-pay', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(response => {
-            if (response.response.status === 200) {
-                // Check if the response contains PCODE and link (credit card payment)
-                if (response.response.PCODE && response.response.link) {
-                    // Redirect the user to the provided link
-                    window.location.href = response.response.link;
-                } else if (response.data?.transID) {
-                    // Handle MoMo payment success
-                    alert(response.message);
-                    // Optionally, you can redirect or update the UI here
-                } else {
-                    // Handle unexpected response
-                    alert(response.message || 'Something went wrong');
-                }
-            } else {
-                // Handle payment failure
-                alert((response.message || 'Something went wrong') + '. Please try again.');
+            // Validate required fields
+            if (!amount || !phone) {
+                responseMessage.textContent = "Please enter a valid amount and phone number.";
+                responseModal.show();
+                spinner.classList.add("d-none");
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
-        });
-    });
-  </script>
 
+            if (!paymentMethod) {
+                responseMessage.textContent = "Please select a payment method.";
+                responseModal.show();
+                spinner.classList.add("d-none");
+                return;
+            }
+
+            // Prepare data for request
+             const data = {
+                amount: amount,
+                phone: phone,
+                email: email,
+                name: name,
+                description: description,
+                payment_method: paymentMethod,
+                type
+            };
+
+            // Send payment request
+            fetch('/stdlne-pay', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(response => {
+                spinner.classList.add("hidden");
+                 responseModalLabel.textContent = response.title;
+                 responseMessage.textContent = response.message;
+
+                if (response.data.status === 200) {
+                    // Handle transaction ID display
+
+                    console.log(response);
+                    if (response.data?.data?.transID) {
+                        transIdDiv.innerHTML = `
+                            <p class="text-gray-500">Transaction ID:</p>
+                            <div class="text-sm text-gray-500 d-flex justify-content-between align-items-center gap-2">
+                                <p id="transID" class="border rnd bg-gray-300 p-2 w-full">${response.data.data.transID}</p>
+                                <button class="p-2 apply-btn text-white rnd" onclick="copyToClipboard()">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                            <span class="text-gray-500 text-sm mt-2">Keep the transaction to yourself, you might need.</span>
+                            `;
+                    }
+
+                    // Redirect for credit card payments
+                    if (response.data.PCODE && response.data.link) {
+                        setTimeout(() => {
+                            window.location.href = response.data.link;
+                        }, 2000);
+                    }
+                } else {
+                    responseMessage.textContent = response.data.message || "Payment failed. Please try again.";
+                }
+
+                responseModal.show();
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                spinner.classList.add("hidden");
+                responseModalLabel.textContent = "Something Went Wrong";
+                responseMessage.textContent = "An error occurred while processing payment.";
+                responseModal.show();
+            });
+        });
+   });
+
+    // Copy transaction ID to clipboard
+    function copyToClipboard() {
+        const transID = document.getElementById("transID").innerText;
+        navigator.clipboard.writeText(transID).then(() => {
+            alert("Transaction ID copied to clipboard!");
+        }).catch(err => {
+            console.error("Failed to copy text: ", err);
+        });
+    }
+
+   // Close response modal
+   function closeModal() {
+        const responseModalElement = document.getElementById("responseModal");
+        if (responseModalElement) {
+            // Trigger Bootstrap's modal close event
+            responseModalElement.classList.remove("show");
+            responseModalElement.style.display = "none";
+
+            // Remove backdrop manually if Bootstrap doesn't remove it
+            const modalBackdrop = document.querySelector(".modal-backdrop");
+            if (modalBackdrop) {
+                modalBackdrop.remove();
+            }
+
+            // Reset the forms
+            document.getElementById("paymentForm").reset();
+            document.getElementById("donateForm").reset();
+        } else {
+            console.error("Modal element not found.");
+        }
+    }
+
+</script>
 </x-apply-layout>

@@ -1788,6 +1788,34 @@ footer{
     border-bottom-left-radius: 0px;
 }
 
+/* Define the spinning animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Apply the animation to the element with the animate-spin class */
+.animate-spin {
+    animation: spin 1s linear infinite; /* 1s duration, linear timing, infinite loop */
+    display: inline-block; /* Ensure the icon spins properly */
+}
+
+.bg-gray-200 {
+    background-color: #f3f4f6;
+}
+
+.bg-gray-300 {
+    background-color: #e5e7eb;
+}
+
+.bg-gray-400 {
+    background-color: #d1d5db;
+}
+
 .font-semibold {
     font-weight: 600;
 }
