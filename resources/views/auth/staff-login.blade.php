@@ -9,22 +9,22 @@
 
         <div class="d-flex justify-content-center align-items-center mb-5 py-3" style="border-bottom: 1px solid rgba(0, 0, 0, 0.151);">
 
-                <h1 style="font-size: 30px" class="ml-3 mb-2">Staff - Login</h1>
+                <h1 style="font-size: 30px" class="ml-3 mb-2">Login</h1>
 
 </div>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-  <?php /*  action="{{ route('error') */ ?> 
+  <?php /*  action="{{ route('error') */ ?>
     <form method="POST" action="{{ route('staff-login') }}">
         @csrf
-      
+
       @if($errors->has('pass_changed'))
-      
+
       <div>
         <x-input-error :messages="$errors->get('pass_changed')" class="mt-4 mb-3 text-left text-success" />
       </div>
-      
+
       @endif
 
         <!-- Email Address -->

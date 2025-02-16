@@ -219,6 +219,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/delete-service-cost/{cost}', [AdminController::class, 'delete_service_cost'])->middleware('staff')->name('admin.delete-service-cost');
     Route::get('/edit-service-cost/{cost}', [AdminController::class, 'edit_service_cost'])->middleware('staff')->name('admin.edit-service-cost');
     Route::post('/update-service-cost', [AdminController::class, 'update_service_cost'])->middleware('staff')->name('admin.update-service-cost');
+    Route::get('/get-payments/{type}', [PaymentsController::class, 'getPayments'])->name('admin.get-payments');
 });
 
 
@@ -401,6 +402,7 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
     Route::get('/export-revenue', [AccountabilityController::class, 'revenue'])->name('export-revenues');
     Route::get('/accountant-remind/{transaction}', [AccountabilityController::class, 'remind_debtor'])->name('remind-debtor');
     Route::post('/send-clarification-message/{transaction}', [AccountabilityController::class, 'sendClarificationMessage'])->name('send-clarification-message');
+    Route::get('/get-payments/{type}', [PaymentsController::class, 'getPayments'])->name('admin.get-payments');
 });
 
 require __DIR__ . '/auth.php';

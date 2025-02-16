@@ -11,10 +11,33 @@
                 <div class="tab-content">
                     <div>
                         <div class="card">
-                            <div class="card-header-tab card-header py-3 d-flex">
-                                <div class="card-header-title font-size-lg text-capitalize font-weight-normal col-lg-8">
-                                    Overview
+                            <div class="card-header-tab card-header py-3 d-flex justify-content-between align-items-center">
+                                <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
+                                    <h1 class="modal-title f-20 font-semibold">Overview</h1>
                                 </div>
+                                <!-- Payments Button -->
+                                <button type="button" class="snd-apply-btn amount-btn" data-bs-toggle="modal" data-bs-target="#paymentsModal">Payments</button>
+
+                                <!-- Response Modal -->
+                                <div class="modal fade" id="paymentsModal" tabindex="-1" aria-labelledby="responseModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header d-flex justify-content-between align-items-center p-0" style="border-bottom: 1px solid #5d3fd3;">
+                                                <button class="text-center w-full p-3 font-semibold rnd bg-pry text-white rnd-b-none pyToggler" data-type="payment">Payment</button>
+                                                <button class="text-center w-full p-3 font-semibold rnd rnd-b-none pyToggler" data-type="donation">Donations</button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- Table Container (Scrollable) -->
+                                                <div id="data" class="table-responsive" style="max-height: 400px; overflow-y: auto;"></div>
+                                            </div>
+                                            <div class="modal-footer p-1">
+                                                <button type="button" class="snd-apply-btn py-1 px-3" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Response Modal -->
+
                             </div>
                             <div class="no-gutters flex-section justify-content-between gap-2 px-3 py-3" style="padding-right: 32px !important">
                                 <div class="sum-card rounded p-2 col-lg-4 pb-3">
@@ -287,4 +310,93 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const pyTogglers = document.querySelectorAll(".pyToggler");
+            const defaultType = "payment"; // Default selection
+            const dataContainer = document.getElementById("data");
+
+            function fetchPayments(type) {
+                const endPoint = "get-payments/" + type;
+
+                fetch(endPoint)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Fetched Data:", data);
+                        if (data.success && data.data.length > 0) {
+                            generateTable(data.data); // Generate table
+                        } else {
+                            dataContainer.innerHTML = `<p class="text-muted text-center">No ${type} records found.</p>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Fetch Error:", error);
+                        dataContainer.innerHTML = `<p class="text-danger text-center">Error fetching data.</p>`;
+                    });
+            }
+
+            function generateTable(data) {
+                let tableHTML = `
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead class="">
+                                <tr>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Paid By</th>
+                                    <th>TransID</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                data.forEach(item => {
+                    tableHTML += `
+                        <tr>
+                            <td class="text-center">${item.amount}</td>
+                            <td>${new Date(item.created_at).toLocaleDateString()}</td>
+                            <td>
+                                ${item.names ?? "---"}<br>
+                                ${item.phone_number ?? "---"}<br>
+                                ${item.email ?? "---"}
+                            </td>
+                            <td class="text-center">${item.transaction_id} RWF</td>
+                        </tr>`;
+                });
+
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>`;
+
+                document.getElementById("data").innerHTML = tableHTML;
+            }
+
+
+            // Handle button clicks for fetching data dynamically
+            pyTogglers.forEach((toggler) => {
+                toggler.addEventListener("click", function () {
+                    // Remove active class from all buttons
+                    pyTogglers.forEach(btn => btn.classList.remove("bg-pry", "text-white"));
+
+                    // Add active class to clicked button
+                    this.classList.add("bg-pry", "text-white");
+
+                    // Fetch data dynamically based on selected type
+                    fetchPayments(this.getAttribute("data-type"));
+                });
+            });
+
+            // Fetch default payment data when the modal opens
+            document.getElementById("paymentsModal").addEventListener("shown.bs.modal", function () {
+                fetchPayments(defaultType); // Fetch "payment" by default
+            });
+
+            // reset the modal content and selected button when the modal closes
+            document.getElementById("paymentsModal").addEventListener("hidden.bs.modal", function () {
+                dataContainer.innerHTML = ""; // Clear the table content
+                pyTogglers.forEach(btn => btn.classList.remove("bg-pry", "text-white")); // Remove active class from all buttons
+                pyTogglers[0].classList.add("bg-pry", "text-white");  // Add active class to the first button
+            });
+        });
+    </script>
 </x-app-layout>
