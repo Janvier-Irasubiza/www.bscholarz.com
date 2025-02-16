@@ -33,7 +33,7 @@ class ApplicationsController extends Controller
             });
         }
 
-        $applications = $query->paginate(10);
+        $applications = $query->get();
 
         return view('admin.applications', compact('applications'));
     }
@@ -228,7 +228,7 @@ class ApplicationsController extends Controller
             'link' => 'required',
             'link_to_institution' => 'required',
             //link_to_institution and start_date
-            // 'poster' => ['required', 'mimes:jpg,jpeg,png,gif,svg|max:5048'], 
+            // 'poster' => ['required', 'mimes:jpg,jpeg,png,gif,svg|max:5048'],
         ]);
 
         $poster = time() . '-' . $request->file('poster')->getClientOriginalName();
@@ -406,7 +406,7 @@ class ApplicationsController extends Controller
             $query->where('is_appointment', 1);
         }
 
-        $requests = $query->paginate(10);
+        $requests = $query->get();
         return view('admin.user-requests', compact('requests'));
     }
 

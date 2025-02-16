@@ -42,7 +42,7 @@
                     </a>
                   </div> -->
 
-                  <table id="example1" class="table align-middle mb-0 bg-white">
+                  <table id="example1" class="table align-middle mb-0 bg-white mt-4" width="100%" cellspacing="0">
                     <thead class="bg-light">
                       <tr>
                         <th>Customer</th>
@@ -114,7 +114,7 @@
             @endforeach
                     </tbody>
                   </table>
-                  {{ $requests->links() }}
+                  {{-- {{ $requests->links() }} --}}
                 </div>
               </div>
             </div>

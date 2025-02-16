@@ -34,14 +34,14 @@
                             </div>
                             <div style="border-top: none" class="d-block p-3 card-footer">
                                 <form action="" method="get">
-                                    <div class="d-flex gap-2">
+                                    {{-- <div class="d-flex gap-2">
                                         <input type="text" name="app" id="" placeholder="Search by application name"
                                             value="{{ request('app') }}">
                                         <button
                                             class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm btn btn-primary px-4">Search</button>
-                                    </div>
+                                    </div> --}}
                                 </form>
-                                <table class="table align-middle mb-0 bg-white mt-4" width="100%" cellspacing="0">
+                                <table id="example1" class="table align-middle mb-0 bg-white mt-4" width="100%" cellspacing="0">
                                     <thead class="bg-light">
                                         <tr>
                                             <th>Application</th>
@@ -82,10 +82,10 @@
                                     </tbody>
                                 </table>
 
-                                <!-- Pagination Links -->
+                                {{-- <!-- Pagination Links -->
                                 <div class="mt-3 custom-pagination">
                                     {{ $applications->links() }}
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>

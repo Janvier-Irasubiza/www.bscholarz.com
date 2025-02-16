@@ -98,9 +98,9 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="pagination">
+                    {{-- <div class="pagination">
                         {{ $partners->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

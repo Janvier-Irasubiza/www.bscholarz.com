@@ -282,7 +282,7 @@ class AdminController extends Controller
 
     public function parteners()
     {
-        $partners = Partner::paginate(10);
+        $partners = Partner::get();
         return view('admin.partners', compact('partners'));
     }
 
