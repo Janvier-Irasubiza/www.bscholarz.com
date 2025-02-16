@@ -41,11 +41,11 @@
             <form action="" method="POST" id="donateForm" class="hidden">
                 @csrf
                 <div class="mt-4 flex gap-4">
-                    <button type="button" class="snd-apply-btn amount-btn" data-amount="100K">100K RWF</button>
-                    <button type="button" class="snd-apply-btn amount-btn" data-amount="250K">250K RWF</button>
-                    <button type="button" class="snd-apply-btn amount-btn" data-amount="500K">500K RWF</button>
-                    <button type="button" class="snd-apply-btn amount-btn" data-amount="750K">750K RWF</button>
-                    <button type="button" class="snd-apply-btn amount-btn" data-amount="1M">1M RWF</button>
+                    <button type="button" class="snd-apply-btn amount-btn" data-amount="100000">100K RWF</button>
+                    <button type="button" class="snd-apply-btn amount-btn" data-amount="250000">250K RWF</button>
+                    <button type="button" class="snd-apply-btn amount-btn" data-amount="500000">500K RWF</button>
+                    <button type="button" class="snd-apply-btn amount-btn" data-amount="750000">750K RWF</button>
+                    <button type="button" class="snd-apply-btn amount-btn" data-amount="1000000">1M RWF</button>
                 </div>
 
                 <div class="flex gap-4 mt-4">
@@ -141,9 +141,6 @@
                             <p id="responseMessage" class="text-gray-500"></p>
                             <div id="transIdDiv" class="mt-4"></div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" onclick="closeModal()" class="btn btn-secondary py-2" data-bs-dismiss="modal">Close</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -184,6 +181,25 @@
             paymentForm.classList.add('hidden');
             type = 'donate';
         });
+
+        document.querySelectorAll('.amount-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove the classes from all buttons
+                document.querySelectorAll('.amount-btn').forEach(btn => {
+                    btn.classList.remove('bg-pry', 'text-white');
+                });
+
+                // Get the amount from the button's data attribute
+                const amount = this.dataset.amount;
+
+                // Set the value in the donate form's amount input
+                document.querySelector('#donateForm input[name="amount"]').value = amount;
+
+                // Add the classes to the clicked button
+                this.classList.add('bg-pry', 'text-white');
+            });
+        });
+
 
         // Payment method selection
         document.getElementById("momobtn").addEventListener("click", () => {
@@ -246,9 +262,10 @@
             })
             .then(response => response.json())
             .then(response => {
+                console.log("Success:", response);
                 spinner.classList.add("hidden");
-                 responseModalLabel.textContent = response.title;
-                 responseMessage.textContent = response.message;
+                responseModalLabel.textContent = response.title;
+                responseMessage.textContent = response.message;
 
                 if (response.data.status === 200) {
                     // Handle transaction ID display
@@ -272,7 +289,9 @@
                         }, 2000);
                     }
                 } else {
+                    responseModalLabel.textContent = response.data.title || "Payment Failed";
                     responseMessage.textContent = response.data.message || "Payment failed. Please try again.";
+                    responseModal.show();
                 }
 
                 responseModal.show();
