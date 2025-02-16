@@ -40,7 +40,7 @@
             </form>
             <form action="" method="POST" id="donateForm" class="hidden">
                 @csrf
-                <div class="mt-4 flex gap-4">
+                <div class="mt-4 d-flex gap-4 overflow-auto flex-nowrap" style="white-space: nowrap;">
                     <button type="button" class="snd-apply-btn amount-btn" data-amount="100000">100K RWF</button>
                     <button type="button" class="snd-apply-btn amount-btn" data-amount="250000">250K RWF</button>
                     <button type="button" class="snd-apply-btn amount-btn" data-amount="500000">500K RWF</button>
