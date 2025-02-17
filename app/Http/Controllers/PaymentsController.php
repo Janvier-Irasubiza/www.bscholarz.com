@@ -760,7 +760,7 @@ class PaymentsController extends Controller
         $request->validate([
             'phone' => 'required|string|min:10|max:15',
             'amount' => 'required|numeric|min:0',
-            'names' => 'nullable|string',
+            'name' => 'nullable|string',
             'email' => 'nullable|email',
             'description' => 'nullable|string',
             'type' => 'required|string',
@@ -783,7 +783,7 @@ class PaymentsController extends Controller
             $payment = GeneralPayments::create([
                 'type' => $request->type,
                 'amount' => $request->amount,
-                'names' => $request->names,
+                'names' => $request->name,
                 'email' => $request->email,
                 'phone' => $phone,
                 'description' => $request->description,
@@ -826,7 +826,6 @@ class PaymentsController extends Controller
                     ]);
                 } elseif ($request->payment_method == 'cc' && isset($response['PCODE'])) {
                     // For credit card payments, return the response without updating the payment record
-
                     $payment->update([
                         'pcode' => $response['PCODE'],
                         'status' => 'pending',
@@ -869,6 +868,45 @@ class PaymentsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to process payment.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function getPayments($type) {
+        try {
+            // Validate that 'type' exists in allowed values (optional, based on your use case)
+            $validTypes = ['payment', 'donation'];
+            if (!in_array($type, $validTypes)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid payment type.',
+                ], 400); // Bad Request
+            }
+
+            // Fetch payments based on the type
+            $payments = GeneralPayments::where('type', $type)->whereNotNull('transaction_id')->get();
+
+            // If no payments found, return a 404 response
+            if ($payments->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No payments found for the given type.',
+                    'data' => [],
+                ], 404);
+            }
+
+            // Return successful response
+            return response()->json([
+                'success' => true,
+                'data' => $payments,
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Catch any unexpected errors and return a server error response
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching payments.',
                 'error' => $e->getMessage(),
             ], 500);
         }
