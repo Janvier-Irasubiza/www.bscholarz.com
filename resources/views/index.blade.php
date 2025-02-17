@@ -341,7 +341,7 @@
                 <div class="mt-3 d-flex flex-wrap gap-3">
                     @foreach ($partners as $partner)
                         <a href="">
-                            <div style="width: 100px; height: 100px;" class="overflow-hidden rounded">
+                            <div style="width: 70px; height: 70px;" class="overflow-hidden rounded">
                                 <img src="{{ asset('profile_pictures/' . $partner->poster) }}" alt=""
                                     style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
