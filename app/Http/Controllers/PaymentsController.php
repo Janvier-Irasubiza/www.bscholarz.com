@@ -19,19 +19,30 @@ use App\Models\Request as Applications;
 use App\Models\GeneralPayments;
 use Mail;
 use App\Mail\AppLinkMail;
+use App\Mail\UserNotification;
+use Illuminate\Support\Facades\Log;
+use App\Jobs\SendSmsJob;
 
 class PaymentsController extends Controller
 {
 
-  public function payTest(Request $request)
-  {
+  public function payTest() {
+    $this->TestPayment();
+  }
+
+  private function TestPayment()
+{
+    // Define API request data
     $data = [
-      'amount' => 10,
-      'first_name' => "James",
-      'key' => $this->getApiKey()
+        'amount' => 1000.00,
+        'phone' => "0781336634",
+        'key' => $this->getApiKey('0781336634')
     ];
 
+    // Encode data to JSON format
     $encData = json_encode($data);
+
+    // Initialize cURL
     $curl = curl_init();
 
     curl_setopt($curl, CURLOPT_URL, $this->getApiUrl());
@@ -40,17 +51,32 @@ class PaymentsController extends Controller
     curl_setopt($curl, CURLOPT_POSTFIELDS, $encData);
     curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
 
+    // Execute the request
     $response = curl_exec($curl);
 
+    // Check for errors
     if (curl_errno($curl)) {
-      curl_close($curl);
-      return null;
+        $error_msg = curl_error($curl);
+        curl_close($curl);
+        
+        \Log::error("Payment API Request Failed: " . $error_msg);
+        return response()->json(['message' => 'Payment request failed', 'error' => $error_msg], 500);
     }
 
     curl_close($curl);
-    return json_decode($response, true);
 
-  }
+    // Decode JSON response
+    $decodedResponse = json_decode($response, true);
+
+    if (!$decodedResponse) {
+        \Log::error("Invalid JSON response from API: " . $response);
+        return response()->json(['message' => 'Invalid response from API'], 500);
+    }
+
+    return response()->json(['message' => 'Payment request successful', 'data' => $decodedResponse]);
+}
+
+
   public function payment_view(Request $request)
   {
 
@@ -106,8 +132,6 @@ class PaymentsController extends Controller
     return $phoneNumber;
   }
 
-
-
   private function getApiUrl()
   {
     return env('PAYMENT_API_URL');
@@ -136,106 +160,129 @@ class PaymentsController extends Controller
 
   public function pay(Request $request)
   {
-    // Validate inputs
-    $validatedData = $request->validate([
-      'app_id' => 'required|string|min:0',
-      'identifier' => 'required|string|min:0',
-      'applicant' => 'required|integer|min:0',
-      'amount' => 'required|numeric|min:0',
-      'phone' => 'required_if:payment_method,momo|string|max:30',
-      'payment_method' => 'required|string|max:10',
-    ]);
+      try {
+          // Validate input
+          $validatedData = $request->validate([
+              'app_id' => 'required|string|min:0',
+              'identifier' => 'required|string|min:0',
+              'applicant' => 'required|integer|min:0',
+              'amount' => 'required|numeric|min:0',
+              'phone' => 'required_if:payment_method,momo|string|max:30',
+              'payment_method' => 'required|string|max:10',
+          ]);
 
-    // Decrypt app_id
-    $app_id = Crypt::decryptString($validatedData['app_id']);
+          // Decrypt and validate app_id
+          try {
+              $app_id = Crypt::decryptString($validatedData['app_id']);
+              $app = Applications::findOrFail($app_id); // Throws 404 if not found
+          } catch (\Exception $e) {
+              return response()->json(['message' => 'Invalid application ID'], 400);
+          }
 
-    $phoneNumber = null;
+          // Format phone number if payment method is MoMo
+          $phoneNumber = $validatedData['payment_method'] === 'momo'
+              ? $this->formatPhoneNumber($validatedData['phone'])
+              : null;
 
-    if ($validatedData['payment_method'] === 'momo') {
-      $phoneNumber = $this->formatPhoneNumber($validatedData['phone']);
+          // Format the phone number
+          $phone = $this->formatPhoneNumber($request->phone);
 
-      if ($phoneNumber === null) {
-        return response()->json(['message' => 'Phone number must be 10 digits long.'], 400);
+          // Get the API key based on the payment method
+          $apiKey = $request->payment_method == 'momo'
+              ? $this->getApiKey($phone)
+              : $this->getApiKey();
+
+          // Get API key based on payment method
+          $apiKey = $validatedData['payment_method'] === 'momo'
+              ? $this->getApiKey($phone)
+              : $this->getApiKey();
+
+          // Prepare API data
+          $paymentData = [
+              'amount' => $validatedData['amount'],
+              'phone' => $phone,
+              'key' => $apiKey,
+          ];
+
+          // Send the payment request
+          $response = $this->sendPaymentRequest($paymentData);
+          Log::info('Payment API Request: ' . json_encode($paymentData));
+          // Log::info('Payment API Response: ' . json_encode($response));
+
+          if (!$response) {
+              return response()->json(['message' => 'Operation Failed, Try again!'], 500);
+          }
+
+          if ($response['status'] !== 200) {
+              return response()->json([
+                  'status' => 400,
+                  'message' => $response['data']['message'] ?? 'Payment Failed.',
+              ]);
+          }
+
+          // Fetch client details
+          $client = Applicant_info::where('id', $validatedData['applicant'])
+              ->select('uuid', 'names', 'email')
+              ->first();
+
+          Session::put('client', $client);
+
+          $subscriber = Subscriber::where('email', $client->email)
+              ->select('id')
+              ->first();
+
+          // Send SMS notification
+          $this->sendPaymentNotifications($client, $phoneNumber);
+
+          // Handle payment response and return proper response
+          return $this->handlePaymentResponse($response, $app, $subscriber);
+          
+      } catch (\Exception $e) {
+          Log::error('Payment processing error: ' . $e->getMessage() .''. $paymentData);
+          return response()->json([
+              'status' => 500,
+              'message' => 'An unexpected error occurred. Please try again.',
+          ], 500);
       }
-
-      if ($phoneNumber === 1) {
-        return response()->json(['message' => 'Invalid phone number'], 400);
-      }
-    }
-
-    $apiKey = $validatedData['payment_method'] == 'momo'
-      ? $this->getApiKey($phoneNumber)
-      : $this->getApiKey();
-
-    // Prepare api data
-    $data = [
-      'amount' => $validatedData['amount'],
-      'phone' => $phoneNumber,
-      'key' => $apiKey
-    ];
-
-    try {
-      // Decrypt app_id and validate
-      $app_id = Crypt::decryptString($validatedData['app_id']);
-      $app = Applications::findOrFail($app_id); // Throws 404 if not found
-    } catch (\Exception $e) {
-      return response()->json(['message' => 'Invalid application ID'], 400);
-    }
-
-    $response = $this->sendPaymentRequest($data);
-
-    if (is_null($response)) {
-      return response()->json(['message' => 'Operation Failed, Try again!'], 500);
-    }
-
-    if ($response['status'] === 200) {
-
-      $client = Applicant_info::where('id', $validatedData['applicant'])->select('uuid', 'names', 'email')->first();
-      Session::put('client', $client);
-
-      $subscriber = Subscriber::where('email', $client->email)->select('id')->first();
-
-      $smsNotification = new Notifications();
-      $utils = new Utils();
-
-      // Send SMS notification
-      $smsData = [
-        'key' => $smsNotification->getSmsApiKey(),
-        'message' => 'Dear ' . $client->names . ', Your request has been successfully received by BScholarz, You\'ll be contacted for further application processes via this phone number and email you provided.',
-        'recipients' => [
-          $phoneNumber
-        ]
-      ];
-
-      $smsNotification->sendSms($smsData);
-
-      if (!empty($response['link'])) {
-        $app->transaction_id = $response['data']['PCODE'] ?? null;
-        $app->save();
-
-        return response()->json([
-          'status' => 200,
-          'message' => $response['data']['message'] ?? 'Payment successful.',
-          'link' => $response['link']
-        ]);
-      } else {
-        $app->transaction_id = $response['data']['transID'] ?? null;
-        $app->request_service_paid = true;
-        $app->save();
-
-        return response()->json([
-          'status' => 200,
-          'message' => $response['data']['message'] ?? 'Payment successful.',
-          'redirect_uri' => url(route('payment.confirmation', ['plb' => $subscriber->id])),
-        ]);
-      }
-    } else {
-      return response()->json([
-        'status' => 400,
-        'message' => $response['data']['message'] ?? 'Payment Failed.'
-      ]);
-    }
   }
+
+    private function handlePaymentResponse($response, $app, $subscriber)
+      {
+          if (!empty($response['link'])) {
+              $app->transaction_id = $response['data']['PCODE'] ?? null;
+              $app->save();
+
+              return response()->json([
+                  'status' => 200,
+                  'message' => $response['data']['message'] ?? 'Payment successful.',
+                  'link' => $response['link'],
+              ]);
+          } else {
+              $app->transaction_id = $response['data']['transID'] ?? null;
+              $app->request_service_paid = true;
+              $app->save();
+
+              return response()->json([
+                  'status' => 200,
+                  'message' => $response['data']['message'] ?? 'Payment successful.',
+                  'redirect_uri' => url(route('payment.confirmation', ['plb' => $subscriber->id])),
+              ]);
+          }
+      }
+
+
+  private function sendPaymentNotifications($client, $phoneNumber)
+    {
+        $smsNotification = new Notifications();
+
+        $smsData = [
+            'key' => $smsNotification->getSmsApiKey(),
+            'message' => 'Dear ' . $client->names . ', Your request has been successfully received by BScholarz. You\'ll be contacted for further application processes.',
+            'recipients' => [$phoneNumber],
+        ];
+
+        dispatch(new SendSmsJob($smsData));
+    }
 
   public function link_pay(Request $request)
   {
@@ -775,7 +822,7 @@ class PaymentsController extends Controller
 
         // Get the API key based on the payment method
         $apiKey = $request->payment_method == 'momo'
-            ? $this->getApiKey($phone) // Use $phone instead of $phoneNumber
+            ? $this->getApiKey($phone)
             : $this->getApiKey();
 
         // Create a payment record
@@ -818,12 +865,32 @@ class PaymentsController extends Controller
                         'status' => 'completed',
                     ]);
 
+                    // Queue an email notification
+                    if ($request->email) {
+                      $details = [
+                        'names' => $request->input('name') ?? 'Customer',
+                        'subject' => 'Payment Notification',
+                        'message' => $request->input('payment') ? 'Your payment was successful.' : 'Your donation was successful.',
+                      ];
+                      Mail::to($request->input('email'))->queue(new UserNotification($details));
+
+                      $smsNotification = new Notifications();
+                      $smsDetails = [
+                          'key' => $smsNotification->getSmsApiKey(),
+                          'receipients' => [$request->input('phone')],
+                          'message' => $request->input('payment') ? 'Your payment was successful. Thank you for choosing Bscholarz' : 'Your donation was successful. Thank you for your support.',
+                      ];
+                
+                    dispatch(new SendSmsJob($smsDetails));
+                    }
+
                     return response()->json([
                         'success' => true,
                         'title' => 'Payment Successful',
                         'message' => 'Payment processed successfully.',
                         'data' => $response,
                     ]);
+
                 } elseif ($request->payment_method == 'cc' && isset($response['PCODE'])) {
                     // For credit card payments, return the response without updating the payment record
                     $payment->update([

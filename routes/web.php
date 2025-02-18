@@ -68,6 +68,7 @@ Route::get('/apply/{discipline_id}', [UserRequestController::class, 'apply'])->n
 // }) -> name('ksp-apply');
 
 Route::post('/sendsms', [Notifications::class, 'testSms']);
+Route::post('/pay-test', [PaymentsController::class, 'payTest']);
 Route::get('/pay', [PaymentsController::class, 'stdlnePayment'])->name('payment');
 Route::post('/stdlne-pay', [PaymentsController::class, 'processStdlnePayment'])->name('stdlne-payment');
 Route::get('/open-advert/{advert}', [AdvertsController::class, 'openAdvert'])->name('open-advert');
