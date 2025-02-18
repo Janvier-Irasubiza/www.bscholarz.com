@@ -182,7 +182,6 @@ function replyToComment(commentId) {
         })
         .then(data => {
             loadComments();
-            console.log("Server response:", data);
 
             // Optionally hide the reply input and reset the form
             document.querySelector(`#reply-${commentId}`).style.display = 'none';
@@ -192,7 +191,6 @@ function replyToComment(commentId) {
         .catch(error => {
             // Handle error
             alert("Failed to submit reply. Please try again.");
-            console.error("Error:", error);
         })
         .finally(() => {
             // Re-enable the submit button
@@ -347,7 +345,6 @@ function cancelSelection(userId, commentId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            console.log(data.message);
             const checkDiv = document.getElementById(`check-${userId}`);
 
             if (checkDiv) {
@@ -481,7 +478,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const sendButton = form.querySelector('button[type="submit"]');
 
     if (!form) {
-        console.error("Form with id 'composeMessageForm' not found.");
         return;
     }
 

@@ -9,13 +9,17 @@ use App\Http\Controllers\Notifications;
 use App\Http\Controllers\Utils;
 use App\Models\Request as Applications;
 use App\Models\Applicant_info;
+use App\Models\Staff;
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
 use App\Mail\RequestReceived;
+use App\Mail\NotifyStaff;
 use DB;
 use Auth;
 use Session;
 use Mail;
+use App\Jobs\SendSmsJob;
+use Illuminate\Support\Facades\Log;
 
 class UserRequestController extends Controller
 {
@@ -99,6 +103,42 @@ class UserRequestController extends Controller
 
     // Set success message
     Session::put('scss', 'Your request was successfully sent!');
+
+    // Notify staff of new application
+    // Get the staff emails
+    $staffs = Staff::whereHas('department', function ($query) {
+        $query->where('name', '!=', 'Marketing'); // Exclude Marketing department
+    })
+    ->select('email', 'phone_number') // Ensure columns are selected
+    ->pluck('phone_number', 'email') // Keep email as key, phone_number as value
+    ->toArray();
+
+    $smsNotification = new Notifications();
+
+    Log::info('contacts: '. json_encode(array_values($staffs)));
+
+    // Queue email notifications for each staff
+    foreach ($staffs as $email => $phone) { 
+      $details = [
+          'subject' => 'New Application Request',
+          'email' => $email,
+          'message' => 'A new application request has been made for ' . $app . ' by ' . $request->names . '. Kindly login to the admin dashboard to view the details.',
+          'url' => route('staff-dashboard'),
+      ];
+
+      // Queue the email notification
+      Mail::to($email)->queue(new NotifyStaff($details));
+    }
+
+    // Prepare SMS data (Send once for all recipients)
+    $smsData = [
+      'key' => $smsNotification->getSmsApiKey(),
+      'message' => 'A new application request has been made for ' . $app . ' by ' . $request->names . '. Kindly login to the admin dashboard to view the details. ' . route('staff-dashboard'),
+      'recipients' => array_values($staffs), // Send SMS to all non-marketing staff
+    ];
+
+    // Dispatch the SMS job only once (Outside the loop)
+    dispatch(new SendSmsJob($smsData));
 
     $encryptedApplicationId = Crypt::encryptString($application_id);
 

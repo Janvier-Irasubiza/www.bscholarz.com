@@ -665,9 +665,6 @@
                 const formData = new FormData(form);
                 const jsonData = Object.fromEntries(formData.entries());
 
-                console.log(jsonData);
-
-
                 // const formData = {
                 //     app_id: $('#app_id').val(),
                 //     identifier: $('#identifier').val(),
@@ -743,7 +740,6 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data);
                         if (data.status === 200) {
                             window.location.replace("{{ route('link-pay.success') }}");
                         } else {
@@ -793,7 +789,6 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data);
                         if (data.status === 200) {
                             window.location.replace(data.link);
                         } else {

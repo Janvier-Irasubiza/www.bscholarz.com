@@ -25,6 +25,11 @@ body::-webkit-scrollbar{
   background-color: #EBF0FF;
 }
 
+.py-8 {
+    padding-top: 5em;
+    padding-bottom: 5em;
+}
+
 img {
     max-width: 100%;
     max-height: 100%;
@@ -1786,6 +1791,11 @@ footer{
 .rnd-b-none {
     border-bottom-right-radius: 0px;
     border-bottom-left-radius: 0px;
+}
+
+.rnd-b {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
 /* Define the spinning animation */

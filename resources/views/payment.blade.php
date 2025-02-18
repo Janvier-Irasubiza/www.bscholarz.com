@@ -42,7 +42,7 @@
         @endif
 
         <div class="mb-3 mt-3">
-          <h1 style="" class="f-20">Request fee: <strong>{{ number_format($amount) }} RWF</strong> </h1>
+          <h1 class="f-20">Request fee: <strong>{{ number_format($amount) }} RWF</strong> </h1>
         </div>
 
         <div class="mt-4 px-3">
@@ -51,8 +51,8 @@
             <small class="mb-0" style="color: #595959">Select your prefered payment method</small>
             <div class="flex-section gap-4 mt-2">
               <div class="w-full mb-3">
-                <small class="mb-0" style="">Mobile money</small>
-                <button type="button" id="momobtn" class="col-lg-8 w-full p-1 paybtn" style="">
+                <small class="mb-0">Mobile money</small>
+                <button type="button" id="momobtn" class="col-lg-8 w-full p-1 paybtn">
                   <div class="d-flex align-items-center gap-3 px-3">
                     <div class="col-lg-1"><input id="momochk" type="radio" name="payment_method" value="momo"></div>
                     <div class="w-full mt-1 mb-1 d-flex justify-content-center" style="height: 35px;"><img
@@ -110,8 +110,8 @@
                 class="shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800"
                 name="agree" style="border-radius: 4px; border: 1.5px solid #505050" required>
               <span class="ml-2 text-sm">By clicking process payment, you agree with our
-                <a class="underline text-sm hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                  href="">
+                <a class="underline text-sm hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" style="font-weight: 600;"
+                  href="{{ route('tac') }}" target="_blank">
                   Terms and Conditions
                 </a>
               </span>
@@ -184,6 +184,16 @@
             </label>
           </div>
 
+          <div class="mt-4">
+            {!! NoCaptcha::display() !!}
+          </div>
+
+          <div class="mt-3 mb-4">
+            @if ($errors->has('g-recaptcha-response'))
+              <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
+            @endif
+          </div>
+
           <div class="button-section mt-4 mb-4">
             <button type="submit" id="cardPayment" class="apply-btn w-full text-center py-2 uppercase"
               style="border: none; font-weight: 600">
@@ -196,7 +206,7 @@
       </div>
     </div>
 
-    <div style="" class="mt-5 w-full">
+    <div class="mt-5 w-full">
       @include('layouts.full-footer')
     </div>
 

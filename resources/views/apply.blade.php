@@ -71,7 +71,7 @@
                                 </div>
 
                                 <x-input-error :messages="$errors->get('email')" class="mt-2 text-left text-danger"
-                                    style="color #000; font-weight: bold" />
+                                    style="color: #000; font-weight: bold" />
 
                             </div>
 
@@ -85,7 +85,15 @@
                                 <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
                             </div>
 
+                            <div class="mt-5 d-flex justify-content-center">
+                                {!! NoCaptcha::display() !!}
+                            </div>
 
+                            <div class="mt-3 mb-4">
+                                @if ($errors->has('g-recaptcha-response'))
+                                <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
+                                @endif
+                            </div>
 
                             <div class="flex-section mt-4 space-y-5"
                                 style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px;">
@@ -161,7 +169,7 @@
                                     </div>
 
                                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-left text-danger"
-                                        style="color #000; font-weight: bold" />
+                                        style="color: #000; font-weight: bold" />
 
                                 </div>
 
@@ -188,7 +196,7 @@
                                     </div>
 
                                     <x-input-error :messages="$errors->get('time')" class="mt-2 text-left text-danger"
-                                        style="color #000; font-weight: bold" />
+                                        style="color: #000; font-weight: bold" />
 
                                 </div>
 
@@ -203,7 +211,15 @@
                                 </div>
                             </div>
 
+                            <div class="mt-5 d-flex justify-content-center">
+                                {!! NoCaptcha::display() !!}
+                            </div>
 
+                            <div class="mt-3 mb-4">
+                                @if ($errors->has('g-recaptcha-response'))
+                                <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
+                                @endif
+                            </div>
 
                             <div class="flex-section mt-4 space-y-5"
                                 style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px;">

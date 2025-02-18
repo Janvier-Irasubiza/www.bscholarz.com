@@ -32,6 +32,16 @@
       
       @endif
 
+      <div class="mt-5 d-flex justify-content-center">
+          {!! NoCaptcha::display() !!}
+      </div>
+
+      <div class="mt-3 mb-4">
+          @if ($errors->has('g-recaptcha-response'))
+          <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
+          @endif
+      </div>
+      
         <div class="d-flex items-center mb-4 justify-between mt-4">
         <a class="underline text-sm hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('authenticate') }}">
                 {{ __('Back to Sign in') }}

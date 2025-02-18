@@ -171,7 +171,6 @@ function replyToComment(commentId) {
         })
         .then(data => {
             loadComments();
-            console.log("Server response:", data);
 
             // Optionally hide the reply input and reset the form
             document.querySelector(`#reply-${commentId}`).style.display = 'none';

@@ -66,7 +66,7 @@ Route::get('/apply/{discipline_id}', [UserRequestController::class, 'apply'])->n
 // Route::get('/ksp-apply', function() {
 //     return redirect()->away('https://ksp.bscholarz.com/apply');
 // }) -> name('ksp-apply');
-
+Route::get('/tac', [PagesController::class,'tac'])->name('tac');
 Route::post('/sendsms', [Notifications::class, 'testSms']);
 Route::post('/pay-test', [PaymentsController::class, 'payTest']);
 Route::get('/pay', [PaymentsController::class, 'stdlnePayment'])->name('payment');

@@ -120,7 +120,7 @@
                         </label>
                     </div>
 
-                    <div class="mt-4">
+                    <div class="mt-5 d-flex justify-content-center">
                         {!! NoCaptcha::display() !!}
                     </div>
 

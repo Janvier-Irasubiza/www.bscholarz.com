@@ -788,4 +788,8 @@ class PagesController extends Controller
         return back();
     }
 
+    public function tac() {
+        return view('tac');
+    }
+
 }
