@@ -43,7 +43,7 @@
                     class="slider border mt-0"
                     data-bs-ride="carousel"
                     style="border-radius: 0px; height: 10em"
-                    @if ($ads->count() > 1) data-bs-interval="60000" @endif>
+                    @if ($ads->count() > 1) data-bs-interval="5000" @endif>
                     <!-- Carousel Items -->
                     <div class="carousel-inner">
                         @foreach ($ads as $index => $ad)

@@ -99,11 +99,14 @@ class AdminController extends Controller
                 ->count();
         });
 
-        $assistanceRequestCount = Cache::remember('assistance_request_count', now()->addMinutes(10), function () {
-            return DB::table('assistance_seekings')
+        // $assistanceRequestCount = Cache::remember('assistance_request_count', now()->addMinutes(10), function () {
+        //     return DB::table('assistance_seekings')
+        //         ->whereNull('assistance_given')
+        //         ->count();
+        // });
+        $assistanceRequestCount = DB::table('assistance_seekings')
                 ->whereNull('assistance_given')
                 ->count();
-        });
 
         $requestedDeleteCount = Cache::remember('requested_delete_count', now()->addMinutes(10), function () {
             return DB::table('user_requests')
@@ -125,11 +128,15 @@ class AdminController extends Controller
                 ->count();
         });
 
-        $appointments = Cache::remember('appointments', now()->addMinutes(10), function () {
-            return Applications::where('is_appointment', true)
+        // $appointments = Cache::remember('appointments', now()->addMinutes(10), function () {
+        //     return Applications::where('is_appointment', true)
+        //         ->where('status', 'Pending')
+        //         ->count();
+        // });
+
+        $appointments = Applications::where('is_appointment', true)
                 ->where('status', 'Pending')
                 ->count();
-        });
 
         return view('admin.dashboard', compact(
             'applicationCount',

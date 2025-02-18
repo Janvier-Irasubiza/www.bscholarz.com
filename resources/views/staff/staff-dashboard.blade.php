@@ -329,7 +329,7 @@
                   </form>
 
                   <div class="requests-scroll">
-                    @if($ready_clients->isNotEmpty())
+                    @if($ready_clients->count())
 
             @foreach($ready_clients as $client)
 
@@ -339,7 +339,7 @@
       <div class="mb-4 client-info-1 customer-search-item" style="border: 3px solid #FAC898">
       <div class="px-2 py-1 d-flex align-items-center">
         <small style="font-weight: 500">Reviewed by: &nbsp </small>
-        <h5 style="font-weight: bold; font-size: 12px">{{ $client->appAssistant->names }}</h5>
+        <h5 style="font-weight: bold; font-size: 12px">{{ $client->appAssistant->names ?? 'Not yet reviewed'}}</h5>
       </div>
       <div class="container staff-client-1" style="">
         <div class="row">
@@ -368,15 +368,24 @@
       <div class="d-flex justify-content-between py-2 px-4">
 
         <a style="color: black"
-        href="{{ route('customer-details', ['customer_info' => $client->id, 'application_info' => $client->application_id]) }}"
-        class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
-        Review request
+            @if(isset($client->user->id) && isset($client->application_id))
+                href="{{ route('customer-details', ['customer_info' => $client->user->id, 'application_info' => $client->application_id]) }}"
+            @else
+                href="#" onclick="showToast()"
+            @endif
+            class="staff-resume-btn-1" style="padding: 5px; border-radius: 5px">
+            Review request
         </a>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast-message">
+            <p>⚠️ Missing required information. Cannot proceed.</p>
+        </div>
 
         <a href="#" class="ml-4 postpone-btn" style="color: black" data-bs-toggle="modal"
         data-bs-target="#staticBackdrop" data-application-id="{{ $client->application_id }}"
-        data-service="{{ $discipline->discipline_name }}"
-        data-client="{{ $client_info->names }}">
+        data-service="{{ $discipline->discipline_name ?? 'No discipline name found'}}"
+        data-client="{{ $client_info->names ?? 'Names not found'}}">
         Delete
         </a>
       </div>
@@ -1112,6 +1121,12 @@
         });
       });
 
+
+    function showToast() {
+        var toast = document.getElementById("toast");
+        toast.classList.add("show");
+        setTimeout(() => { toast.classList.remove("show"); }, 3000);
+    }
 
     </script>
 

@@ -48,6 +48,7 @@ class StaffController extends Controller
         // $ready_clients = DB::table('user_requests')->where('status', 'Pending')->whereNull('deletion_status')->where('due_date', '>', now()->format('Y-m-d H:i:s.u'))->get();
         $ready_clients = Applications::with('discipline')
             ->with('user')
+            ->with('appAssistant')
             ->where('status', 'Pending')
             ->where('request_service_paid', true)
             ->whereNull('deletion_status')
@@ -1022,7 +1023,7 @@ class StaffController extends Controller
         $serviceInfo = DB::table('served_requests')
             ->where('application_id', $request->app_id)
             ->first();
-        
+
         $client = $serviceInfo->names;
         $app = $serviceInfo->discipline_name;
         $date = $serviceInfo->served_on;
