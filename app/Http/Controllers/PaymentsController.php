@@ -544,8 +544,6 @@ class PaymentsController extends Controller
     return view('confirmation', compact('link'));
   }
 
-
-
   public function approve_payment(Request $request)
   {
 

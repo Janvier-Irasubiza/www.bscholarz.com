@@ -66,7 +66,6 @@ class PagesController extends Controller
         );
     }
 
-
     public function BeScholar()
     {
         $scholarships = DB::table('disciplines')->where('category', 'scholarship')->where('status', '<>', 'N/A')->orderBy('publish_date', 'desc')->get();
