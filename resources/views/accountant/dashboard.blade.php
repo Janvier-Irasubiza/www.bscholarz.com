@@ -150,7 +150,7 @@
                     </div>
                 </div>
                 <div style="border-top: none" class="d-block p-3 card-footer">
-                    <table id="example1" class="table align-middle mb-0 bg-white">
+                    <table id="example1" class="table align-middle mb-0 bg-white" cellspacing="0">
                         <thead class="bg-light">
                             <tr>
                                 <th>Transaction ID</th>

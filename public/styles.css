@@ -1741,8 +1741,8 @@ footer{
 .snd-apply-btn {
     padding: 10px 20px;
     border-radius: 5px;
-    border: 2px solid #5d3fd3 !important;
-  	color: #5d3fd3;
+    background-color: #59dfc2;
+  	color: #ffffff;
   	text-decoration: none;
     transition: background-color 0.12s ease;
     margin-right: 0px;
@@ -1758,7 +1758,7 @@ footer{
 }
 
 .snd-apply-btn:hover {
-    background-color: #5d3fd3 !important;
+    background-color: #59dfc2da !important;
     font-weight: bold;
   color: ghostwhite;
 }
