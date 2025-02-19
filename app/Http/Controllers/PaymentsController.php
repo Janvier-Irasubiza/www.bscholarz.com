@@ -950,7 +950,7 @@ class PaymentsController extends Controller
                 ], 400);
             }
         } catch (\Exception $e) {
-            Log::error($e);
+            Log::error('Pyt failed  '. $e);
             // Update the payment record with the error status
             $payment->update([
                 'status' => 'failed',
