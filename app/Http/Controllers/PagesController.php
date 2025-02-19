@@ -24,22 +24,27 @@ class PagesController extends Controller
     public function Index()
     {
         $scholarships = Discipline::where('category', 'scholarship')
-            ->where('status', '<>', 'N/A')
-            ->orderBy('publish_date', 'desc')
-            ->get();
+        ->where('status', '<>', 'N/A')
+        ->where('speciality', '!=', 'carousel')
+        ->orderBy('publish_date', 'desc')
+        ->get();
+
 
         $opportunity = Discipline::where('category', 'Job')
             ->where('status', '<>', 'N/A')
+            ->where('speciality', '!=', 'carousel')
             ->orderBy('publish_date', 'desc')
             ->get();
 
         $trainings = Discipline::where('status', '<>', 'N/A')
+            ->where('speciality', '!=', 'carousel')
             ->whereNotIn('category', ['scholarship', 'Job'])
             ->orderBy('publish_date', 'desc')
             ->get();
 
         $sidebarData = Discipline::where('speciality', 'Trendings')
             ->where('status', '<>', 'N/A')
+            ->where('speciality', '!=', 'carousel') 
             ->orderBy('publish_date', 'desc')
             ->get();
 
@@ -613,7 +618,7 @@ class PagesController extends Controller
                 'keyword' => $keyWord,
             ]);
         } else {
-            // 
+            //
         }
 
         $sidebarData = DB::table('disciplines')->where('status', '<>', 'N/A')->where('speciality', 'special')->get();

@@ -189,7 +189,7 @@
             @include('layouts.sidebar')
         @elseif($department == 'Marketing' || $department == 'marketing')
             @include('layouts.partials.md-sidebar') <!-- Marketing department -->
-        @elseif($department == 'Accounting' || $department == 'accounting')
+        @elseif($department == 'Accounting' || $department == 'accounting' || $department == 'Accountability' || $department == 'accountability' || $department == 'Finance' || $department == 'finance')
             @include('layouts.acc-sidebar') <!-- Accounting or Accountability -->
         @elseif($department == 'Applications' || $department == 'applications')
             @include('layouts.staff-sidebar')

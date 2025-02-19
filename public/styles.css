@@ -1798,6 +1798,37 @@ footer{
     background-color: #5d3fd3 !important;
 }
 
+.toast-message {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #f44336;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    font-size: 16px;
+}
+
+.toast-message.show {
+    visibility: visible;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
 .rnd {
     border-radius: 5px;
 }
