@@ -467,26 +467,41 @@ class PaymentsController extends Controller
 
   private function sendPaymentRequest(array $data)
   {
-    $encData = json_encode($data);
-    $curl = curl_init();
-
-    curl_setopt($curl, CURLOPT_URL, $this->getApiUrl());
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_POSTFIELDS, $encData);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-
-    $response = curl_exec($curl);
-
-    if (curl_errno($curl)) {
+      $encData = json_encode($data);
+      $curl = curl_init();
+  
+      curl_setopt_array($curl, [
+          CURLOPT_URL => $this->getApiUrl(),
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_POST => true,
+          CURLOPT_POSTFIELDS => $encData,
+          CURLOPT_HTTPHEADER => [
+              'Content-Type: application/json',
+              'Content-Length: ' . strlen($encData)
+          ],
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_FAILONERROR => true,
+      ]);
+  
+      $response = curl_exec($curl);
+  
+      if (curl_errno($curl)) {
+          Log::error('cURL Error: ' . curl_error($curl)); // Log the error
+          curl_close($curl);
+          return null;
+      }
+  
+      $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
       curl_close($curl);
-      return null;
-    }
-
-    curl_close($curl);
-    Log::info('RSP: '. json_encode($response));
-    return json_decode($response, true);
-  }
+  
+      if ($httpCode >= 400) {
+          Log::error("HTTP Error $httpCode: " . $response);
+          return null;
+      }
+  
+      Log::info('Payment API Response: ' . $response);
+      return json_decode($response, true);
+  }  
 
   public function payment(Request $request)
   {
