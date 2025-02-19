@@ -877,6 +877,7 @@ class PaymentsController extends Controller
         // Send the payment request
         try {
             $response = $this->sendPaymentRequest($data);
+            Log::info('rsp: ' . json_encode($response));
 
             // Check if the payment was successful
             if ($response['status'] == 200) {
