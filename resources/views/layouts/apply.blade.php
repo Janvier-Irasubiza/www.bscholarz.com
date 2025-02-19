@@ -327,142 +327,143 @@
 
 <body class="font-sans antialiased border p-0">
 
-    <div class="sidebar-drawer" style="z-index: 10 !important">
-        <i style="font-size: 30px" class="fa-solid fa-suitcase-rolling"></i>
-    </div>
-
     <nav class="" style="margin-top: -1px">
         <div class="container-fluid">
 
-            <div class="nav-wrapper">
+        <div class="nav-wrapper">
 
-                <div class="d-flex gap-2">
-                    <button class="nav-drawer" href="">
-                        <i class="fa-solid fa-bars dft-btn"></i>
-                    </button>
+            <div class="d-flex gap-2 justify-content-between align-items-center">
+                <button class="nav-drawer" href="">
+                    <i class="fa-solid fa-bars dft-btn"></i>
+                </button>
 
-                    <button class="aft-btn" href="">
-                        <i class="fa-solid fa-arrow-up"></i>
-                    </button>
+                <button class="aft-btn" href="">
+                    <i class="fa-solid fa-arrow-up"></i>
+                </button>
 
-                    <div class="bbg-logo col-lg-12 d-flex align-items-center" style="">
-                        <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
-                    </div>
+                <div class="bbg-logo col-lg-12 d-flex align-items-center">
+                    <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
                 </div>
+            </div>
 
-                <div style="padding: 0px;" class="col-lg-11 nav-container container-fluid">
-                    <div class="d-flex align-items-center" style="margin-left: 10px; width: 100%;">
+            <div style="padding: 0px;" class="nav-container container-fluid">
+                <div class="d-flex justify-content-between align-items-center" style="margin-left: 10px; width: 100%;">
 
-                        <div style="padding: 0px" class="col-lg-9 nav-links-contianer">
-                            <ul style="margin: 0px;">
-                                <li class="navigator">
-                                    <a class="{{ request()->routeIs('home') ? 'active-navigator' : '' }}"
-                                        href="{{ route('home') }}">Home</a>
-                                </li>
-                                <li class="navigator">
-                                    <a class="{{ request()->routeIs('BeScholar') || (request()->is('learnMore/*') && request()->segment(2) === 'scholar') ? 'active-navigator' : '' }}"
-                                        href="{{ route('BeScholar') }}">Be a Scholar</a>
-                                </li>
-                                <li class="navigator">
-                                    <a class="{{ request()->routeIs('get-employed') || (request()->is('learnMore/*') && request()->segment(2) === 'employed') ? 'active-navigator' : '' }}"
-                                        href="{{ route('get-employed') }}">Get Employed</a>
-                                </li>
-                                <li class="navigator">
-                                    <a class="{{ request()->routeIs('fellowships-trainings') || (request()->is('learnMore/*') && request()->segment(2) === 'fellowships') ? 'active-navigator' : '' }}"
-                                        href="{{ route('fellowships-trainings') }}">Fellowships & Trainings</a>
-                                </li>
+                    <div style="padding: 0px" class="nav-links-contianer">
+                        <ul style="margin: 0px;">
+                            <li class="navigator">
+                                <a class="{{ request()->routeIs('home') ? 'active-navigator' : '' }}"
+                                    href="{{ route('home') }}">Home</a>
+                            </li>
+                            <li class="navigator">
+                                <a class="{{ request()->routeIs('BeScholar') || (request()->is('learnMore/*') && request()->segment(2) === 'scholar') ? 'active-navigator' : '' }}"
+                                    href="{{ route('BeScholar') }}">Be a Scholar</a>
+                            </li>
+                            <li class="navigator">
+                                <a class="{{ request()->routeIs('get-employed') || (request()->is('learnMore/*') && request()->segment(2) === 'employed') ? 'active-navigator' : '' }}"
+                                    href="{{ route('get-employed') }}">Get Employed</a>
+                            </li>
+                            <li class="navigator">
+                                <a class="{{ request()->routeIs('fellowships-trainings') || (request()->is('learnMore/*') && request()->segment(2) === 'fellowships') ? 'active-navigator' : '' }}"
+                                    href="{{ route('fellowships-trainings') }}">Fellowships & Trainings</a>
+                            </li>
 
-                                <li class="navigator"><a
-                                        class="{{ request()->routeIs('about-us') ? 'active-navigator' : '' }}"
-                                        href="{{ route('about-us') }}">About Us</a></li>
-                                <li class="navigator"><a
-                                        class="{{ request()->routeIs('contact-us') ? 'active-navigator' : '' }}"
-                                        href="{{ route('contact-us') }}">Contact Us</a></li>
-                                <li class="navigator"><a
-                                        class="{{ request()->routeIs('membership') || (request()->is('membership/*')) ? 'active-navigator' : '' }}"
-                                        href="{{ route('membership') }}">Membership</a>
-                                </li>
-                            </ul>
-                        </div>
+                            <li class="navigator"><a
+                                    class="{{ request()->routeIs('about-us') ? 'active-navigator' : '' }}"
+                                    href="{{ route('about-us') }}">About Us</a></li>
+                            <li class="navigator"><a
+                                    class="{{ request()->routeIs('contact-us') ? 'active-navigator' : '' }}"
+                                    href="{{ route('contact-us') }}">Contact Us</a>
+                            </li>
+                            <li class="navigator"><a
+                                    class="{{ request()->routeIs('membership') || (request()->is('membership/*')) ? 'active-navigator' : '' }}"
+                                    href="{{ route('membership') }}">Membership</a>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <div class="col-lg-3 nav-section-right" style="padding: 0px;">
-                            <div class="d-flex gap-2 justify-content-end" style="padding: 0px;">
-                                <div class="col-lg-9 d-flex align-items-center" style="">
-                                    <button class="search-btn text-left w-full" style="padding-left: 6px"
-                                        data-toggle="modal" data-target="#exampleModal">
-                                        Search
-                                    </button>
+                    <div class="nav-section-right" style="padding: 0px;">
+                        <div class="d-flex gap-3 justify-content-end align-items-center" style="padding: 0px;">
 
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                                        aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
-                                        <div class="modal-dialog modal-xl" role="document" style="">
-                                            <div class="modal-content" style="">
-                                                <div style="" class="modal-header">
+                            <div class="d-flex align-items-center" style="margin-right: 10px;">
 
-                                                    <form action="{{ route('search') }}" class="w-full">
-                                                        <div class="d-flex">
-                                                            <input id="searchBox" class="input-box" type="text"
-                                                                placeholder="Type here....." name="search_keyword"
-                                                                required autofocus />
-                                                            <button class="search-sub-btn">
-                                                                <span class="fa-solid fa-magnifying-glass"></span>
-                                                            </button>
-                                                        </div>
-                                                    </form>
+                                <button style="padding: 0px; border: none; background: none; font-size: 1.2rem; color: #646464" data-toggle="modal" data-target="#exampleModal">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
 
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true" style="">
+                                    <div class="modal-dialog modal-xl" style="z-index: 1000;" role="document">
+                                        <div class="modal-content">
+                                            <div style="" class="modal-header">
+                                                <form action="{{ route('search') }}" class="w-full">
+                                                    <div class="d-flex">
+                                                        <input id="searchBox" class="input-box" type="text"
+                                                            placeholder="Type here....." name="search_keyword"
+                                                            required autofocus />
+                                                        <button class="search-sub-btn">
+                                                            <span class="fa-solid fa-magnifying-glass"></span>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            @php $sugs = DB::table('search_suggestions')->where('count', '>', 2)->get(); @endphp
+
+                                            @if($sugs)
+
+                                                <div class="modal-body">
+                                                    <h5>Suggestions:</h5>
+                                                    <div style="padding: 0px;" class="">
+                                                        <ul style="margin: 0px; padding: 0px">
+
+
+                                                            @foreach($sugs as $sug)
+
+                                                                <li class="sugest-navigator mb-1"><a
+                                                                        href="{{ route('search', ['search_keyword' => $sug->keyword]) }}">
+                                                                        <small>#</small> {{ $sug->keyword }}</a></li>
+
+                                                            @endforeach
+
+                                                        </ul>
+                                                    </div>
                                                 </div>
 
-                                                @php $sugs = DB::table('search_suggestions')->where('count', '>', 2)->get(); @endphp
+                                            @endif
 
-                                                @if($sugs)
-
-                                                    <div class="modal-body">
-                                                        <h5>Suggestions:</h5>
-                                                        <div style="padding: 0px;" class="">
-                                                            <ul style="margin: 0px; padding: 0px">
-
-
-                                                                @foreach($sugs as $sug)
-
-                                                                    <li class="sugest-navigator mb-1"><a
-                                                                            href="{{ route('search', ['search_keyword' => $sug->keyword]) }}">
-                                                                            <small>#</small> {{ $sug->keyword }}</a></li>
-
-                                                                @endforeach
-
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-
-                                                @endif
-
-                                            </div>
                                         </div>
                                     </div>
-
-                                    <!-- End of modal -->
-
                                 </div>
 
-                                <a href="{{ Auth::guard('client')->user() ? route('client.client-dashboard') : route('login') }}">
+                                <!-- End of modal -->
 
-
-                                    @if(Auth::guard('client')->user() && Auth::guard('client')->user()->profile_picture)
-                                        <div class="user-profile">
-
-                                            <img src="{{ asset('profile_pictures') }}/{{ Auth::guard('client')->user()->profile_picture }}"
-                                                alt="">
-                                        </div>
-                                    @else
-                                        <i class="fa-regular fa-user" style="font-size: 1.7em"></i>
-                                    @endif
-                                </a>
                             </div>
 
+                        <a href="{{ route('payment') }}" class="apply-btn py-2 pay-btn" style="border: none;">
+                            Pay
+                        </a>
+
+                            <a
+                                href="{{ Auth::guard('client')->user() ? route('client.client-dashboard') : route('login') }}" class="snd-apply-btn py-2">
+
+
+                                @if(Auth::guard('client')->user() && Auth::guard('client')->user()->profile_picture)
+                                    <div class="user-profile">
+
+                                        <img src="{{ asset('profile_pictures') }}/{{ Auth::guard('client')->user()->profile_picture }}"
+                                            alt="">
+                                    </div>
+                                @else
+                                    Join Us
+                                @endif
+                            </a>
                         </div>
+
                     </div>
                 </div>
+            </div>
 
             </div>
         </div>

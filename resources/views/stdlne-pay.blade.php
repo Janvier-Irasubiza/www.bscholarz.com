@@ -13,22 +13,22 @@
             <div class="" id="types">
                 <form action="" method="POST" id="paymentForm">
                     @csrf
-                    <div class="flex gap-4 mt-4">
-                        <div class="w-full">
+                    <div class="flex-section gap-4">
+                        <div class="w-full mt-4">
                             <label for="amount" class="text-gray-500">Amount</label>
                             <input type="number" name="amount" id="amount" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" required placeholder="Enter amount" autofocus>
                         </div>
-                        <div class="w-full">
+                        <div class="w-full mt-4">
                             <label for="phone" class="text-gray-500">Phone</label>
                             <input type="text" name="phone" id="phone" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" required placeholder="Enter phone number">
                         </div>
                     </div>
-                    <div class="flex gap-4 mt-4">
-                        <div class="w-full">
+                    <div class="flex-section gap-4">
+                        <div class="w-full mt-4">
                             <label for="email" class="text-gray-500">Email</label>
                             <input type="email" name="email" id="email" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" placeholder="Enter your email address">
                         </div>
-                        <div class="w-full">
+                        <div class="w-full mt-4">
                             <label for="name" class="text-gray-500">Name</label>
                             <input type="text" name="name" id="name" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" placeholder="Enter your name">
                         </div>
@@ -40,30 +40,30 @@
                 </form>
                 <form action="" method="POST" id="donateForm" class="hidden">
                     @csrf
-                    <div class="mt-4 d-flex gap-4 overflow-auto flex-nowrap" style="white-space: nowrap;">
-                        <button type="button" class="snd-apply-btn amount-btn" data-amount="100000">100K RWF</button>
-                        <button type="button" class="snd-apply-btn amount-btn" data-amount="250000">250K RWF</button>
-                        <button type="button" class="snd-apply-btn amount-btn" data-amount="500000">500K RWF</button>
-                        <button type="button" class="snd-apply-btn amount-btn" data-amount="750000">750K RWF</button>
-                        <button type="button" class="snd-apply-btn amount-btn" data-amount="1000000">1M RWF</button>
+                    <div class="mt-4 d-flex gap-3 overflow-auto flex-nowrap justify-content-between no-scroll" style="white-space: nowrap;">
+                        <button type="button" class="sm-apply-btn amount-btn" data-amount="100000">100K RWF</button>
+                        <button type="button" class="sm-apply-btn amount-btn" data-amount="250000">250K RWF</button>
+                        <button type="button" class="sm-apply-btn amount-btn" data-amount="500000">500K RWF</button>
+                        <button type="button" class="sm-apply-btn amount-btn" data-amount="750000">750K RWF</button>
+                        <button type="button" class="sm-apply-btn amount-btn" data-amount="1000000">1M RWF</button>
                     </div>
 
-                    <div class="flex gap-4 mt-4">
-                        <div class="w-full">
+                    <div class="flex-section gap-4">
+                        <div class="w-full mt-4">
                             <label for="amount" class="text-gray-500">Custom Amount</label>
                             <input type="number" name="amount" id="amount" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" placeholder="Enter amount" required>
                         </div>
-                        <div class="w-full">
+                        <div class="w-full mt-4">
                             <label for="phone" class="text-gray-500">Phone Number</label>
                             <input type="text" name="phone" id="phone" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" placeholder="Enter phone number" required>
                         </div>
                     </div>
-                    <div class="flex gap-4 mt-4">
-                        <div class="w-full">
+                    <div class="flex-section gap-4">
+                        <div class="w-full mt-4">
                             <label for="email" class="text-gray-500">Email</label>
                             <input type="email" name="email" id="email" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" placeholder="Enter your email address">
                         </div>
-                        <div class="w-full">
+                        <div class="w-full mt-4">
                             <label for="name" class="text-gray-500">Names</label>
                             <input type="text" name="name" id="name" class="w-full border-2 border-gray-200 rounded-md p-2 mt-1" placeholder="Enter your name">
                         </div>

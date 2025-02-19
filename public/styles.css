@@ -1739,8 +1739,25 @@ footer{
   	color: ghostwhite;
   	text-decoration: none;
     transition: background-color 0.12s ease;
-  font-size: 14px;
-  font-weight: 600;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sm-apply-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 3px solid #5d3fd3;
+    color: #626262;
+  	text-decoration: none;
+    transition: background-color 0.12s ease;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sm-apply-btn:hover {
+    background-color: #5d3fd3 !important;
+    font-weight: bold;
+    color: ghostwhite;
 }
 
 .snd-apply-btn {
@@ -1751,21 +1768,30 @@ footer{
   	text-decoration: none;
     transition: background-color 0.12s ease;
     margin-right: 0px;
-  font-size: 14px;
-  font-weight: 600;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 
 .apply-btn:hover {
     background-color: #4528b3 !important;
     font-weight: bold;
-  color: ghostwhite;
+    color: ghostwhite;
 }
 
 .snd-apply-btn:hover {
     background-color: #59dfc2da !important;
     font-weight: bold;
-  color: ghostwhite;
+    color: ghostwhite;
+}
+
+.no-scroll {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.no-scroll::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
 }
 
 .bg-pry {
@@ -1890,8 +1916,28 @@ footer{
     padding: 50px 0px 0px 0px;
 }
 
+.mt-8 {
+    margin-top: 1.5em;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.block {
+    display: block;
+}
+
+.pay-btn {
+    display: block;
+}
+
 .nav-drawer {
-    color: #000;
+    color: #545454;
     font-size: 30px;
     border: none;
     background: none;
@@ -1908,14 +1954,15 @@ footer{
     background-color: #d4e7ee;
     position: absolute;
     width: 29%;
-    top: -290px;
+    top: -400px;
     transition: top 0.3s ease-in-out;
+    width: 100%;
 }
 
 .nav-links-drawer  ul .small-navigator {
     display: block;
     padding: 10px 22px;
-    border-bottom: 1.5px solid #a8a3a3;
+    border-bottom: 1.5px solid #c5c5c5;
     font-size: 15px;
     transition: padding 0.2s ease-in-out;
     transition: background 0.2s ease-in-out;
@@ -3142,6 +3189,10 @@ input:focus, select:focus, textarea:focus {
 
 
 @media (max-width: 600px) {
+
+    .pay-btn {
+        display: none;
+    }
 
   .freq-asked-questions-cstm {
 
