@@ -339,7 +339,7 @@
                     <i class="fa-solid fa-arrow-up"></i>
                 </button>
 
-                <div class="bbg-logo d-flex align-items-center border">
+                <div class="bbg-logo d-flex align-items-center">
                     <a href="{{ route('home') }}"> 
                         <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
                     </a>
