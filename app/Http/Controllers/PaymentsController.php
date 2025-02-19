@@ -484,6 +484,7 @@ class PaymentsController extends Controller
     }
 
     curl_close($curl);
+    Log::info('RSP: '. json_encode($response));
     return json_decode($response, true);
   }
 
