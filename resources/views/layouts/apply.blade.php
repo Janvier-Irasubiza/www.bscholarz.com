@@ -332,7 +332,7 @@
 
         <div class="nav-wrapper">
 
-            <div class="d-flex gap-2 justify-content-between align-items-center">
+            <div class="d-flex gap-3 justify-content-between align-items-center">
                 <button class="nav-drawer" href="">
                     <i class="fa-solid fa-bars dft-btn"></i>
                 </button>
