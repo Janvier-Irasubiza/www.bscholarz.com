@@ -228,14 +228,12 @@
             }
         }
 
-
         @media (max-width: 1220px) {
 
             .carousel-caption {
                 height: 68%;
             }
         }
-
 
         @media (max-width: 1200px) {
             .modal-xl {

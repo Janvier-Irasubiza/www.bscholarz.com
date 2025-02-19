@@ -5,9 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>BScholarz - @yield('title')</title>
-
     <link rel="stylesheet" href="{{ asset('styles.css') }}?v={{ filemtime(public_path('styles.css')) }}">
     <link rel="stylesheet"
         href="{{ asset('bootstrap/css/bootstrap.min.css') }}?v={{ filemtime(public_path('bootstrap/css/bootstrap.min.css')) }}">
@@ -342,7 +340,9 @@
                 </button>
 
                 <div class="bbg-logo col-lg-12 d-flex align-items-center">
-                    <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
+                    <a href="{{ route('home') }}"> 
+                        <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
+                    </a>
                 </div>
             </div>
 
@@ -579,6 +579,18 @@
 
         $('#toast').toast({ delay: 30000 });
         $('#toast').toast('show');
+
+        $('.nav-drawer').on('click', function () {
+            $('.nav-links-drawer').toggleClass('show');
+            $('.aft-btn').toggleClass('show');
+            $('.nav-drawer').toggleClass('hide');
+        });
+
+        $('.aft-btn').on('click', function () {
+            $('.nav-links-drawer').toggleClass('show');
+            $('.aft-btn').toggleClass('hide');
+            $('.nav-drawer').toggleClass('show');
+        });
 
         $(document).ready(function () {
             $('#submitPayment').on('click', function (e) {
