@@ -345,7 +345,7 @@
                         <i class="fa-solid fa-arrow-up"></i>
                     </button>
 
-                    <div class="bbg-logo col-lg-12 d-flex align-items-center">
+                    <div class="bbg-logo d-flex align-items-center">
                         <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
                     </div>
                 </div>
