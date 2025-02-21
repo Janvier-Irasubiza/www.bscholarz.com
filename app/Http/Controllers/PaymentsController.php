@@ -200,8 +200,7 @@ class PaymentsController extends Controller
 
           // Prepare API data
           $paymentData = [
-              // 'amount' => (float) $validatedData['amount'],
-              'amount' => 10,
+              'amount' => (float) $validatedData['amount'],
               'phone' => $phone,
               'key' => $apiKey,
           ];
