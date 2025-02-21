@@ -479,14 +479,15 @@ class PaymentsController extends Controller
               'Content-Type: application/json',
               'Content-Length: ' . strlen($encData)
           ],
-          CURLOPT_TIMEOUT => 30,
+          CURLOPT_TIMEOUT => 60,
+          CURLOPT_CONNECTTIMEOUT => 10,
           CURLOPT_FAILONERROR => true,
       ]);
   
       $response = curl_exec($curl);
   
       if (curl_errno($curl)) {
-          Log::error('cURL Error: ' . curl_error($curl)); // Log the error
+          Log::error('cURL Error: ' . curl_error($curl));
           curl_close($curl);
           return null;
       }
