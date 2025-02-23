@@ -120,15 +120,7 @@
                         </label>
                     </div>
 
-                    <div class="mt-5 d-flex justify-content-center">
-                        {!! NoCaptcha::display() !!}
-                    </div>
-
-                    <div class="mt-3 mb-4">
-                        @if ($errors->has('g-recaptcha-response'))
-                        <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
-                        @endif
-                    </div>
+                    
 
                     <div class="button-section mt-4 mb-4">
                         <!-- Spinner inside the button -->
