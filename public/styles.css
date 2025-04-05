@@ -3580,30 +3580,34 @@ input:focus, select:focus, textarea:focus {
         display: block;
     }
 
-         .sidebar {
-         position: fixed;
-         left: -430px;
-         width: 55%;
-         z-index: 5;
-         top: 65px;
-         bottom: 0px;
-         transition: left 0.3s ease-in-out;
-         background: #d4e7ee;
-     }
-
-     .sidebar.show {
-         left: 0px;
-         position: fixed;
-         z-index: 5;
-     }
-
-     .sidebar-drawer {
-        padding: 5px 10px;
-        display: block;
+    .sidebar {
         position: fixed;
-        left: 0px;
+        transform: translateX(-100%);
+        width: 55%;
+        z-index: 1000 !important;
         top: 65px;
-        height: auto;
+        bottom: 0;
+        transition: transform 0.3s ease-in-out;
+        background: #d4e7ee;
+    }
+
+    .sidebar.show {
+        /* left: 0px;
+        position: fixed;
+        z-index: 5; */
+        transform: translateX(0);
+    }
+
+    .sidebar.hide {
+        /* left: 0px; */
+        transform: translateX(-100%);
+    }
+
+    .sidebar-drawer {
+        position: fixed;
+        left: 0;
+        top: 65px;
+        padding: 5px 10px;
         background-color: #d4e7ee;
         border-bottom-right-radius: 5px;
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -3613,7 +3617,6 @@ input:focus, select:focus, textarea:focus {
     .sidebar-drawer.show {
         left: 54.99%;
         background-color: #d4e7ee;
-        position: fixed;
         box-shadow: none;
         border-left: 1px solid #cbdee6;
     }
@@ -3623,7 +3626,7 @@ input:focus, select:focus, textarea:focus {
     }
 
     .sidebar.hide {
-        left: -430px;
+        left: 430px;
     }
 
     .sidebar-drawer.show button {
@@ -3641,13 +3644,15 @@ input:focus, select:focus, textarea:focus {
     .sidebar-drawer button {
         background: none;
         border: none;
-        padding: 0px;
+        padding: 0;
     }
 
     .sidebar-drawer button::before {
+        /* font-size: 25px;
+        content: '\f5c1';
+        -webkit-font-smoothing: antialiased; */
         font-size: 25px;
         content: '\f5c1';
-        -webkit-font-smoothing: antialiased;
     }
 }
 

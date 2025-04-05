@@ -17,7 +17,9 @@ use App\Models\Advert;
 use App\Models\Partner;
 use App\Models\Request as Applications;
 use Mail;
-
+use Illuminate\Support\Str;
+use Psy\Readline\Hoa\Console;
+use Illuminate\Support\Facades\Log;
 
 class PagesController extends Controller
 {
@@ -44,7 +46,7 @@ class PagesController extends Controller
 
         $sidebarData = Discipline::where('speciality', 'Trendings')
             ->where('status', '<>', 'N/A')
-            ->where('speciality', '!=', 'carousel') 
+            ->where('speciality', '!=', 'carousel')
             ->orderBy('publish_date', 'desc')
             ->get();
 
@@ -795,5 +797,115 @@ class PagesController extends Controller
     public function tac() {
         return view('tac');
     }
+
+    public function iremboInvoice() {
+        return view('irembo-pay');
+    }
+
+    public function createInvoice(Request $request)
+{
+    // Validate the form data
+    $validatedData = $request->validate([
+        'customerName' => 'required|string|max:100',
+        'customerEmail' => 'required|email|max:100',
+        'phoneNumber' => 'required|string|max:20|regex:/^[0-7][0-9]{7,}$/',
+        'amount' => 'required|numeric|min:0'
+    ]);
+
+    // Generate unique IDs
+    $transactionId = 'TST-' . Str::random(3);
+    $itemCode = 'PC-e231f638f0'; // Adjusted to match the code pattern in your request
+
+    // Prepare the data for the cURL request
+    $data = [
+        'transactionId' => $transactionId,
+        'paymentAccountIdentifier' => 'BSCHOLARZ_RWF',
+        'customer' => [
+            'email' => $validatedData['customerEmail'],
+            'phoneNumber' => $validatedData['phoneNumber'], // Send as string as per your provided structure
+            'name' => $validatedData['customerName']
+        ],
+        'paymentItems' => [
+            [
+                'unitAmount' => (float) $validatedData['amount'],
+                'quantity' => 1,
+                'code' => $itemCode
+            ]
+        ],
+        'description' => 'Invoice for ' . $validatedData['customerName'],
+        'expiryAt' => now()->addDays(30)->toIso8601String(), // Adjust the expiry time here if needed
+        'language' => 'EN'
+    ];
+
+    // cURL setup
+    $ch = curl_init('https://api.sandbox.irembopay.com/payments/invoices');
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Accept: application/json',
+        'irembopay-secretKey: sk_live_ec06c7558b5940d4918a2985e3f3c666',
+        'X-API-Version: 2'
+    ]);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));  // Send the data as JSON
+
+    // Execute cURL request and get the response
+    $response = curl_exec($ch);
+
+    // Check for errors
+    if ($response === false) {
+        return response()->json([
+            'success' => false,
+            'error' => curl_error($ch)
+        ], 500);
+    }
+
+    // Close the cURL session
+    curl_close($ch);
+
+    // Decode the response
+    $responseData = json_decode($response, true);
+
+    // Check if the response was successful
+    if (isset($responseData['success']) && $responseData['success'] === true) {
+        return response()->json([
+            'success' => true,
+            'data' => $responseData
+        ]);
+    }
+
+    // Return error if the API call fails
+    return response()->json([
+        'success' => false,
+        'error' => $responseData['message'] ?? 'Failed to create invoice'
+    ], 500);
+}
+
+public function paymentConfirmation(Request $request)
+{
+    $transactionId = $request->input('transactionId');
+    $status = $request->input('status');
+    $amount = $request->input('amount');
+    $invoiceNumber = $request->input('invoiceNumber');
+
+    // Log the specific variables
+    Log::info('Payment Confirmation Details', [
+        'Transaction ID' => $transactionId,
+        'Status' => $status,
+        'Amount' => $amount,
+        'Invoice Number' => $invoiceNumber
+    ]);
+
+    // Perform any necessary processing
+    return response()->json([
+        'success' => true,
+        'message' => 'Payment confirmation received',
+        'processedTransactionId' => $transactionId
+    ]);
+}
 
 }

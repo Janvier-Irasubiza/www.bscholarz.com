@@ -407,3 +407,8 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+
+Route::get('/irembo-invoice', [PagesController::class, 'iremboInvoice'])->name('irembo-invoice');
+
+Route::post('/create-invoice', [PagesController::class, 'createInvoice'])->name('create-invoice');
+Route::post('/payment-confirmation', [PagesController::class, 'paymentConfirmation'])->name('payment-confirmation');
