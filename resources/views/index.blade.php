@@ -422,9 +422,6 @@
             updateActiveSlide(currentIndex);
         }, 10000); // Slide every 10 seconds
     });
-
-
-
 </script>
 
 @stop

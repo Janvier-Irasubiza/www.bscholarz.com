@@ -228,14 +228,12 @@
             }
         }
 
-
         @media (max-width: 1220px) {
 
             .carousel-caption {
                 height: 68%;
             }
         }
-
 
         @media (max-width: 1200px) {
             .modal-xl {
@@ -338,7 +336,7 @@
 
             <div class="nav-wrapper">
 
-                <div class="d-flex gap-2 border justify-content-between align-items-center">
+                <div class="d-flex gap-3 justify-content-between align-items-center">
                     <button class="nav-drawer" href="">
                         <i class="fa-solid fa-bars dft-btn"></i>
                     </button>
@@ -347,7 +345,7 @@
                         <i class="fa-solid fa-arrow-up"></i>
                     </button>
 
-                    <div class="bbg-logo col-lg-12 d-flex align-items-center" style="">
+                    <div class="bbg-logo d-flex align-items-center">
                         <img src="{{ asset('images') }}/{{ 'BScholarz_Logo.png' }}" class="img-responsive" alt="Logo">
                     </div>
                 </div>
@@ -447,7 +445,7 @@
 
                                 </div>
 
-                            <a href="{{ route('payment') }}" class="apply-btn py-2" style="border: none;">
+                            <a href="{{ route('payment') }}" class="apply-btn py-2 pay-btn" style="border: none;">
                                 Pay
                             </a>
 
@@ -532,14 +530,22 @@
     </nav>
 
     <div style="padding: 0px; z-index: 1000;" class="nav-links-drawer">
-        <ul style="margin: 0px; padding: 3px 0px">
+        <ul style="margin: 0px; padding: 3px 0px;">
             <li class="small-navigator"><a href="{{ route('home') }}">Home</a></li>
             <li class="small-navigator"><a href="{{ route('BeScholar') }}">Be a Scholar</a></li>
             <li class="small-navigator"><a href="{{ route('get-employed') }}">Get Employed</a></li>
             <li class="small-navigator"><a href="{{ route('fellowships-trainings') }}">Fellowship & Trainings</a></li>
             <li class="small-navigator"><a href="{{ route('about-us') }}">About Us</a></li>
             <li class="small-navigator"><a href="{{ route('contact-us') }}">Contact Us</a></li>
+            <li class="small-navigator"><a href="{{ route('membership') }}">Membership</a></li>
         </ul>
+
+        <div class="w-full relative mt-8 mb-4 px-3">
+            <a href="{{ route('payment') }}" class="relative p-2 w-full apply-btn block text-center f-14">
+                Pay
+            </a>
+        </div>
+
     </div>
 
     <div>
