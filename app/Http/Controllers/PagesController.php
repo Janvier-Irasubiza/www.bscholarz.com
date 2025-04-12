@@ -814,7 +814,10 @@ class PagesController extends Controller
 
     // Generate unique IDs
     $transactionId = 'TST-' . Str::random(3);
-    $itemCode = 'PC-e231f638f0'; // Adjusted to match the code pattern in your request
+    $itemCode = 'PC-e231f638f0';
+    $endpoint = env('PAYMENT_URL');
+    $secret_key = env('SECRET_KEY');
+    $api_version = env('API_VERSION');
 
     // Prepare the data for the cURL request
     $data = [
@@ -838,7 +841,7 @@ class PagesController extends Controller
     ];
 
     // cURL setup
-    $ch = curl_init('https://api.sandbox.irembopay.com/payments/invoices');
+    $ch = curl_init($endpoint);
 
     // Set cURL options
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -847,8 +850,8 @@ class PagesController extends Controller
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Content-Type: application/json',
         'Accept: application/json',
-        'irembopay-secretKey: sk_live_ec06c7558b5940d4918a2985e3f3c666',
-        'X-API-Version: 2'
+        'irembopay-secretKey: ' . $secret_key,
+        'X-API-Version: ' . $api_version,
     ]);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));  // Send the data as JSON
@@ -882,6 +885,99 @@ class PagesController extends Controller
     return response()->json([
         'success' => false,
         'error' => $responseData['message'] ?? 'Failed to create invoice'
+    ], 500);
+}
+
+public function ProdCreateInvoice(Request $request)
+{
+    // Validate the form data with more lenient rules
+    $validatedData = $request->validate([
+        'customerName' => 'required|string|max:100',
+        'customerEmail' => 'nullable|email|max:100', // Made email optional
+        'phoneNumber' => 'nullable|string|max:20', // Made phone more lenient
+        'amount' => 'required|numeric|min:0',
+        'serviceId' => 'required', // Added this field
+        'requestInfo' => 'nullable' // Added this field
+    ]);
+
+    // Set default values for optional fields
+    $customerEmail = $validatedData['customerEmail'] ?? 'noemail@example.com';
+    $phoneNumber = $validatedData['phoneNumber'] ?? '0000000000';
+
+    // Generate unique IDs
+    $transactionId = 'TST-' . Str::random(3);
+    $itemCode = 'PC-0a93da0719';
+    $endpoint = env('PAYMENT_URL');
+    $secret_key = env('SECRET_KEY');
+    $api_version = env('API_VERSION');
+
+    // Prepare the data for the cURL request
+    $data = [
+        'transactionId' => $transactionId,
+        'paymentAccountIdentifier' => 'BSCHOLARZ_RWF',
+        'customer' => [
+            'email' => $customerEmail,
+            'phoneNumber' => $phoneNumber,
+            'name' => $validatedData['customerName']
+        ],
+        'paymentItems' => [
+            [
+                'unitAmount' => (float) $validatedData['amount'],
+                'quantity' => 1,
+                'code' => $itemCode
+            ]
+        ],
+        'description' => 'Invoice for ' . $validatedData['customerName'],
+        'expiryAt' => now()->addDays(30)->toIso8601String(),
+        'language' => 'EN'
+    ];
+
+    // cURL setup
+    $ch = curl_init($endpoint);
+
+    // Set cURL options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Accept: application/json',
+        'irembopay-secretKey: ' . $secret_key,
+        'X-API-Version: ' . $api_version,
+    ]);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+    // Execute cURL request and get the response
+    $response = curl_exec($ch);
+
+    // Check for errors
+    if ($response === false) {
+        return response()->json([
+            'success' => false,
+            'error' => curl_error($ch)
+        ], 500);
+    }
+
+    // Close the cURL session
+    curl_close($ch);
+
+    // Decode the response
+    $responseData = json_decode($response, true);
+
+
+    // Check if the response was successful
+    if (isset($responseData['success']) && $responseData['success'] === true) {
+        return response()->json([
+            'success' => true,
+            'data' => $responseData
+        ]);
+    }
+
+    // Return error if the API call fails
+    return response()->json([
+        'success' => false,
+        'error' => $responseData
     ], 500);
 }
 

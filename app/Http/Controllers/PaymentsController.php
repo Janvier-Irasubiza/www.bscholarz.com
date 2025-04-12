@@ -521,6 +521,8 @@ class PaymentsController extends Controller
 
     $amount = 15000;
     $client = $request->input('names');
+    $client_phone = $request->input('phone_number');
+    $email = $request->input('email');
 
     // Save data or perform other logic here...
 
@@ -532,7 +534,7 @@ class PaymentsController extends Controller
     ]);
 
     // Redirect to a confirmation page after processing
-    return view('payment', compact('service', 'amount', 'client'));
+    return view('payment', compact('service', 'amount', 'client', 'client_phone', 'email'));
   }
 
   public function confirmation()

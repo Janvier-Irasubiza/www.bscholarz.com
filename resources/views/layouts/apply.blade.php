@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{{ asset('plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 
+    <script src="https://dashboard.sandbox.irembopay.com/assets/payment/inline.js"></script>
+    <!-- <script src="https://dashboard.irembopay.com/assets/payment/inline.js"></script>   -->
 
     <style>
         body,
@@ -576,7 +578,6 @@
     <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 
     <script>
-
         $('#toast').toast({ delay: 30000 });
         $('#toast').toast('show');
 
@@ -609,7 +610,7 @@
                 <p>Phone number is required.</p>
             </div>
         `);
-                    $(this).text('Proceed with MoMo').prop('disabled', false);
+                    $(this).prop('disabled', false);
                     return;
                 }
 
@@ -654,7 +655,7 @@
                             </div>`;
                         }
 
-                        $('#submitPayment').text('Proceed with momo').prop('disabled', false);
+                        $('#submitPayment').prop('disabled', false);
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -663,7 +664,7 @@
                             <p>An error occurred. Please try again.</p>
                         </div>`;
 
-                        $('#submitPayment').text('Proceed with MoMo').prop('disabled', false);
+                        $('#submitPayment').prop('disabled', false);
                     });
             });
 
@@ -718,7 +719,7 @@
                             <p>An error occurred. Please try again.</p>
                         </div>`;
 
-                        $('#cardPayment').text('Proceed with card').prop('disabled', false);
+                        $('#cardPayment').prop('disabled', false);
                     });
             });
 
