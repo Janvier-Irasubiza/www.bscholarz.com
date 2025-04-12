@@ -409,6 +409,6 @@ Route::prefix('accountant')->middleware('staff')->group(function () {
 require __DIR__ . '/auth.php';
 
 Route::get('/irembo-invoice', [PagesController::class, 'iremboInvoice'])->name('irembo-invoice');
-
 Route::post('/create-invoice', [PagesController::class, 'ProdCreateInvoice'])->name('create-invoice');
+Route::post('/pyt/callback', [PagesController::class, 'callback']);
 Route::post('/payment-confirmation', [PagesController::class, 'paymentConfirmation'])->name('payment-confirmation');

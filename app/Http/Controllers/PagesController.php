@@ -981,6 +981,89 @@ public function ProdCreateInvoice(Request $request)
     ], 500);
 }
 
+    public static function verifySignature(string $secretKey, string $payload, string $signatureHeader): bool
+    {
+        // Step 1: Extract timestamp and signature
+        $elements = explode(',', $signatureHeader);
+        $timestamp = null;
+        $signatureHash = null;
+
+        foreach ($elements as $element) {
+            [$prefix, $value] = explode('=', $element, 2);
+            if ($prefix === 't') {
+                $timestamp = $value;
+            } elseif ($prefix === 's') {
+                $signatureHash = $value;
+            }
+        }
+
+        if (is_null($timestamp) || is_null($signatureHash)) {
+            return false;
+        }
+
+        // Step 2: Prepare signed payload
+        $signedPayload = $timestamp . '#' . $payload;
+
+        // Step 3: Generate expected signature
+        $expectedSignature = hash_hmac('sha256', $signedPayload, $secretKey);
+
+        // Step 4: Compare securely
+        if (!hash_equals($expectedSignature, $signatureHash)) {
+            return false;
+        }
+
+        // Step 5: Optionally validate timestamp (5 minutes tolerance)
+        $currentTime = round(microtime(true) * 1000); // in milliseconds
+        $timestampInt = (int) $timestamp;
+
+        if (abs($currentTime - $timestampInt) > (300 * 1000)) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    public function callback(Request $request)
+    {
+        $signatureHeader = $request->header('X-Signature');
+        $secretKey = env('PAYMENT_SECRET_KEY');
+        $encodedPayload = $request->getContent(); // raw POST body (Base64-encoded)
+
+        // Optional: log raw data for debugging
+        Log::info('Payment callback received', [
+            'signature' => $signatureHeader,
+            'encoded_payload' => $encodedPayload,
+        ]);
+
+        // Decode Base64 payload
+        $payload = base64_decode($encodedPayload);
+
+        if (!$payload) {
+            return response()->json(['error' => 'Invalid Base64 payload'], 400);
+        }
+
+        // Verify signature
+        $isValid = $this->verifySignature($secretKey, $payload, $signatureHeader);
+
+        if (!$isValid) {
+            return response()->json(['error' => 'Invalid signature'], 401);
+        }
+
+        // Convert JSON string to array
+        $data = json_decode($payload, true);
+
+        if (!$data) {
+            return response()->json(['error' => 'Invalid JSON payload'], 400);
+        }
+
+        // ✅ Process payment data here
+        // e.g. update order status, record payment, etc.
+        Log::info('Payment data verified', $data);
+
+        return response()->json(['message' => 'Payment verified successfully'], 200);
+    }
+    
 public function paymentConfirmation(Request $request)
 {
     $transactionId = $request->input('transactionId');
