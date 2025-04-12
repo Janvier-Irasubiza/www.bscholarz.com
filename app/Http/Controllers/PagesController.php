@@ -7,6 +7,7 @@ use App\Models\Subscriber;
 use App\Models\SubscriberSubscription;
 use Illuminate\Console\Application;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +21,7 @@ use Mail;
 use Illuminate\Support\Str;
 use Psy\Readline\Hoa\Console;
 use Illuminate\Support\Facades\Log;
+use Http;
 
 class PagesController extends Controller
 {
@@ -1026,42 +1028,121 @@ public function ProdCreateInvoice(Request $request)
 
     public function callback(Request $request)
     {
-        $signatureHeader = $request->header('X-Signature');
-        $secretKey = env('PAYMENT_SECRET_KEY');
-        $encodedPayload = $request->getContent(); // raw POST body (Base64-encoded)
-
-        // Optional: log raw data for debugging
-        Log::info('Payment callback received', [
-            'signature' => $signatureHeader,
-            'encoded_payload' => $encodedPayload,
-        ]);
-
-        // Decode Base64 payload
-        $payload = base64_decode($encodedPayload);
-
-        if (!$payload) {
-            return response()->json(['error' => 'Invalid Base64 payload'], 400);
+        $signatureHeader = $request->header('irembopay-signature');
+        $secretKey = env('SECRET_KEY');
+        
+        // Log the received signature header for debugging
+        Log::debug('Signature header received', ['header' => $signatureHeader]);
+    
+        // Parse the header: "t=...,s=..."
+        $timestamp = null;
+        $signatureHash = null;
+    
+        if (!empty($signatureHeader)) {
+            foreach (explode(',', $signatureHeader) as $part) {
+                $parts = explode('=', $part, 2);
+                if (count($parts) !== 2) {
+                    continue; // Skip this part if it doesn't have the expected format
+                }
+                
+                [$key, $value] = $parts;
+                if (trim($key) === 't') {
+                    $timestamp = trim($value);
+                } elseif (trim($key) === 's') {
+                    $signatureHash = trim($value);
+                }
+            }
+        } else {
+            return response()->json(['message' => 'Signature header missing'], 400);
         }
-
-        // Verify signature
-        $isValid = $this->verifySignature($secretKey, $payload, $signatureHeader);
-
-        if (!$isValid) {
-            return response()->json(['error' => 'Invalid signature'], 401);
+    
+        if (!$timestamp || !$signatureHash) {
+            return response()->json(['message' => 'Invalid signature header'], 400);
         }
-
-        // Convert JSON string to array
-        $data = json_decode($payload, true);
-
-        if (!$data) {
-            return response()->json(['error' => 'Invalid JSON payload'], 400);
+    
+        // Combine timestamp and payload
+        $signedPayload = $timestamp . '#' . $request->getContent();
+    
+        // Generate expected signature
+        $expectedSignature = hash_hmac('sha256', $signedPayload, $secretKey);
+    
+        // Compare securely
+        if (!hash_equals($expectedSignature, $signatureHash)) {
+            return response()->json(['message' => 'Signature mismatch'], 403);
         }
+    
+        // Optional: Check if the timestamp is too old (>5 minutes)
+        $currentMillis = round(microtime(true) * 1000);
+        if (abs($currentMillis - (int)$timestamp) > 5 * 60 * 1000) {
+            return response()->json(['message' => 'Signature timestamp expired'], 403);
+        }
+    
+        // If everything checks out, proceed with handling
+        Log::info('✅ Verified IremboPay callback', ['body' => $request->json()->all()]);
+    
+        return response()->json(['message' => 'Callback processed'], 200);
+    }
 
-        // ✅ Process payment data here
-        // e.g. update order status, record payment, etc.
-        Log::info('Payment data verified', $data);
+    /**
+ * Generate a signature for IremboPay webhook validation
+ *
+ * @param array $payload The payload to be sent to the webhook
+ * @param string|null $secretKey The secret key for signing (defaults to env value if not provided)
+ * @param int|null $timestamp Custom timestamp in milliseconds (defaults to current time if not provided)
+ * @return array Returns an array with the timestamp, signature, and formatted header string
+ */
+function generateIremboPaySignature(array $payload, ?string $secretKey = null, ?int $timestamp = null): array
+{
+    // Use provided secret key or fetch from environment
+    $secretKey = $secretKey ?? env('SECRET_KEY');
+    
+    if (empty($secretKey)) {
+        throw new \InvalidArgumentException('Secret key is required for signature generation');
+    }
+    
+    // Use provided timestamp or generate current time in milliseconds
+    $timestamp = $timestamp ?? round(microtime(true) * 1000);
+    
+    // Convert payload to JSON
+    $payloadJson = json_encode($payload);
+    
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        throw new \InvalidArgumentException('Invalid payload: ' . json_last_error_msg());
+    }
+    
+    // Create the signed payload (timestamp + '#' + request body)
+    $signedPayload = $timestamp . '#' . $payloadJson;
+    
+    // Generate the HMAC-SHA256 signature
+    $signature = hash_hmac('sha256', $signedPayload, $secretKey);
+    
+    // Format the signature header
+    $signatureHeader = "t={$timestamp},s={$signature}";
+    
+    return [
+        'timestamp' => $timestamp,
+        'signature' => $signature,
+        'header' => $signatureHeader,
+        'payload' => $payloadJson
+    ];
+}
 
-        return response()->json(['message' => 'Payment verified successfully'], 200);
+/**
+ * Send a signed request to the IremboPay webhook endpoint
+ *
+ * @param string $url The webhook URL to send the request to
+ * @param array $payload The payload to send
+ * @param string|null $secretKey Secret key for signing
+ * @return \Illuminate\Http\Client\Response
+ */
+    function sendSignedIremboPayRequest(string $url, array $payload, ?string $secretKey = null)
+    {
+        $signature = $this->generateIremboPaySignature($payload, $secretKey);
+        
+        return Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'irembopay-signature' => $signature['header']
+        ])->post($url, $payload);
     }
     
 public function paymentConfirmation(Request $request)
