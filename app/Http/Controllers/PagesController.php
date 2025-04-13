@@ -17,11 +17,12 @@ use App\Models\Discipline;
 use App\Models\Advert;
 use App\Models\Partner;
 use App\Models\Request as Applications;
+use GuzzleHttp\Psr7\Response;
 use Mail;
 use Illuminate\Support\Str;
 use Psy\Readline\Hoa\Console;
 use Illuminate\Support\Facades\Log;
-use Http;
+use Illuminate\Support\Facades\Crypt;
 
 class PagesController extends Controller
 {
@@ -895,16 +896,17 @@ public function ProdCreateInvoice(Request $request)
     // Validate the form data with more lenient rules
     $validatedData = $request->validate([
         'customerName' => 'required|string|max:100',
-        'customerEmail' => 'nullable|email|max:100', // Made email optional
-        'phoneNumber' => 'nullable|string|max:20', // Made phone more lenient
+        'customerEmail' => 'required|email|max:100',
+        'phoneNumber' => 'required|string|max:20',
         'amount' => 'required|numeric|min:0',
-        'serviceId' => 'required', // Added this field
-        'requestInfo' => 'nullable' // Added this field
+        'serviceId' => 'required',
+        'applicationId' => 'required',
+        'requestInfo' => 'nullable'
     ]);
 
     // Set default values for optional fields
-    $customerEmail = $validatedData['customerEmail'] ?? 'noemail@example.com';
-    $phoneNumber = $validatedData['phoneNumber'] ?? '0000000000';
+    $customerEmail = $validatedData['customerEmail'];
+    $phoneNumber = $validatedData['phoneNumber'];
 
     // Generate unique IDs
     $transactionId = 'TST-' . Str::random(3);
@@ -970,6 +972,15 @@ public function ProdCreateInvoice(Request $request)
 
     // Check if the response was successful
     if (isset($responseData['success']) && $responseData['success'] === true) {
+
+        $application_id = Crypt::decryptString($request->application_id);
+        // Update the application status in the database
+
+        Applications::where('app_id', $application_id)
+            ->update([
+                'transaction_id' => $responseData['data']['transactionId'],
+            ]);
+
         return response()->json([
             'success' => true,
             'data' => $responseData
@@ -1076,6 +1087,11 @@ public function ProdCreateInvoice(Request $request)
         if (abs($currentMillis - (int)$timestamp) > 5 * 60 * 1000) {
             return response()->json(['message' => 'Signature timestamp expired'], 403);
         }
+
+        Applications::where('transaction_id', $request->input('transactionId'))
+            ->update([
+                'payment_status' => 'Paid',
+            ]); 
     
         // If everything checks out, proceed with handling
         Log::info('✅ Verified IremboPay callback', ['body' => $request->json()->all()]);

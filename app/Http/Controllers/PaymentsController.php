@@ -81,6 +81,8 @@ class PaymentsController extends Controller
   public function payment_view(Request $request)
   {
 
+    // dd($request->all());
+
     $application_id = Crypt::decryptString($request->application_id);
 
     $service = Discipline::findOrFail($request->discipline);
@@ -94,9 +96,10 @@ class PaymentsController extends Controller
     $amount = Costs::where('service', $request->r_type)->value('cost');
     $client = $request->client;
     $client_phone = $request->client_phone;
+    $email = $request->email;
     $application = $request->application_id;
 
-    return view('payment', compact('service', 'amount', 'client', 'request_info', 'client_phone', 'application', 'text'));
+    return view('payment', compact('service', 'amount', 'client', 'email', 'request_info', 'client_phone', 'application', 'text'));
   }
 
   public function service_payment_view(Request $request)
@@ -509,7 +512,9 @@ class PaymentsController extends Controller
     return redirect()->route('request.payment', [
       'service' => $request->input('application_info'),
       'amount' => $request->input('amount'),
-      'client' => $request->input('names')
+      'client' => $request->input('names'),
+      'email' => $request->input('email'),
+      'client_phone' => $request->input('phone_number'),
     ]);
   }
 
@@ -530,7 +535,9 @@ class PaymentsController extends Controller
     session([
       'service' => $service,
       'amount' => $amount,
-      'client' => $client
+      'client' => $client,
+      'client_phone' => $client_phone,
+      'email' => $email,
     ]);
 
     // Redirect to a confirmation page after processing

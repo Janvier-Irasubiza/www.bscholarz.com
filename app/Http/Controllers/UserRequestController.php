@@ -147,6 +147,8 @@ class UserRequestController extends Controller
       'discipline' => $discipline_identifier->id,
       'client' => $request->names,
       'client_phone' => $request->phone_number,
+      'email' => $request->email,
+      'application' => $request->application_info,
       'application_id' => $encryptedApplicationId,
       'r_type' => 'request_service',
     ]);

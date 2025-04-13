@@ -102,7 +102,7 @@
         // Extract values from URL parameters if they're not in the template
         const urlParams = new URLSearchParams(window.location.search);
         const emailFromUrl = urlParams.get('email') || '';
-        const phoneFromUrl = urlParams.get('client_phone') || '';
+        const phoneFromUrl = urlParams.get('client_phone') || '';          
         
         // Create the form data based on the page content
         const formData = {
@@ -111,6 +111,7 @@
             phoneNumber: '{{ isset($phone) ? $phone : "" }}' || phoneFromUrl,
             amount: {{ $amount }},
             serviceId: '{{ $service->id }}',
+            applicationId: '{{ $application }}',
             requestInfo: JSON.stringify({
                 is_appointment: {{ $request_info->is_appointment }},
                 time: '{{ $request_info->time }}',
@@ -150,7 +151,7 @@
             }
             return response.json();
         })
-        .then(data => {
+        .then(data => {          
             if (data.success) {
                 // Initialize payment with invoice number
                 makePayment(data.data.data.invoiceNumber);
