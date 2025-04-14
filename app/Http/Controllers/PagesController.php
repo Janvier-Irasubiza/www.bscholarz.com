@@ -891,6 +891,23 @@ class PagesController extends Controller
     ], 500);
 }
 
+private function generateUniqueTransactionId($prefix = 'TXN')
+{
+    // Get current timestamp with microseconds
+    $timestamp = now()->format('YmdHisu');
+    
+    // Generate a random component (8 characters)
+    $random = strtoupper(Str::random(8));
+    
+    // Optional: Include a server identifier if you have multiple servers
+    $serverId = env('SERVER_ID', '01');
+    
+    // Combine all parts with separators for readability
+    $transactionId = "{$prefix}-{$timestamp}-{$random}-{$serverId}";
+    
+    return $transactionId;
+}
+
 public function ProdCreateInvoice(Request $request)
 {
     // Validate the form data with more lenient rules
@@ -909,7 +926,7 @@ public function ProdCreateInvoice(Request $request)
     $phoneNumber = $validatedData['phoneNumber'];
 
     // Generate unique IDs
-    $transactionId = 'TST-' . Str::random(3);
+    $transactionId = $this->generateUniqueTransactionId('TXN');
     $itemCode = 'PC-0a93da0719';
     $endpoint = env('PAYMENT_URL');
     $secret_key = env('SECRET_KEY');
