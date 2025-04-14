@@ -151,7 +151,8 @@
             }
             return response.json();
         })
-        .then(data => {          
+        .then(data => {
+          console.log(data);          
             if (data.success) {
                 // Initialize payment with invoice number
                 makePayment(data.data.data.invoiceNumber);

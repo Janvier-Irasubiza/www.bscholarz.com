@@ -969,11 +969,10 @@ public function ProdCreateInvoice(Request $request)
     // Decode the response
     $responseData = json_decode($response, true);
 
-
     // Check if the response was successful
     if (isset($responseData['success']) && $responseData['success'] === true) {
 
-        $application_id = Crypt::decryptString($request->application_id);
+        $application_id = Crypt::decryptString($request->applicationId);
         // Update the application status in the database
 
         Applications::where('app_id', $application_id)
@@ -1038,66 +1037,115 @@ public function ProdCreateInvoice(Request $request)
 
 
     public function callback(Request $request)
-    {
-        $signatureHeader = $request->header('irembopay-signature');
-        $secretKey = env('SECRET_KEY');
-        
-        // Log the received signature header for debugging
-        Log::debug('Signature header received', ['header' => $signatureHeader]);
+{
+    $signatureHeader = $request->header('irembopay-signature');
+    $secretKey = env('SECRET_KEY');
     
-        // Parse the header: "t=...,s=..."
-        $timestamp = null;
-        $signatureHash = null;
-    
-        if (!empty($signatureHeader)) {
-            foreach (explode(',', $signatureHeader) as $part) {
-                $parts = explode('=', $part, 2);
-                if (count($parts) !== 2) {
-                    continue; // Skip this part if it doesn't have the expected format
-                }
-                
-                [$key, $value] = $parts;
-                if (trim($key) === 't') {
-                    $timestamp = trim($value);
-                } elseif (trim($key) === 's') {
-                    $signatureHash = trim($value);
-                }
-            }
-        } else {
-            return response()->json(['message' => 'Signature header missing'], 400);
-        }
-    
-        if (!$timestamp || !$signatureHash) {
-            return response()->json(['message' => 'Invalid signature header'], 400);
-        }
-    
-        // Combine timestamp and payload
-        $signedPayload = $timestamp . '#' . $request->getContent();
-    
-        // Generate expected signature
-        $expectedSignature = hash_hmac('sha256', $signedPayload, $secretKey);
-    
-        // Compare securely
-        if (!hash_equals($expectedSignature, $signatureHash)) {
-            return response()->json(['message' => 'Signature mismatch'], 403);
-        }
-    
-        // Optional: Check if the timestamp is too old (>5 minutes)
-        $currentMillis = round(microtime(true) * 1000);
-        if (abs($currentMillis - (int)$timestamp) > 5 * 60 * 1000) {
-            return response()->json(['message' => 'Signature timestamp expired'], 403);
-        }
+    // Log the received signature header and payload for debugging
+    Log::debug('Callback received', [
+        'header' => $signatureHeader,
+        'payload' => $request->all()
+    ]);
 
-        Applications::where('transaction_id', $request->input('transactionId'))
-            ->update([
-                'payment_status' => 'Paid',
-            ]); 
-    
-        // If everything checks out, proceed with handling
-        Log::info('✅ Verified IremboPay callback', ['body' => $request->json()->all()]);
-    
-        return response()->json(['message' => 'Callback processed'], 200);
+    // Parse the header: "t=...,s=..."
+    $timestamp = null;
+    $signatureHash = null;
+
+    if (!empty($signatureHeader)) {
+        foreach (explode(',', $signatureHeader) as $part) {
+            $parts = explode('=', $part, 2);
+            if (count($parts) !== 2) {
+                continue; // Skip this part if it doesn't have the expected format
+            }
+            
+            [$key, $value] = $parts;
+            if (trim($key) === 't') {
+                $timestamp = trim($value);
+            } elseif (trim($key) === 's') {
+                $signatureHash = trim($value);
+            }
+        }
+    } else {
+        return response()->json(['message' => 'Signature header missing'], 400);
     }
+
+    if (!$timestamp || !$signatureHash) {
+        return response()->json(['message' => 'Invalid signature header'], 400);
+    }
+
+    // Combine timestamp and payload
+    $signedPayload = $timestamp . '#' . $request->getContent();
+
+    // Generate expected signature
+    $expectedSignature = hash_hmac('sha256', $signedPayload, $secretKey);
+
+    // Compare securely
+    if (!hash_equals($expectedSignature, $signatureHash)) {
+        Log::error('Signature mismatch', [
+            'expected' => $expectedSignature,
+            'received' => $signatureHash
+        ]);
+        return response()->json(['message' => 'Signature mismatch'], 403);
+    }
+
+    // Optional: Check if the timestamp is too old (>5 minutes)
+    $currentMillis = round(microtime(true) * 1000);
+    if (abs($currentMillis - (int)$timestamp) > 5 * 60 * 1000) {
+        return response()->json(['message' => 'Signature timestamp expired'], 403);
+    }
+
+    // Extract the data from the payload
+    $payload = $request->json()->all();
+    
+    if (!isset($payload['data']) || !isset($payload['data']['transactionId'])) {
+        Log::error('Missing transaction data in callback', ['payload' => $payload]);
+        return response()->json(['message' => 'Invalid callback data format'], 400);
+    }
+    
+    $transactionId = $payload['data']['transactionId'];
+    $paymentStatus = $payload['data']['paymentStatus'] ?? 'UNKNOWN';
+    $paymentMethod = $payload['data']['paymentMethod'] ?? 'UNKNOWN';
+    $amount = $payload['data']['amount'] ?? 0;
+    
+    // Only update if payment status is PAID
+    if ($paymentStatus === 'PAID') {
+        try {
+            // Update the application record
+            $updated = Applications::where('transaction_id', $transactionId)
+                ->update([
+                    'payment_status' => 'Paid',
+                    'amount_paid' => $amount,
+                    'payment_date' => now()
+                ]);
+            
+            if ($updated) {
+                Log::info('✅ Payment marked as paid', [
+                    'transactionId' => $transactionId,
+                    'amount' => $amount
+                ]);
+            } else {
+                Log::warning('⚠️ No application found with transaction ID', [
+                    'transactionId' => $transactionId
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to update application payment status', [
+                'transactionId' => $transactionId,
+                'error' => $e->getMessage()
+            ]);
+            return response()->json(['message' => 'Error updating application record'], 500);
+        }
+    } else {
+        Log::info('Payment not marked as PAID', [
+            'transactionId' => $transactionId,
+            'status' => $paymentStatus
+        ]);
+    }
+
+    // Return success regardless if we found the application or not
+    // (to avoid giving away information to potential attackers)
+    return response()->json(['message' => 'Callback processed successfully'], 200);
+}
 
     /**
  * Generate a signature for IremboPay webhook validation
