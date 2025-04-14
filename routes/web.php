@@ -76,6 +76,8 @@ Route::get('/apply/{discipline}/payment', [PaymentsController::class, 'payment_v
 Route::get('/link/payment/{app}', [PaymentsController::class, 'service_payment_view'])->middleware('guest')->name('link.payment');
 Route::post('/link-pay', [PaymentsController::class, 'link_pay'])->middleware('guest')->name('link.pay');
 Route::get('/request/success', [PaymentsController::class, 'confirm'])->middleware('guest')->name('link-pay.success');
+Route::get('/donation/success', [PaymentsController::class, 'donSuccess'])->middleware('guest')->name('dobation.success');
+Route::get('/pay/success', [PaymentsController::class, 'paySuccess'])->middleware('guest')->name('success.pay');
 Route::get('/membership/success', [PaymentsController::class, 'subscriptionSuccess'])->middleware('guest')->name('subscription.success');
 Route::post('/request-payment', [PaymentsController::class, 'payment'])->middleware('guest')->name('request-payment');
 Route::post('/request/{request}/payment', [PaymentsController::class, 'pay_view'])->middleware('guest')->name('request.payment');

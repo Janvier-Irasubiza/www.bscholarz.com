@@ -570,6 +570,17 @@ class PaymentsController extends Controller
     return view('confirmation', compact('link'));
   }
 
+  public function donSuccess()
+  {
+    // Display the confirmation view with session data
+    return view('don-success');
+  }
+
+  public function paySuccess(){
+    // Display the confirmation view with session data
+    return view('pay-success');
+  }
+
   public function approve_payment(Request $request)
   {
 

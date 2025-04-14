@@ -17,6 +17,7 @@ use App\Models\Discipline;
 use App\Models\Advert;
 use App\Models\Partner;
 use App\Models\Request as Applications;
+use App\Models\GeneralPayments;
 use GuzzleHttp\Psr7\Response;
 use Mail;
 use Illuminate\Support\Str;
@@ -910,49 +911,109 @@ private function generateUniqueTransactionId($prefix = 'TXN')
 
 public function ProdCreateInvoice(Request $request)
 {
-    // Validate the form data with more lenient rules
-    $validatedData = $request->validate([
-        'customerName' => 'required|string|max:100',
-        'customerEmail' => 'required|email|max:100',
-        'phoneNumber' => 'required|string|max:20',
-        'amount' => 'required|numeric|min:0',
-        'serviceId' => 'required',
-        'applicationId' => 'required',
-        'requestInfo' => 'nullable'
-    ]);
+    try {
+        // Validate the form data
+        $validatedData = $request->validate([
+            'customerName' => 'required|string|max:100',
+            'customerEmail' => 'nullable|email|max:100',
+            'phoneNumber' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:1',
+            'description' => 'nullable|string|max:255',
+            'requestType' => 'required|string|in:pre-filled,self-filled,donation',
+            'applicationId' => 'required_if:requestType,pre-filled',
+            'serviceId' => 'nullable',
+            'requestInfo' => 'nullable',
+        ]);
 
-    // Set default values for optional fields
-    $customerEmail = $validatedData['customerEmail'];
-    $phoneNumber = $validatedData['phoneNumber'];
+        // Generate unique transaction ID
+        $transactionId = $this->generateUniqueTransactionId('TXN');
+        $itemCode = 'PC-0a93da0719';
+        $endpoint = env('PAYMENT_URL');
+        $secret_key = env('SECRET_KEY');
+        $api_version = env('API_VERSION');
 
-    // Generate unique IDs
-    $transactionId = $this->generateUniqueTransactionId('TXN');
-    $itemCode = 'PC-0a93da0719';
-    $endpoint = env('PAYMENT_URL');
-    $secret_key = env('SECRET_KEY');
-    $api_version = env('API_VERSION');
+        // Set payment description based on requestType
+        $description = match($request->requestType) {
+            'donation' => 'Donation from ' . $request->name,
+            'self-filled' => $request->description ? $request->description : 'Payment from ' . $request->name,
+            'pre-filled' => 'Application payment from ' . $request->name,
+            default => 'Payment from ' . $request->name
+        };
 
-    // Prepare the data for the cURL request
-    $data = [
-        'transactionId' => $transactionId,
-        'paymentAccountIdentifier' => 'BSCHOLARZ_RWF',
-        'customer' => [
-            'email' => $customerEmail,
-            'phoneNumber' => $phoneNumber,
-            'name' => $validatedData['customerName']
-        ],
-        'paymentItems' => [
-            [
-                'unitAmount' => (float) $validatedData['amount'],
-                'quantity' => 1,
-                'code' => $itemCode
-            ]
-        ],
-        'description' => 'Invoice for ' . $validatedData['customerName'],
-        'expiryAt' => now()->addDays(30)->toIso8601String(),
-        'language' => 'EN'
-    ];
+        // Prepare the data for the cURL request
+        $data = [
+            'transactionId' => $transactionId,
+            'paymentAccountIdentifier' => 'BSCHOLARZ_RWF',
+            'customer' => [
+                'email' => $request->customerEmail ?? '',
+                'phoneNumber' => $request->phoneNumber,
+                'name' => $request->customerName
+            ],
+            'paymentItems' => [
+                [
+                    'unitAmount' => (float) $request->amount,
+                    'quantity' => 1,
+                    'code' => $itemCode
+                ]
+            ],
+            'description' => $description,
+            'expiryAt' => now()->addDays(30)->toIso8601String(),
+            'language' => 'EN'
+        ];
 
+        // Make API request to payment gateway
+        $response = $this->makePaymentGatewayRequest($endpoint, $data, $secret_key, $api_version);
+        $responseData = json_decode($response, true);
+
+        // Check if the response was successful
+        if (isset($responseData['success']) && $responseData['success'] === true) {
+            // Handle different request types
+            switch ($request->requestType) {
+                case 'pre-filled':
+                    $this->handlePreFilledPayment($request, $responseData);
+                    break;
+                    
+                case 'donation':
+                    $this->recordDonation($request, $responseData);
+                    break;
+                    
+                case 'self-filled':
+                default:
+                    $this->recordGeneralPayment($request, $responseData);
+                    break;
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $responseData
+            ]);
+        }
+
+        // Return error if the API call fails
+        return response()->json([
+            'success' => false,
+            'error' => $responseData['message'] ?? 'Payment gateway error'
+        ], 500);
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return response()->json([
+            'success' => false,
+            'error' => 'Validation error',
+            'errors' => $e->errors()
+        ], 422);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => 'Server error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+/**
+ * Make request to payment gateway
+ */
+private function makePaymentGatewayRequest($endpoint, $data, $secret_key, $api_version)
+{
     // cURL setup
     $ch = curl_init($endpoint);
 
@@ -974,40 +1035,77 @@ public function ProdCreateInvoice(Request $request)
 
     // Check for errors
     if ($response === false) {
-        return response()->json([
-            'success' => false,
-            'error' => curl_error($ch)
-        ], 500);
+        throw new \Exception(curl_error($ch));
     }
 
     // Close the cURL session
     curl_close($ch);
 
-    // Decode the response
-    $responseData = json_decode($response, true);
+    return $response;
+}
 
-    // Check if the response was successful
-    if (isset($responseData['success']) && $responseData['success'] === true) {
-
+/**
+ * Handle pre-filled application payment
+ */
+private function handlePreFilledPayment($request, $responseData)
+{
+    try {
         $application_id = Crypt::decryptString($request->applicationId);
+        
         // Update the application status in the database
-
         Applications::where('app_id', $application_id)
             ->update([
                 'transaction_id' => $responseData['data']['transactionId'],
+                'payment_status' => 'pending'
             ]);
-
-        return response()->json([
-            'success' => true,
-            'data' => $responseData
-        ]);
+    } catch (\Exception $e) {
+        Log::error('Error updating application payment: ' . $e->getMessage());
+        throw new \Exception('Failed to process application payment');
     }
+}
 
-    // Return error if the API call fails
-    return response()->json([
-        'success' => false,
-        'error' => $responseData
-    ], 500);
+/**
+ * Record donation payment
+ */
+private function recordDonation($request, $responseData)
+{
+    try {
+        GeneralPayments::create([
+            'type' => 'donation',
+            'amount' => $request->amount,
+            'names' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'description' => $request->description ?? 'Donation',
+            'status' => 'pending',
+            'transaction_id' => $responseData['data']['transactionId']
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Error recording donation: ' . $e->getMessage());
+        throw new \Exception('Failed to record donation');
+    }
+}
+
+/**
+ * Record general payment
+ */
+private function recordGeneralPayment($request, $responseData)
+{
+    try {
+        GeneralPayments::create([
+            'type' => 'payment',
+            'amount' => $request->amount,
+            'names' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'description' => $request->description ?? 'General payment',
+            'status' => 'pending',
+            'transaction_id' => $responseData['data']['transactionId']
+        ]);
+    } catch (\Exception $e) {
+        Log::error('Error recording payment: ' . $e->getMessage());
+        throw new \Exception('Failed to record payment');
+    }
 }
 
     public static function verifySignature(string $secretKey, string $payload, string $signatureHeader): bool

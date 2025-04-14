@@ -7,7 +7,7 @@
         <div class="col-md-10 col-lg-8">
           <div class="card shadow-sm border-0">
             <!-- Header Section -->
-            <div class="card-header bg-primary text-white p-4 rounded-top">
+            <div class="card-header p-4 rounded-top" style="background-color: #5d3fd3; color: white">
               <h1 class="h4 mb-0">Payment Details</h1>
             </div>
 
@@ -112,6 +112,7 @@
             amount: {{ $amount }},
             serviceId: '{{ $service->id }}',
             applicationId: '{{ $application }}',
+            requestType: 'pre-filled',
             requestInfo: JSON.stringify({
                 is_appointment: {{ $request_info->is_appointment }},
                 time: '{{ $request_info->time }}',
@@ -152,7 +153,6 @@
             return response.json();
         })
         .then(data => {
-          console.log(data);          
             if (data.success) {
                 // Initialize payment with invoice number
                 makePayment(data.data.data.invoiceNumber);
@@ -215,9 +215,6 @@
             locale: IremboPay.locale.EN,
             callback: (err, resp) => {
                 if (!err) {
-                    // On successful payment
-                    console.log(resp);
-                    
                     // Send confirmation to server
                     fetch('/payment-confirmation', {
                         method: 'POST',
@@ -236,9 +233,7 @@
                         })
                     })
                     .then(response => response.json())
-                    .then(data => {
-                        console.log('Server response:', data);
-                        
+                    .then(data => {                        
                         // Show success message and redirect if needed
                         if (data.success) {
                             showMessage('success', 'Payment processed successfully!');
