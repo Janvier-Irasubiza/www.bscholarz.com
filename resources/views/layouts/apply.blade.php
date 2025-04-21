@@ -566,7 +566,7 @@
 
     <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script>
+    <!-- <script src="{{ asset('bootstrap/dist/js/jquery.min.js') }}"></script> -->
     <script src="{{ asset('bootstrap/dist/js/popper.js') }}"></script>
     <script src="{{ asset('bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('bootstrap/dist/js/main.js') }}"></script>
