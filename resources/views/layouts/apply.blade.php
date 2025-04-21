@@ -861,44 +861,6 @@
 
         });
 
-        const momobtn = document.getElementById('momobtn');
-        const momochk = document.getElementById('momochk');
-        const visabtn = document.getElementById('visabtn');
-        const visachk = document.getElementById('visachk');
-
-        const phoneForm = document.querySelector('.phone-form');
-        const cardForm = document.querySelector('.card-form');
-        const confirm = document.querySelector('.confirm');
-
-        window.onload = function () {
-            momobtn.style.border = "2px solid";
-            momochk.checked = true;
-            phoneForm.style.display = 'block';
-            confirm.style.display = 'block';
-        };
-
-        visachk.addEventListener('change', function () {
-            visabtn.style.border = "2px solid";
-        });
-
-        momobtn.addEventListener('click', function () {
-            momochk.checked = true;
-            momobtn.style.border = "2px solid";
-            visabtn.style.border = "1px solid";
-            phoneForm.style.display = 'block';
-            cardForm.style.display = 'none';
-            confirm.style.display = 'block';
-        });
-
-        visabtn.addEventListener('click', function () {
-            visachk.checked = true;
-            momobtn.style.border = "1px solid";
-            visabtn.style.border = "2px solid";
-            phoneForm.style.display = 'none';
-            cardForm.style.display = 'block';
-            confirm.style.display = 'block';
-        });
-
     </script>
 
 </body>
