@@ -156,7 +156,7 @@
           
             if (data.success) {
                 // Initialize payment with invoice number
-                makePayment(data.data.data.invoiceNumber);
+                makePayment(data.data.invoiceNumber);
             } else {
                 // Show error message
                 showMessage('error', data.error || 'Failed to create invoice');
