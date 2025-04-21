@@ -217,6 +217,8 @@
                     return response.json();
                 })
                 .then(data => {
+                    console.log(data);
+                    
                     if (data.success) {
                         // Initialize payment with invoice number
                         makePayment(data.data.invoiceNumber, paymentData.requestType);
