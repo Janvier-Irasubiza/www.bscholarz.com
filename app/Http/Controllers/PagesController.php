@@ -818,7 +818,7 @@ class PagesController extends Controller
 
     // Generate unique IDs
     $transactionId = 'TST-' . Str::random(3);
-    $itemCode = 'PC-e231f638f0';
+    $itemCode = 'PC-a11510988e';
     $endpoint = env('PAYMENT_URL');
     $secret_key = env('SECRET_KEY');
     $api_version = env('API_VERSION');
