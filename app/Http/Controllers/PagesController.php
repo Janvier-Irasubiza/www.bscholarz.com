@@ -927,7 +927,7 @@ public function ProdCreateInvoice(Request $request)
 
         // Generate unique transaction ID
         $transactionId = $this->generateUniqueTransactionId('TXN');
-        $itemCode = 'PC-0a93da0719';
+        $itemCode = 'PC-a11510988e';
         $endpoint = env('PAYMENT_URL');
         $secret_key = env('SECRET_KEY');
         $api_version = env('API_VERSION');
@@ -964,6 +964,8 @@ public function ProdCreateInvoice(Request $request)
         // Make API request to payment gateway
         $response = $this->makePaymentGatewayRequest($endpoint, $data, $secret_key, $api_version);
         $responseData = json_decode($response, true);
+
+        return response()->json($responseData);
 
         // Check if the response was successful
         if (isset($responseData['success']) && $responseData['success'] === true) {

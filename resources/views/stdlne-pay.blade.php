@@ -217,10 +217,9 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log("Invoice created:", data);
                     if (data.success) {
                         // Initialize payment with invoice number
-                        makePayment(data.data.data.invoiceNumber, paymentData.requestType);
+                        makePayment(data.data.invoiceNumber, paymentData.requestType);
                     } else {
                         showMessage('error', data.error || 'Failed to create invoice');
                         resetButton(submitButton, originalButtonText);
@@ -272,7 +271,7 @@
             // Function to initiate IremboPay payment
             function makePayment(invoiceNumber, requestType) {
                 IremboPay.initiate({
-                    publicKey: "pk_live_bc8d282220e74750894e59dbd1211b9a",
+                    publicKey: "pk_live_e3ca819f65094a11923e6be83c35deb9",
                     invoiceNumber: invoiceNumber,
                     locale: IremboPay.locale.EN,
                     callback: (err, resp) => {
