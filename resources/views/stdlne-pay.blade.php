@@ -217,11 +217,10 @@
                     return response.json();
                 })
                 .then(data => {
-                    console.log(data);
                     
                     if (data.success) {
                         // Initialize payment with invoice number
-                        makePayment(data.data.invoiceNumber, paymentData.requestType);
+                        makePayment(data.data.data.invoiceNumber, paymentData.requestType);
                     } else {
                         showMessage('error', data.error || 'Failed to create invoice');
                         resetButton(submitButton, originalButtonText);
@@ -301,7 +300,6 @@
                             })
                             .then(response => response.json())
                             .then(data => {
-                                console.log('Server response:', data);
                                 
                                 // Show success message and redirect if needed
                                 if (data.success) {

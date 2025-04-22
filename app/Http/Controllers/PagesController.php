@@ -892,223 +892,242 @@ class PagesController extends Controller
     ], 500);
 }
 
-private function generateUniqueTransactionId($prefix = 'TXN')
-{
-    // Get current timestamp with microseconds
-    $timestamp = now()->format('YmdHisu');
-    
-    // Generate a random component (8 characters)
-    $random = strtoupper(Str::random(8));
-    
-    // Optional: Include a server identifier if you have multiple servers
-    $serverId = env('SERVER_ID', '01');
-    
-    // Combine all parts with separators for readability
-    $transactionId = "{$prefix}-{$timestamp}-{$random}-{$serverId}";
-    
-    return $transactionId;
-}
+    private function generateUniqueTransactionId($prefix = 'TXN')
+    {
+        // Get current timestamp with microseconds
+        $timestamp = now()->format('YmdHisu');
+        
+        // Generate a random component (8 characters)
+        $random = strtoupper(Str::random(8));
+        
+        // Optional: Include a server identifier if you have multiple servers
+        $serverId = env('SERVER_ID', '01');
+        
+        // Combine all parts with separators for readability
+        $transactionId = "{$prefix}-{$timestamp}-{$random}-{$serverId}";
+        
+        return $transactionId;
+    }
 
-public function ProdCreateInvoice(Request $request)
-{
-    try {
-        // Validate the form data
-        $validatedData = $request->validate([
-            'customerName' => 'required|string|max:100',
-            'customerEmail' => 'nullable|email|max:100',
-            'phoneNumber' => 'required|string|max:20',
-            'amount' => 'required|numeric|min:1',
-            'description' => 'nullable|string|max:255',
-            'requestType' => 'required|string|in:pre-filled,self-filled,donation',
-            'applicationId' => 'required_if:requestType,pre-filled',
-            'serviceId' => 'nullable',
-            'requestInfo' => 'nullable',
-        ]);
+    public function ProdCreateInvoice(Request $request)
+    {
+        try {
+            // Validate the form data
+            $request->validate([
+                'customerName' => 'required|string|max:100',
+                'customerEmail' => 'nullable|email|max:100',
+                'phoneNumber' => 'required|string|max:20',
+                'amount' => 'required|numeric|min:1',
+                'description' => 'nullable|string|max:255',
+                'requestType' => 'required|string|in:pre-filled,self-filled,donation,link',
+                'applicationId' => 'required_if:requestType,pre-filled',
+                'serviceId' => 'nullable',
+                'requestInfo' => 'nullable',
+            ]);
 
-        // Generate unique transaction ID
-        $transactionId = $this->generateUniqueTransactionId('TXN');
-        $itemCode = 'PC-a11510988e';
-        $endpoint = env('PAYMENT_URL');
-        $secret_key = env('SECRET_KEY');
-        $api_version = env('API_VERSION');
+            // Generate unique transaction ID
+            $transactionId = $this->generateUniqueTransactionId('TXN');
+            $itemCode = 'PC-a11510988e';
+            $endpoint = env('PAYMENT_URL');
+            $secret_key = env('SECRET_KEY');
+            $api_version = env('API_VERSION');
 
-        // Set payment description based on requestType
-        $description = match($request->requestType) {
-            'donation' => 'Donation from ' . $request->name,
-            'self-filled' => $request->description ? $request->description : 'Payment from ' . $request->name,
-            'pre-filled' => 'Application payment from ' . $request->name,
-            default => 'Payment from ' . $request->name
-        };
+            // Set payment description based on requestType
+            $description = match($request->requestType) {
+                'donation' => 'Donation from ' . $request->name,
+                'self-filled' => $request->description ? $request->description : 'Payment from ' . $request->name,
+                'pre-filled' => 'Application payment from ' . $request->name,
+                default => 'Payment from ' . $request->name
+            };
 
-        // Prepare the data for the cURL request
-        $data = [
-            'transactionId' => $transactionId,
-            'paymentAccountIdentifier' => 'BSCHOLARZ_RWF',
-            'customer' => [
-                'email' => $request->customerEmail ?? '',
-                'phoneNumber' => $request->phoneNumber,
-                'name' => $request->customerName
-            ],
-            'paymentItems' => [
-                [
-                    'unitAmount' => (float) $request->amount,
-                    'quantity' => 1,
-                    'code' => $itemCode
-                ]
-            ],
-            'description' => $description,
-            'expiryAt' => now()->addDays(30)->toIso8601String(),
-            'language' => 'EN'
-        ];
+            // Prepare the data for the cURL request
+            $data = [
+                'transactionId' => $transactionId,
+                'paymentAccountIdentifier' => 'BSCHOLARZ_RWF',
+                'customer' => [
+                    'email' => $request->customerEmail ?? '',
+                    'phoneNumber' => $request->phoneNumber,
+                    'name' => $request->customerName
+                ],
+                'paymentItems' => [
+                    [
+                        'unitAmount' => (float) $request->amount,
+                        'quantity' => 1,
+                        'code' => $itemCode
+                    ]
+                ],
+                'description' => $description,
+                'expiryAt' => now()->addDays(30)->toIso8601String(),
+                'language' => 'EN'
+            ];
 
-        // Make API request to payment gateway
-        $response = $this->makePaymentGatewayRequest($endpoint, $data, $secret_key, $api_version);
-        $responseData = json_decode($response, true);
+            // Make API request to payment gateway
+            $response = $this->makePaymentGatewayRequest($endpoint, $data, $secret_key, $api_version);
+            $responseData = json_decode($response, true);
 
-        return response()->json($responseData);
+            // Check if the response was successful
+            if (isset($responseData['success']) && $responseData['success'] === true) {
+                // Handle different request types
+                switch ($request->requestType) {
+                    case 'pre-filled':
+                        $this->handlePreFilledPayment($request, $responseData);
+                        break;
+                        
+                    case 'donation':
+                        $this->recordDonation($request, $responseData);
+                        break;
 
-        // Check if the response was successful
-        if (isset($responseData['success']) && $responseData['success'] === true) {
-            // Handle different request types
-            switch ($request->requestType) {
-                case 'pre-filled':
-                    $this->handlePreFilledPayment($request, $responseData);
-                    break;
-                    
-                case 'donation':
-                    $this->recordDonation($request, $responseData);
-                    break;
-                    
-                case 'self-filled':
-                default:
-                    $this->recordGeneralPayment($request, $responseData);
-                    break;
+                    case 'link':
+                        $this->getAppLink($request->serviceId);
+                        break;
+                        
+                    case 'self-filled':
+                    default:
+                        $this->recordGeneralPayment($request, $responseData);
+                        break;
+                }
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $responseData
+                ]);
             }
 
+            // Return error if the API call fails
             return response()->json([
-                'success' => true,
-                'data' => $responseData
-            ]);
+                'success' => false,
+                'error' => $responseData['message'] ?? 'Payment gateway error'
+            ], 500);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Make request to payment gateway
+     */
+    private function makePaymentGatewayRequest($endpoint, $data, $secret_key, $api_version)
+    {
+        // cURL setup
+        $ch = curl_init($endpoint);
+
+        // Set cURL options
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Accept: application/json',
+            'irembopay-secretKey: ' . $secret_key,
+            'X-API-Version: ' . $api_version,
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        // Execute cURL request and get the response
+        $response = curl_exec($ch);
+
+        // Check for errors
+        if ($response === false) {
+            throw new \Exception(curl_error($ch));
         }
 
-        // Return error if the API call fails
-        return response()->json([
-            'success' => false,
-            'error' => $responseData['message'] ?? 'Payment gateway error'
-        ], 500);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'success' => false,
-            'error' => 'Validation error',
-            'errors' => $e->errors()
-        ], 422);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => 'Server error',
-            'message' => $e->getMessage()
-        ], 500);
-    }
-}
+        // Close the cURL session
+        curl_close($ch);
 
-/**
- * Make request to payment gateway
- */
-private function makePaymentGatewayRequest($endpoint, $data, $secret_key, $api_version)
-{
-    // cURL setup
-    $ch = curl_init($endpoint);
-
-    // Set cURL options
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'Accept: application/json',
-        'irembopay-secretKey: ' . $secret_key,
-        'X-API-Version: ' . $api_version,
-    ]);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-
-    // Execute cURL request and get the response
-    $response = curl_exec($ch);
-
-    // Check for errors
-    if ($response === false) {
-        throw new \Exception(curl_error($ch));
+        return $response;
     }
 
-    // Close the cURL session
-    curl_close($ch);
+    /**
+     * Handle pre-filled application payment
+     */
+    private function handlePreFilledPayment($request, $responseData)
+    {
+        try {
+            $application_id = Crypt::decryptString($request->applicationId);
+            
+            // Update the application status in the database
+            Applications::where('app_id', $application_id)
+                ->update([
+                    'transaction_id' => $responseData['data']['transactionId'],
+                    'payment_status' => 'pending'
+                ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating application payment: ' . $e->getMessage());
+            throw new \Exception('Failed to process application payment');
+        }
+    }
 
-    return $response;
-}
-
-/**
- * Handle pre-filled application payment
- */
-private function handlePreFilledPayment($request, $responseData)
-{
-    try {
-        $application_id = Crypt::decryptString($request->applicationId);
-        
-        // Update the application status in the database
-        Applications::where('app_id', $application_id)
-            ->update([
-                'transaction_id' => $responseData['data']['transactionId'],
-                'payment_status' => 'pending'
+    /**
+     * Record donation payment
+     */
+    private function recordDonation($request, $responseData)
+    {
+        try {
+            GeneralPayments::create([
+                'type' => 'donation',
+                'amount' => $request->amount,
+                'names' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'description' => $request->description ?? 'Donation',
+                'status' => 'pending',
+                'transaction_id' => $responseData['data']['transactionId']
             ]);
-    } catch (\Exception $e) {
-        Log::error('Error updating application payment: ' . $e->getMessage());
-        throw new \Exception('Failed to process application payment');
+        } catch (\Exception $e) {
+            Log::error('Error recording donation: ' . $e->getMessage());
+            throw new \Exception('Failed to record donation');
+        }
     }
-}
 
-/**
- * Record donation payment
- */
-private function recordDonation($request, $responseData)
-{
-    try {
-        GeneralPayments::create([
-            'type' => 'donation',
-            'amount' => $request->amount,
-            'names' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'description' => $request->description ?? 'Donation',
-            'status' => 'pending',
-            'transaction_id' => $responseData['data']['transactionId']
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Error recording donation: ' . $e->getMessage());
-        throw new \Exception('Failed to record donation');
+    /**
+     * Record general payment
+     */
+    private function recordGeneralPayment($request, $responseData)
+    {
+        try {
+            GeneralPayments::create([
+                'type' => 'payment',
+                'amount' => $request->amount,
+                'names' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'description' => $request->description ?? 'General payment',
+                'status' => 'pending',
+                'transaction_id' => $responseData['data']['transactionId']
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error recording payment: ' . $e->getMessage());
+            throw new \Exception('Failed to record payment');
+        }
     }
-}
 
-/**
- * Record general payment
- */
-private function recordGeneralPayment($request, $responseData)
-{
-    try {
-        GeneralPayments::create([
-            'type' => 'payment',
-            'amount' => $request->amount,
-            'names' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'description' => $request->description ?? 'General payment',
-            'status' => 'pending',
-            'transaction_id' => $responseData['data']['transactionId']
-        ]);
-    } catch (\Exception $e) {
-        Log::error('Error recording payment: ' . $e->getMessage());
-        throw new \Exception('Failed to record payment');
+    private function getAppLink($serviceId)
+    {
+        $app = Discipline::where('id', $serviceId)->select('link')->first();
+        if ($app) {
+            session(['service_link' => $app->link]);
+            return [
+                'success' => true,
+                'link' => $app->link,
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Application not found'
+            ];
+        }
     }
-}
 
     public static function verifySignature(string $secretKey, string $payload, string $signatureHeader): bool
     {
